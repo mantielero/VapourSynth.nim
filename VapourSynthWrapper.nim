@@ -238,7 +238,7 @@ type
   VSFilterFree* {.impVapourSynth.} = proc(instanceData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSFrameDoneCallback* {.impVapourSynth.} = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}
   VSMessageHandler* {.impVapourSynth.} = proc(msgType: cint, msg: cstring, userData: pointer) {.cdecl.}
+  #VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
+#proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl,importc, header: headerVapourSynth.} #, dynlib: "/home/jose/src/julia/vapoursynth/vapoursynth.so".}
 
-proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl,importc, header: headerVapourSynth, dynlib: "/home/jose/src/julia/vapoursynth/vapoursynth.so".}
-
-#proc VSGetVapourSynthAPI*(version: cint):VSAPI {.cdecl,importc:"VSGetVapourSynthAPI", header: headerVapourSynth.}
+proc VSGetVapourSynthAPI*(version: cint):VSAPI {.cdecl,importc:"VSGetVapourSynthAPI", header: headerVapourSynth.}
