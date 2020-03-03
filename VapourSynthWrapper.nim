@@ -13,7 +13,7 @@ defineEnum(VSPropTypes)
 
 
 const
-  headerVapourSynth {.used.} = "/home/jose/src/nimlang/vapoursynth-master/include/VapourSynth.h"
+  headerVapourSynth {.used.} = "./include/VapourSynth.h"
   VAPOURSYNTH_H* = ""
   VAPOURSYNTH_API_MAJOR* = 3
   VAPOURSYNTH_API_MINOR* = 5
