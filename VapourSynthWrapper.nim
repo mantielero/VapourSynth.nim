@@ -246,4 +246,4 @@ type
 
 #{.impVapourSynth.} 
 #proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl.}
-proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {. dynlib: "/usr/lib/libvapoursynth.so",importc .}
+proc getVapourSynthAPI*(version: cint):ptr VSAPI {. importc, dynlib: "/usr/lib/libvapoursynth.so" .}
