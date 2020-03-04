@@ -1,4 +1,5 @@
-import nimterop/types
+import nimterop/types   # Provides "defineEnum"
+
 
 defineEnum(VSColorFamily)
 defineEnum(VSSampleType)
@@ -13,11 +14,11 @@ defineEnum(VSPropTypes)
 
 
 const
-  headerVapourSynth {.used.} = "./include/VapourSynth.h"
+  headerVapourSynth = "include/VapourSynth.h"
   VAPOURSYNTH_H* = ""
   VAPOURSYNTH_API_MAJOR* = 3
-  VAPOURSYNTH_API_MINOR* = 5
-  VAPOURSYNTH_API_VERSION* = 196613  #((3 shl 16) | (5))
+  VAPOURSYNTH_API_MINOR* = 6
+  VAPOURSYNTH_API_VERSION* = 196613 #((3 << 16) | (6))
   VS_EXTERN_C* = ""
   VS_NOEXCEPT* = ""
   VS_CC* = ""
@@ -122,80 +123,83 @@ type
   VSMap*  {.importc: "struct VSMap", header: headerVapourSynth, bycopy.} = object 
   
   VSAPI*  {.importc: "struct VSAPI", header: headerVapourSynth, bycopy.} = object 
-    createCore*: proc(threads:cint):ptr VSCore
-    freeCore*: proc(core:ptr VSCore)
-    getCoreInfo*: proc(core:ptr VSCore):ptr VSCoreInfo
-    cloneFrameRef*: proc(f:ptr VSFrameRef):ptr VSFrameRef
-    cloneNodeRef*: proc(node:ptr VSNodeRef):ptr VSNodeRef
-    cloneFuncRef*: proc(f:ptr VSFuncRef):ptr VSFuncRef
-    freeFrame*: proc(f:ptr VSFrameRef)
-    freeNode*: proc(node:ptr VSNodeRef)
-    freeFunc*: proc(f:ptr VSFuncRef)
-    newVideoFrame*: proc(format:ptr VSFormat, width:cint, height:cint, propSrc:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef
-    copyFrame*: proc(f:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef
-    copyFrameProps*: proc(src:ptr VSFrameRef, dst:ptr VSFrameRef, core:ptr VSCore)
-    registerFunction*: proc(name:cstring, args:cstring, argsFunc:VSPublicFunction, functionData:pointer, plugin:ptr VSPlugin)
-    getPluginById*: proc(identifier:cstring, core:ptr VSCore):ptr VSPlugin
-    getPluginByNs*: proc(ns:cstring, core:ptr VSCore):ptr VSPlugin
-    getPlugins*: proc(core:ptr VSCore):ptr VSMap
-    getFunctions*: proc(plugin:ptr VSPlugin):ptr VSMap
-    createFilter*: proc(`in`:ptr VSMap, `out`:ptr VSMap, name:cstring, init:VSFilterInit, getFrame:VSFilterGetFrame, free:VSFilterFree, filterMode:cint, flags:cint, instanceData:pointer, core:ptr VSCore)
-    setError*: proc(map:ptr VSMap, errorMessage:cstring)
-    getError*: proc(map:ptr VSMap):cstring
-    setFilterError*: proc(errorMessage:cstring, frameCtx:ptr VSFrameContext)
-    invoke*: proc(plugin:ptr VSPlugin, name:cstring, args:ptr VSMap):ptr VSMap
-    getFormatPreset*: proc(id:cint, core:ptr VSCore):ptr VSFormat
-    registerFormat*: proc(colorFamily:cint, sampleType:cint, bitsPerSample:cint, subSamplingW:cint, subSamplingH:cint, core:ptr VSCore):ptr VSFormat
-    getFrame*: proc(n:cint, node:ptr VSNodeRef, errorMsg:cstring, bufSize:cint):ptr VSFrameRef
-    getFrameAsync*: proc(n:cint, node:ptr VSNodeRef, callback:VSFrameDoneCallback, userData:pointer)
-    getFrameFilter*: proc(n:cint, node:ptr VSNodeRef, frameCtx:ptr VSFrameContext):ptr VSFrameRef
-    requestFrameFilter*: proc(n:cint, node:ptr VSNodeRef, frameCtx:ptr VSFrameContext)
-    queryCompletedFrame*: proc(node:ptr ptr VSNodeRef, n:ptr cint, frameCtx:ptr VSFrameContext)
-    releaseFrameEarly*: proc(node:ptr VSNodeRef, n:cint, frameCtx:ptr VSFrameContext)
-    getStride*: proc(f:ptr VSFrameRef, plane:cint):cint
-    getReadPtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint  #uint8_t
-    getWritePtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint #uint8_t
-    createFunc*: proc(`func`:VSPublicFunction, userData:pointer, free:VSFreeFuncData, core:ptr VSCore, vsapi:ptr VSAPI):ptr VSFuncRef
-    callFunc*: proc(`func`:ptr VSFuncRef, `in`:ptr VSMap, `out`:ptr VSMap, core:ptr VSCore, vsapi:ptr VSAPI)
-    createMap*: proc(None:void):ptr VSMap
-    freeMap*: proc(map:ptr VSMap)
-    clearMap*: proc(map:ptr VSMap)
-    getVideoInfo*: proc(node:ptr VSNodeRef):ptr VSVideoInfo
-    setVideoInfo*: proc(vi:ptr VSVideoInfo, numOutputs:cint, node:ptr VSNode)
-    getFrameFormat*: proc(f:ptr VSFrameRef):ptr VSFormat
-    getFrameWidth*: proc(f:ptr VSFrameRef, plane:cint):cint
-    getFrameHeight*: proc(f:ptr VSFrameRef, plane:cint):cint
-    getFramePropsRO*: proc(f:ptr VSFrameRef):ptr VSMap
-    getFramePropsRW*: proc(f:ptr VSFrameRef):ptr VSMap
-    propNumKeys*: proc(map:ptr VSMap):cint
-    propGetKey*: proc(map:ptr VSMap, index:cint):cstring
-    propNumElements*: proc(map:ptr VSMap, key:cstring):cint
-    propGetType*: proc(map:ptr VSMap, key:cstring):cchar
-    propGetInt*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):int64
-    propGetFloat*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cdouble
-    propGetData*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cstring
-    propGetDataSize*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cint
-    propGetNode*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSNodeRef
-    propGetFrame*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFrameRef
-    propGetFunc*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFuncRef
-    propDeleteKey*: proc(map:ptr VSMap, key:cstring):cint
-    propSetInt*: proc(map:ptr VSMap, key:cstring, i:int64, append:cint):cint
-    propSetFloat*: proc(map:ptr VSMap, key:cstring, d:cdouble, append:cint):cint
-    propSetData*: proc(map:ptr VSMap, key:cstring, data:cstring, size:cint, append:cint):cint
-    propSetNode*: proc(map:ptr VSMap, key:cstring, node:ptr VSNodeRef, append:cint):cint
-    propSetFrame*: proc(map:ptr VSMap, key:cstring, f:ptr VSFrameRef, append:cint):cint
-    propSetFunc*: proc(map:ptr VSMap, key:cstring, `func`:ptr VSFuncRef, append:cint):cint
-    setMaxCacheSize*: proc(`bytes`:int64, `core`:ptr VSCore):int64
-    getOutputIndex*: proc(frameCtx:ptr VSFrameContext):cint
-    newVideoFrame2*: proc(format:ptr VSFormat, width:cint, height:cint, planeSrc:ptr ptr VSFrameRef, planes:ptr cint, propSrc:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef
-    setMessageHandler*: proc(handler:VSMessageHandler, userData:pointer)
-    setThreadCount*: proc(threads:cint, core:ptr VSCore):cint
-    getPluginPath*: proc(plugin:ptr VSPlugin):cstring
-    propGetIntArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr int64
-    propGetFloatArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr cdouble
-    propSetIntArray*: proc(map:ptr VSMap, key:cstring, i:ptr int64, size:cint):cint
-    propSetFloatArray*: proc(map:ptr VSMap, key:cstring, d:ptr cdouble, size:cint):cint
-    logMessage*: proc(msgType:cint, msg:cstring)
+    createCore*: proc(threads:cint):ptr VSCore {.cdecl.}
+    freeCore*: proc(core:ptr VSCore) {.cdecl.}
+    getCoreInfo*: proc(core:ptr VSCore):ptr VSCoreInfo {.cdecl.}
+    cloneFrameRef*: proc(f:ptr VSFrameRef):ptr VSFrameRef {.cdecl.}
+    cloneNodeRef*: proc(node:ptr VSNodeRef):ptr VSNodeRef {.cdecl.}
+    cloneFuncRef*: proc(f:ptr VSFuncRef):ptr VSFuncRef {.cdecl.}
+    freeFrame*: proc(f:ptr VSFrameRef) {.cdecl.}
+    freeNode*: proc(node:ptr VSNodeRef) {.cdecl.}
+    freeFunc*: proc(f:ptr VSFuncRef) {.cdecl.}
+    newVideoFrame*: proc(format:ptr VSFormat, width:cint, height:cint, propSrc:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef {.cdecl.}
+    copyFrame*: proc(f:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef {.cdecl.}
+    copyFrameProps*: proc(src:ptr VSFrameRef, dst:ptr VSFrameRef, core:ptr VSCore) {.cdecl.}
+    registerFunction*: proc(name:cstring, args:cstring, argsFunc:VSPublicFunction, functionData:pointer, plugin:ptr VSPlugin) {.cdecl.}
+    getPluginById*: proc(identifier:cstring, core:ptr VSCore):ptr VSPlugin {.cdecl.}
+    getPluginByNs*: proc(ns:cstring, core:ptr VSCore):ptr VSPlugin {.cdecl.}
+    getPlugins*: proc(core:ptr VSCore):ptr VSMap {.cdecl.}
+    getFunctions*: proc(plugin:ptr VSPlugin):ptr VSMap {.cdecl.}
+    createFilter*: proc(`in`:ptr VSMap, `out`:ptr VSMap, name:cstring, init:VSFilterInit, getFrame:VSFilterGetFrame, free:VSFilterFree, filterMode:cint, flags:cint, instanceData:pointer, core:ptr VSCore) {.cdecl.}
+    setError*: proc(map:ptr VSMap, errorMessage:cstring) {.cdecl.}
+    getError*: proc(map:ptr VSMap):cstring {.cdecl.}
+    setFilterError*: proc(errorMessage:cstring, frameCtx:ptr VSFrameContext) {.cdecl.}
+    invoke*: proc(plugin:ptr VSPlugin, name:cstring, args:ptr VSMap):ptr VSMap {.cdecl.}
+    getFormatPreset*: proc(id:cint, core:ptr VSCore):ptr VSFormat {.cdecl.}
+    registerFormat*: proc(colorFamily:cint, sampleType:cint, bitsPerSample:cint, subSamplingW:cint, subSamplingH:cint, core:ptr VSCore):ptr VSFormat {.cdecl.}
+    getFrame*: proc(n:cint, node:ptr VSNodeRef, errorMsg:cstring, bufSize:cint):ptr VSFrameRef {.cdecl.}
+    getFrameAsync*: proc(n:cint, node:ptr VSNodeRef, callback:VSFrameDoneCallback, userData:pointer) {.cdecl.}
+    getFrameFilter*: proc(n:cint, node:ptr VSNodeRef, frameCtx:ptr VSFrameContext):ptr VSFrameRef {.cdecl.}
+    requestFrameFilter*: proc(n:cint, node:ptr VSNodeRef, frameCtx:ptr VSFrameContext) {.cdecl.}
+    queryCompletedFrame*: proc(node:ptr ptr VSNodeRef, n:ptr cint, frameCtx:ptr VSFrameContext) {.cdecl.}
+    releaseFrameEarly*: proc(node:ptr VSNodeRef, n:cint, frameCtx:ptr VSFrameContext) {.cdecl.}
+    getStride*: proc(f:ptr VSFrameRef, plane:cint):cint {.cdecl.}
+    getReadPtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint {.cdecl.}
+    getWritePtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint {.cdecl.}
+    createFunc*: proc(`func`:VSPublicFunction, userData:pointer, free:VSFreeFuncData, core:ptr VSCore, vsapi:ptr VSAPI):ptr VSFuncRef {.cdecl.}
+    callFunc*: proc(`func`:ptr VSFuncRef, `in`:ptr VSMap, `out`:ptr VSMap, core:ptr VSCore, vsapi:ptr VSAPI) {.cdecl.}
+    createMap*: proc(None:void):ptr VSMap {.cdecl.}
+    freeMap*: proc(map:ptr VSMap) {.cdecl.}
+    clearMap*: proc(map:ptr VSMap) {.cdecl.}
+    getVideoInfo*: proc(node:ptr VSNodeRef):ptr VSVideoInfo {.cdecl.}
+    setVideoInfo*: proc(vi:ptr VSVideoInfo, numOutputs:cint, node:ptr VSNode) {.cdecl.}
+    getFrameFormat*: proc(f:ptr VSFrameRef):ptr VSFormat {.cdecl.}
+    getFrameWidth*: proc(f:ptr VSFrameRef, plane:cint):cint {.cdecl.}
+    getFrameHeight*: proc(f:ptr VSFrameRef, plane:cint):cint {.cdecl.}
+    getFramePropsRO*: proc(f:ptr VSFrameRef):ptr VSMap {.cdecl.}
+    getFramePropsRW*: proc(f:ptr VSFrameRef):ptr VSMap {.cdecl.}
+    propNumKeys*: proc(map:ptr VSMap):cint {.cdecl.}
+    propGetKey*: proc(map:ptr VSMap, index:cint):cstring {.cdecl.}
+    propNumElements*: proc(map:ptr VSMap, key:cstring):cint {.cdecl.}
+    propGetType*: proc(map:ptr VSMap, key:cstring):cchar {.cdecl.}
+    propGetInt*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):int64 {.cdecl.}
+    propGetFloat*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cdouble {.cdecl.}
+    propGetData*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cstring {.cdecl.}
+    propGetDataSize*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cint {.cdecl.}
+    propGetNode*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSNodeRef {.cdecl.}
+    propGetFrame*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFrameRef {.cdecl.}
+    propGetFunc*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFuncRef {.cdecl.}
+    propDeleteKey*: proc(map:ptr VSMap, key:cstring):cint {.cdecl.}
+    propSetInt*: proc(map:ptr VSMap, key:cstring, i:int64, append:cint):cint {.cdecl.}
+    propSetFloat*: proc(map:ptr VSMap, key:cstring, d:cdouble, append:cint):cint {.cdecl.}
+    propSetData*: proc(map:ptr VSMap, key:cstring, data:cstring, size:cint, append:cint):cint {.cdecl.}
+    propSetNode*: proc(map:ptr VSMap, key:cstring, node:ptr VSNodeRef, append:cint):cint {.cdecl.}
+    propSetFrame*: proc(map:ptr VSMap, key:cstring, f:ptr VSFrameRef, append:cint):cint {.cdecl.}
+    propSetFunc*: proc(map:ptr VSMap, key:cstring, `func`:ptr VSFuncRef, append:cint):cint {.cdecl.}
+    setMaxCacheSize*: proc(bytes:int64, core:ptr VSCore):int64 {.cdecl.}
+    getOutputIndex*: proc(frameCtx:ptr VSFrameContext):cint {.cdecl.}
+    newVideoFrame2*: proc(format:ptr VSFormat, width:cint, height:cint, planeSrc:ptr ptr VSFrameRef, planes:ptr cint, propSrc:ptr VSFrameRef, core:ptr VSCore):ptr VSFrameRef {.cdecl.}
+    setMessageHandler*: proc(handler:VSMessageHandler, userData:pointer) {.cdecl.}
+    setThreadCount*: proc(threads:cint, core:ptr VSCore):cint {.cdecl.}
+    getPluginPath*: proc(plugin:ptr VSPlugin):cstring {.cdecl.}
+    propGetIntArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr int64 {.cdecl.}
+    propGetFloatArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr cdouble {.cdecl.}
+    propSetIntArray*: proc(map:ptr VSMap, key:cstring, i:ptr int64, size:cint):cint {.cdecl.}
+    propSetFloatArray*: proc(map:ptr VSMap, key:cstring, d:ptr cdouble, size:cint):cint {.cdecl.}
+    logMessage*: proc(msgType:cint, msg:cstring) {.cdecl.}
+    addMessageHandler*: proc(handler:VSMessageHandler, free:VSMessageHandlerFree, userData:pointer):cint {.cdecl.}
+    removeMessageHandler*: proc(id:cint):cint {.cdecl.}
+    getCoreInfo2*: proc(core:ptr VSCore, info:ptr VSCoreInfo) {.cdecl.}
   
   VSFrameContext*  {.importc: "struct VSFrameContext", header: headerVapourSynth, bycopy.} = object 
   
@@ -227,7 +231,7 @@ type
     numFrames*: cint
     flags*: cint
   
-
+  #VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
   VSPublicFunction* {.impVapourSynth.} = proc(`in`: ptr VSMap, `out`: ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSRegisterFunction* {.impVapourSynth.} = proc(name: cstring, args: cstring, argsFunc: VSPublicFunction, functionData: pointer, plugin: ptr VSPlugin) {.cdecl.}
   VSConfigPlugin* {.impVapourSynth.} = proc(identifier: cstring, defaultNamespace: cstring, name: cstring, apiVersion: cint, readonly: cint, plugin: ptr VSPlugin) {.cdecl.}
@@ -238,7 +242,8 @@ type
   VSFilterFree* {.impVapourSynth.} = proc(instanceData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSFrameDoneCallback* {.impVapourSynth.} = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}
   VSMessageHandler* {.impVapourSynth.} = proc(msgType: cint, msg: cstring, userData: pointer) {.cdecl.}
-  #VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
-#proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl,importc, header: headerVapourSynth.} #, dynlib: "/home/jose/src/julia/vapoursynth/vapoursynth.so".}
+  VSMessageHandlerFree* {.impVapourSynth.} = proc(userData: pointer) {.cdecl.}
 
-proc VSGetVapourSynthAPI*(version: cint):VSAPI {.cdecl,importc:"VSGetVapourSynthAPI", header: headerVapourSynth.}
+#{.impVapourSynth.} 
+#proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl.}
+proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {. dynlib: "/usr/lib/libvapoursynth.so",importc .}
