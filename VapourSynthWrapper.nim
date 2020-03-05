@@ -14,11 +14,12 @@ defineEnum(VSPropTypes)
 
 
 const
-  headerVapourSynth = "include/VapourSynth.h"
+  headerVapourSynth = "/home/jose/src/nimlang/vapoursynth-R48/include/VapourSynth.h"
+  libName = "/usr/lib/libvapoursynth.so"
   VAPOURSYNTH_H* = ""
   VAPOURSYNTH_API_MAJOR* = 3
   VAPOURSYNTH_API_MINOR* = 6
-  VAPOURSYNTH_API_VERSION* = 196613 #((3 << 16) | (6))
+  VAPOURSYNTH_API_VERSION* = 196614
   VS_EXTERN_C* = ""
   VS_NOEXCEPT* = ""
   VS_CC* = ""
@@ -108,21 +109,21 @@ const
 
  
 type
-  VSFrameRef*  {.importc: "struct VSFrameRef", header: headerVapourSynth, bycopy.} = object 
+  VSFrameRef*  {.bycopy.} = object 
   
-  VSNodeRef*  {.importc: "struct VSNodeRef", header: headerVapourSynth, bycopy.} = object 
+  VSNodeRef*  {.bycopy.} = object 
   
-  VSCore*  {.importc: "struct VSCore", header: headerVapourSynth, bycopy.} = object 
+  VSCore*  {.bycopy.} = object 
   
-  VSPlugin*  {.importc: "struct VSPlugin", header: headerVapourSynth, bycopy.} = object 
+  VSPlugin*  {.bycopy.} = object 
   
-  VSNode*  {.importc: "struct VSNode", header: headerVapourSynth, bycopy.} = object 
+  VSNode*  {.bycopy.} = object 
   
-  VSFuncRef*  {.importc: "struct VSFuncRef", header: headerVapourSynth, bycopy.} = object 
+  VSFuncRef*  {.bycopy.} = object 
   
-  VSMap*  {.importc: "struct VSMap", header: headerVapourSynth, bycopy.} = object 
+  VSMap*  {.bycopy.} = object 
   
-  VSAPI*  {.importc: "struct VSAPI", header: headerVapourSynth, bycopy.} = object 
+  VSAPI*  {.bycopy.} = object 
     createCore*: proc(threads:cint):ptr VSCore {.cdecl.}
     freeCore*: proc(core:ptr VSCore) {.cdecl.}
     getCoreInfo*: proc(core:ptr VSCore):ptr VSCoreInfo {.cdecl.}
@@ -154,8 +155,8 @@ type
     queryCompletedFrame*: proc(node:ptr ptr VSNodeRef, n:ptr cint, frameCtx:ptr VSFrameContext) {.cdecl.}
     releaseFrameEarly*: proc(node:ptr VSNodeRef, n:cint, frameCtx:ptr VSFrameContext) {.cdecl.}
     getStride*: proc(f:ptr VSFrameRef, plane:cint):cint {.cdecl.}
-    getReadPtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint {.cdecl.}
-    getWritePtr*: proc(f:ptr VSFrameRef, plane:cint):ptr cuint {.cdecl.}
+    getReadPtr*: proc(f:ptr VSFrameRef, plane:cint):ptr uint8 {.cdecl.}
+    getWritePtr*: proc(f:ptr VSFrameRef, plane:cint):ptr uint8 {.cdecl.}
     createFunc*: proc(`func`:VSPublicFunction, userData:pointer, free:VSFreeFuncData, core:ptr VSCore, vsapi:ptr VSAPI):ptr VSFuncRef {.cdecl.}
     callFunc*: proc(`func`:ptr VSFuncRef, `in`:ptr VSMap, `out`:ptr VSMap, core:ptr VSCore, vsapi:ptr VSAPI) {.cdecl.}
     createMap*: proc(None:void):ptr VSMap {.cdecl.}
@@ -201,9 +202,9 @@ type
     removeMessageHandler*: proc(id:cint):cint {.cdecl.}
     getCoreInfo2*: proc(core:ptr VSCore, info:ptr VSCoreInfo) {.cdecl.}
   
-  VSFrameContext*  {.importc: "struct VSFrameContext", header: headerVapourSynth, bycopy.} = object 
+  VSFrameContext*  {.bycopy.} = object 
   
-  VSFormat*  {.importc: "struct VSFormat", header: headerVapourSynth, bycopy.} = object 
+  VSFormat*  {.bycopy.} = object 
     name*: array[32, cchar]
     id*: cint
     colorFamily*: cint
@@ -214,7 +215,7 @@ type
     subSamplingH*: cint
     numPlanes*: cint
   
-  VSCoreInfo*  {.importc: "struct VSCoreInfo", header: headerVapourSynth, bycopy.} = object 
+  VSCoreInfo*  {.bycopy.} = object 
     versionString*: cstring
     core*: cint
     api*: cint
@@ -222,7 +223,7 @@ type
     maxFramebufferSize*: int64
     usedFramebufferSize*: int64
   
-  VSVideoInfo*  {.importc: "struct VSVideoInfo", header: headerVapourSynth, bycopy.} = object 
+  VSVideoInfo*  {.bycopy.} = object 
     format*: ptr VSFormat
     fpsNum*: int64
     fpsDen*: int64
@@ -231,7 +232,7 @@ type
     numFrames*: cint
     flags*: cint
   
-  #VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
+  VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
   VSPublicFunction* {.impVapourSynth.} = proc(`in`: ptr VSMap, `out`: ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSRegisterFunction* {.impVapourSynth.} = proc(name: cstring, args: cstring, argsFunc: VSPublicFunction, functionData: pointer, plugin: ptr VSPlugin) {.cdecl.}
   VSConfigPlugin* {.impVapourSynth.} = proc(identifier: cstring, defaultNamespace: cstring, name: cstring, apiVersion: cint, readonly: cint, plugin: ptr VSPlugin) {.cdecl.}
@@ -243,7 +244,7 @@ type
   VSFrameDoneCallback* {.impVapourSynth.} = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}
   VSMessageHandler* {.impVapourSynth.} = proc(msgType: cint, msg: cstring, userData: pointer) {.cdecl.}
   VSMessageHandlerFree* {.impVapourSynth.} = proc(userData: pointer) {.cdecl.}
+ 
 
-#{.impVapourSynth.} 
-#proc VSGetVapourSynthAPI*(version: cint):ptr VSAPI {.cdecl.}
-proc getVapourSynthAPI*(version: cint):ptr VSAPI {. importc, dynlib: "/usr/lib/libvapoursynth.so" .}
+proc getVapourSynthAPI*(version:cint):ptr VSAPI    {.importc,dynlib: libName.}
+
