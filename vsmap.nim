@@ -40,7 +40,7 @@ proc setError(this:VS, vsmap:ptr VSMap, errorMessage:cstring) = this.vsapi.setEr
   ##
   ## For errors encountered in a filter’s "getframe" function, use setFilterError.
 
-proc getError(this:VS, vsmap:ptr VSMap):cstring = this.vsapi.getError(vsmap) ## \
+proc getError*(this:VS, vsmap:ptr VSMap):cstring = this.vsapi.getError(vsmap) ## \
   ## Returns a pointer to the error message contained in the map, or NULL if there is no error message. The pointer is valid as long as the map lives.
 
 proc propDeleteKey(this:VS, vsmap:ptr VSMap, key:cstring):int = this.vsapi.propDeleteKey(vsmap, key).int  ## \
