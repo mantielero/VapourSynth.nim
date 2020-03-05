@@ -833,8 +833,18 @@ function main() {
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#getError%2CVS%2Cptr.VSMap"
-    title="getError(this: VS; vsmap: ptr VSMap): cstring"><wbr />get<wbr />Error<span class="attachedType"></span></a></li>
+      <li><a class="reference" href="#propNumKeys%2CVS%2Cptr.VSMap"
+    title="propNumKeys(this: VS; vsmap: ptr VSMap): int"><wbr />prop<wbr />Num<wbr />Keys<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#propGetKey%2CVS%2Cptr.VSMap%2Ccint"
+    title="propGetKey(this: VS; vsmap: ptr VSMap; idx: cint): cstring"><wbr />prop<wbr />Get<wbr />Key<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#propGetType%2CVS%2Cptr.VSMap%2Ccstring"
+    title="propGetType(this: VS; vsmap: ptr VSMap; key: cstring): VSPropTypes"><wbr />prop<wbr />Get<wbr />Type<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#propNumElements%2CVS%2Cptr.VSMap%2Ccstring"
+    title="propNumElements(this: VS; vsmap: ptr VSMap; key: cstring): int"><wbr />prop<wbr />Num<wbr />Elements<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#propGetData%2CVS%2Cptr.VSMap%2Ccstring%2Cint%2Cptr.cint"
+    title="propGetData(this: VS; vsmap: ptr VSMap; key: cstring; idx: int; error: ptr cint): cstring"><wbr />prop<wbr />Get<wbr />Data<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#propGetDataSize%2CVS%2Cptr.VSMap%2Ccstring%2Cint%2Cptr.cint"
+    title="propGetDataSize(this: VS; vsmap: ptr VSMap; key: cstring; idx: int; error: ptr cint): int"><wbr />prop<wbr />Get<wbr />Data<wbr />Size<span class="attachedType"></span></a></li>
 
   </ul>
 </li>
@@ -867,12 +877,62 @@ function main() {
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<a id="getError,VS,ptr.VSMap"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#getError%2CVS%2Cptr.VSMap"><span class="Identifier">getError</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">cstring</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+<a id="propNumKeys,VS,ptr.VSMap"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propNumKeys%2CVS%2Cptr.VSMap"><span class="Identifier">propNumKeys</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
+Returns the number of keys contained in a property map.
 
+</dd>
+<a id="propGetKey,VS,ptr.VSMap,cint"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propGetKey%2CVS%2Cptr.VSMap%2Ccint"><span class="Identifier">propGetKey</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">;</span> <span class="Identifier">idx</span><span class="Other">:</span> <span class="Identifier">cint</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">cstring</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+<p>Returns a key from a property map.</p>
+<p>Passing an invalid index will cause a fatal error.</p>
+<p>The pointer is valid as long as the key exists in the map.</p>
+
+
+</dd>
+<a id="propGetType,VS,ptr.VSMap,cstring"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propGetType%2CVS%2Cptr.VSMap%2Ccstring"><span class="Identifier">propGetType</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span><span class="Other">:</span> <a href="VapourSynthWrapper.html#VSPropTypes"><span class="Identifier">VSPropTypes</span></a> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+Returns the type of the elements associated with the given key in a property map. The returned value is one of VSPropTypes. If there is no such key in the map, the returned value is ptUnset.
+
+</dd>
+<a id="propNumElements,VS,ptr.VSMap,cstring"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propNumElements%2CVS%2Cptr.VSMap%2Ccstring"><span class="Identifier">propNumElements</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+Returns the number of elements associated with a key in a property map. Returns -1 if there is no such key in the map.
+
+</dd>
+<a id="propGetData,VS,ptr.VSMap,cstring,int,ptr.cint"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propGetData%2CVS%2Cptr.VSMap%2Ccstring%2Cint%2Cptr.cint"><span class="Identifier">propGetData</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">;</span> <span class="Identifier">idx</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">error</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">cint</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">cstring</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+<p>Retrieves arbitrary binary data from a map.</p>
+<p>Returns a pointer to the data on success, or NULL in case of error.</p>
+<p>The array returned is guaranteed to be NULL-terminated. The NULL byte is not considered to be part of the array (propGetDataSize doesn’t count it).</p>
+<p>The pointer is valid until the map is destroyed, or until the corresponding key is removed from the map or altered. If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error:</p>
+<ul class="simple"><li><tt class="docutils literal"><span class="pre">index</span></tt>:  Zero-based index of the element. Use propNumElements() to know the total number of elements associated with a key.</li>
+<li><tt class="docutils literal"><span class="pre">error</span></tt>: One of VSGetPropErrors, or 0 on success. You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.</li>
+</ul>
+
+
+</dd>
+<a id="propGetDataSize,VS,ptr.VSMap,cstring,int,ptr.cint"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#propGetDataSize%2CVS%2Cptr.VSMap%2Ccstring%2Cint%2Cptr.cint"><span class="Identifier">propGetDataSize</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Identifier">VS</span><span class="Other">;</span> <span class="Identifier">vsmap</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="VapourSynthWrapper.html#VSMap"><span class="Identifier">VSMap</span></a><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">;</span> <span class="Identifier">idx</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">error</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">cint</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
 
 </dd>
 
@@ -885,7 +945,7 @@ function main() {
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2020-03-05 20:26:35 UTC</small>
+        <small>Made with Nim. Generated: 2020-03-05 21:30:43 UTC</small>
       </div>
     </div>
   </div>

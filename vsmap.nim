@@ -40,103 +40,72 @@ proc setError(this:VS, vsmap:ptr VSMap, errorMessage:cstring) = this.vsapi.setEr
   ##
   ## For errors encountered in a filter’s "getframe" function, use setFilterError.
 
-proc getError*(this:VS, vsmap:ptr VSMap):cstring = this.vsapi.getError(vsmap) ## \
+proc getError(this:VS, vsmap:ptr VSMap):cstring = 
   ## Returns a pointer to the error message contained in the map, or NULL if there is no error message. The pointer is valid as long as the map lives.
+  this.vsapi.getError(vsmap)
+
 
 proc propDeleteKey(this:VS, vsmap:ptr VSMap, key:cstring):int = this.vsapi.propDeleteKey(vsmap, key).int  ## \
   ## Removes the property with the given key. All values associated with the key are lost.
   ## Returns 0 if the key isn’t in the map. Otherwise it returns 1.  
 
-proc propNumKeys(this:VS, vsmap:ptr VSMap):int = this.vsapi.propNumKeys(vsmap).int
+proc propNumKeys*(this:VS, vsmap:ptr VSMap):int = this.vsapi.propNumKeys(vsmap).int
   ## Returns the number of keys contained in a property map.
+
+proc propGetKey*(this:VS, vsmap:ptr VSMap, idx:int):cstring = 
+  ## Returns a key from a property map.
+  ## 
+  ## Passing an invalid index will cause a fatal error.
+  ## 
+  ## The pointer is valid as long as the key exists in the map.
+  this.vsapi.propGetKey(vsmap, idx.cint)
+
+
+proc propGetType*(this:VS, vsmap:ptr VSMap, key:cstring):VSPropTypes = 
+  ## Returns the type of the elements associated with the given key in a property map.
+  ## The returned value is one of VSPropTypes. If there is no such key in the map, the returned value is ptUnset.
+  this.vsapi.propGetType(vsmap, key).VSPropTypes
+
+
+proc propNumElements*(this:VS, vsmap:ptr VSMap, key:cstring):int = 
+  ## Returns the number of elements associated with a key in a property map. Returns -1 if there is no such key in the map.
+  this.vsapi.propNumElements(vsmap, key).int
+
+proc propGetData*(this:VS, vsmap:ptr VSMap, key:cstring, idx:int, error:ptr cint):string = 
+  ##[
+  Retrieves arbitrary binary data from a map.
+  
+  Returns a pointer to the data on success, or NULL in case of error.
+
+  The array returned is guaranteed to be NULL-terminated. The NULL byte is not considered to be part of the array (propGetDataSize doesn’t count it).
+
+  The pointer is valid until the map is destroyed, or until the corresponding key is removed from the map or altered. If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error:
+  
+  - `index`:  Zero-based index of the element. Use propNumElements() to know the total number of elements associated with a key.
+  - `error`: One of VSGetPropErrors, or 0 on success. You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.]##
+  $this.vsapi.propGetData(vsmap, key,idx.cint,error)
+
+proc propGetDataSize*(this:VS, vsmap:ptr VSMap, key:cstring, idx:int, error:ptr cint):int = 
+  ## Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
+  this.vsapi.propGetDataSize(vsmap, key,idx.cint,error).int
+
+#[ TODO: Fix error declaration
+proc propGetInt*(this:VS, vsmap:ptr VSMap, key:cstring, idx:int, error:VSGetPropErrors):int = 
+  ##[
+  Retrieves an integer from a map.
+  
+  Returns the number on success, or 0 in case of error.
+  
+  If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
+  
+  - `index`: Zero-based index of the element. Use propNumElements() to know the total number of elements associated with a key.
+  - `error`: One of VSGetPropErrors, or 0 on success. You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
+  ]##
+  this.vsapi.propGetDataSize(vsmap, key,idx.cint,unsafeAddr(error.cint) ).int
+]#
 
 
 #[
-
-function propGetKey( vsmap_p::Ptr{VSMap}, idx::Int64 )
-    pointer = ccall( vsapi.propGetKey, Cstring, (Ptr{VSMap},Cint,)
-                 , vsmap_p, Cint(idx) )
-    unsafe_string(pointer)
-end
-
-"""
-Returns the type of the elements associated with the given key in a property map.
-The returned value is one of VSPropTypes. If there is no such key in the map, the returned value is ptUnset.
-"""
-
-function propGetType( vsmap_p::Ptr{VSMap}, key::AbstractString )
-    #char propGetType(const VSMap *map, const char *key)
-    value = ccall( vsapi.propGetType, Cchar, (Ptr{VSMap}, Cstring,)  # Cstring vs Ptr{UInt8}
-                 , vsmap_p, key )
-    VSPropTypes(value)
-end
-
-"""
-Returns the number of elements associated with a key in a property map. Returns -1 if there is no such key in the map.
-"""
-function propNumElements( vsmap_p::Ptr{VSMap}, key::AbstractString )
-    #int propNumElements(const VSMap *map, const char *key)
-    value = ccall( vsapi.propNumElements, Cint, (Ptr{VSMap}, Cstring,)  # Cstring vs Ptr{UInt8}
-                 , vsmap_p, key )
-    Int64(value)
-end
-
-"""
-    const char *propGetData(const VSMap *map, const char *key, int index, int *error)
-        Retrieves arbitrary binary data from a map.
-        Returns a pointer to the data on success, or NULL in case of error.
-        The array returned is guaranteed to be NULL-terminated. The NULL byte is not considered to be part of the array (propGetDataSize doesn’t count it).
-        The pointer is valid until the map is destroyed, or until the corresponding key is removed from the map or altered.
-        If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-        index
-            Zero-based index of the element.
-            Use propNumElements() to know the total number of elements associated with a key.
-        error
-            One of VSGetPropErrors, or 0 on success.
-            You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-"""
-
-
-
-function propGetData( vsmap_p::Ptr{VSMap}, key::AbstractString, idx::Int64, error::VSGetPropErrors )
-    ccall( vsapi.propGetData, Ptr{UInt8}, (Ptr{VSMap}, Cstring, Cint, Cint)  # Cstring vs Ptr{UInt8}
-         , vsmap_p, key, idx, C_NULL )
-    #VSPropTypes(value)
-    #print(value)
-end
-
-"""
-Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
-"""
-# TODO: no funciona correctamente
-function propGetDataSize( vsmap_p::Ptr{VSMap}, key::AbstractString, idx::Int64, error::VSGetPropErrors )
-    #int propGetDataSize(const VSMap *map, const char *key, int index, int *error)
-
-    value = ccall( vsapi.propGetData, Cint, (Ptr{VSMap}, Cstring, Cint, Cint)  # Cstring vs Ptr{UInt8}
-         , vsmap_p, key, idx, C_NULL )
-    #value = unsafe_load(value)
-    #print("Value: $(value)\n")
-    Int64(value)
-end
-
-"""
-Retrieves an integer from a map.
-Returns the number on success, or 0 in case of error.
-If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-index
-    Zero-based index of the element.
-    Use propNumElements() to know the total number of elements associated with a key.
-error
-    One of VSGetPropErrors, or 0 on success.
-    You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-"""
-function propGetInt( vsmap_p::Ptr{VSMap}, key::AbstractString, idx::Int64, error::VSGetPropErrors )
-    #int64_t propGetInt(const VSMap *map, const char *key, int index, int *error)
-    value = ccall( vsapi.propGetInt, Cintmax_t, (Ptr{VSMap}, Cstring, Cint, Cint)  # Cstring vs Ptr{UInt8}
-         , vsmap_p, key, idx, C_NULL )
-    #VSPropTypes(value)
-    Int64(value)
-end
 
 """
     const int64_t *propGetIntArray(const VSMap *map, const char *key, int *error)
@@ -408,7 +377,10 @@ function propSetFunc( vsmap::Ptr{VSMap}, key::AbstractString, func::Union{Ptr{VS
                  , vsmap, key, func, Int64(append) )
     Int64(err)
 end
+]#
 
+
+#[
 # ===================================
 #        Friendly API
 # ===================================

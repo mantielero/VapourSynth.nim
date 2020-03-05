@@ -1,4 +1,4 @@
-import VapourSynthWrapper
+import VapourSynthWrapper, strformat, strutils
 
 #proc vsapi_init() =
 
@@ -37,6 +37,7 @@ proc getMaxFramebufferSize(this:VS):int = this.vsapi.getCoreInfo( this.coreptr )
 proc getUsedFramebufferSize(this:VS):int = this.vsapi.getCoreInfo( this.coreptr ).usedFramebufferSize.int
 
 include "vsmap.nim"
+include "plugins.nim"
 
 when isMainModule:
   #let vsapi:VSapi = getVapourSynthAPI(3)
@@ -46,6 +47,50 @@ when isMainModule:
   var vsmap = vsapi.vsapi.getPlugins( vsapi.coreptr )
   echo repr(vsmap)
   echo vsapi.propNumKeys(vsmap)
+
+  var pluginName = vsapi.propGetKey(vsmap, 10)
+  var pluginType = vsapi.propGetType(vsmap, pluginName)
+  var nElems = vsapi.propNumElements(vsmap, pluginName)
+  echo nElems
+  echo vsapi.propGetData(vsmap, pluginName, 0, nil)
+  echo vsapi.propGetDataSize(vsmap, pluginName, 0, nil)
+
+
+  #
+  echo "PRINTING PLUGINS"
+  for i in 0..<vsapi.propNumKeys(vsmap):
+    echo fmt"  PLUGIN #{i}"
+    var name = vsapi.propGetKey(vsmap, i)
+    var t = vsapi.propGetType(vsmap, name)
+    var nElems = vsapi.propNumElements(vsmap, name)
+    echo fmt"     Name: {name}"
+    echo fmt"     Tipo: {t}"
+    echo fmt"     N elems.: {nElems}"
+    for j in 0..<nElems:
+      var data = vsapi.propGetData(vsmap, name, 0, nil)
+      echo fmt"        Data: {data}"
+      #var data1:string = $data
+      var fields = data.split(";")
+      for item in fields:
+        echo fmt"           {item}"
+      var plugin = vsapi.getPluginById(fields[1])
+      #echo repr(plugin)
+      var funciones = vsapi.getFunctions(plugin)
+      var nFunciones = vsapi.propNumKeys(funciones)
+      for k in 0..<nFunciones:
+        var funcionName = vsapi.propGetKey(funciones, k)
+        echo fmt"             Function name: {funcionName}"
+      #echo tmp
+  # https://github.com/mantielero/VapourSynth.jl/blob/3903bfe492456e2c2e094db2ee940058805f3663/src/vsmodules.jl
+  # getpluginfunctions
+
+
+
+
+
+  #echo repr(VSPropTypes(pluginType))
+  #echo ptData
+
   #echo repr(vsapi)
   #echo repr(coreptr)
   
