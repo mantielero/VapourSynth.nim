@@ -43,15 +43,29 @@ Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim
 
 ## TODO
 
+- [ ] Simplify the wrapper with some overloading.
+- [ ] To use better naming given the advantages provided by Nim.
+- [ ] Better handling of errors.
+- [ ] Helper functions for +, [], ...
+
+  - The whole clip: clip[1:end]
+  - Reversed: clip[end:-1:1]
+  - Odd: clip[1:2:end]
+  - Even: clip[2:2:end]
+
+- [ ] Better documentation
+- [ ] Github pages
 - [ ] To enable dealing with frames like an array.
 - [ ] To enable loading plugins manually.
-- [ ] To enable loading AVS scripts (for instance for deinlerlacing).
+- [ ] To enable loading AVS scripts (for instance for deinlerlacing). Options are [AviSource](http://avisynth.nl/index.php/AviSource). [VS_AvsReader](https://github.com/chikuzen/VS_AvsReader) and [vsavsreader](https://forum.doom9.org/showthread.php?t=165957)
 - [ ] To take a look at [Home Of VapourSynth Evolution](https://github.com/HomeOfVapourSynthEvolution/havsfunc/blob/master/havsfunc.py)
 
 - [ ] Developping plugins directly in Nim (maybe is already possible). In any case, check: [Escribir Filtros](http://avisynth.nl/index.php/Filter_SDK), [InvertNeg](http://avisynth.nl/index.php/Filter_SDK/InvertNeg), [AddGrain](https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain/blob/master/AddGrain/AddGrain.cpp), [filter in python](https://forum.doom9.org/showthread.php?t=172206)
 
 
-
+## Note for developpers
+### Note on plugins function's signatures
+Rather than a clip, the input is always a `ptr VSMap`. Given than `invoke` returns `ptr VSMap`, this enables chaining function scheme shown in the example.
 
 
 
