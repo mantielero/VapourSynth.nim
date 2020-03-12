@@ -1,12 +1,23 @@
-proc eedi3(clip:ptr VSNodeRef, field:int; dh=none(int); planes=none(seq[int]); alpha=none(float); beta=none(float); gamma=none(float); nrad=none(int); mdis=none(int); hp=none(int); ucubic=none(int); cost3=none(int); vcheck=none(int); vthresh0=none(float); vthresh1=none(float); vthresh2=none(float); sclip=none(ptr VSNodeRef)):ptr VSMap =
+proc eedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); alpha=none(float); beta=none(float); gamma=none(float); nrad=none(int); mdis=none(int); hp=none(int); ucubic=none(int); cost3=none(int); vcheck=none(int); vthresh0=none(float); vthresh1=none(float); vthresh2=none(float); sclip=none(ptr VSNodeRef)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.eedi3")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"eedi3\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "field", field, paAppend)
   if dh.isSome:
     propSetInt(args, "dh", dh.get, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if alpha.isSome:
     propSetFloat(args, "alpha", alpha.get, paAppend)
   if beta.isSome:

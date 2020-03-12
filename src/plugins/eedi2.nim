@@ -1,5 +1,16 @@
-proc EEDI2(clip:ptr VSNodeRef, field:int; mthresh=none(int); lthresh=none(int); vthresh=none(int); estr=none(int); dstr=none(int); maxd=none(int); map=none(int); nt=none(int); pp=none(int)):ptr VSMap =
+proc EEDI2*(vsmap:ptr VSMap, field:int; mthresh=none(int); lthresh=none(int); vthresh=none(int); estr=none(int); dstr=none(int); maxd=none(int); map=none(int); nt=none(int); pp=none(int)):ptr VSMap =
   let plug = getPluginById("com.holywu.eedi2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"eedi2\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "field", field, paAppend)

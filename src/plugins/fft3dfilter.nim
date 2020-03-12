@@ -1,5 +1,16 @@
-proc FFT3DFilter(clip:ptr VSNodeRef; sigma=none(float); beta=none(float); planes=none(seq[int]); bw=none(int); bh=none(int); bt=none(int); ow=none(int); oh=none(int); kratio=none(float); sharpen=none(float); scutoff=none(float); svr=none(float); smin=none(float); smax=none(float); measure=none(int); interlaced=none(int); wintype=none(int); pframe=none(int); px=none(int); py=none(int); pshow=none(int); pcutoff=none(float); pfactor=none(float); sigma2=none(float); sigma3=none(float); sigma4=none(float); degrid=none(float); dehalo=none(float); hr=none(float); ht=none(float); ncpu=none(int)):ptr VSMap =
+proc FFT3DFilter*(vsmap:ptr VSMap; sigma=none(float); beta=none(float); planes=none(seq[int]); bw=none(int); bh=none(int); bt=none(int); ow=none(int); oh=none(int); kratio=none(float); sharpen=none(float); scutoff=none(float); svr=none(float); smin=none(float); smax=none(float); measure=none(int); interlaced=none(int); wintype=none(int); pframe=none(int); px=none(int); py=none(int); pshow=none(int); pcutoff=none(float); pfactor=none(float); sigma2=none(float); sigma3=none(float); sigma4=none(float); degrid=none(float); dehalo=none(float); hr=none(float); ht=none(float); ncpu=none(int)):ptr VSMap =
   let plug = getPluginById("systems.innocent.fft3dfilter")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"fft3dfilter\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if sigma.isSome:
@@ -7,7 +18,7 @@ proc FFT3DFilter(clip:ptr VSNodeRef; sigma=none(float); beta=none(float); planes
   if beta.isSome:
     propSetFloat(args, "beta", beta.get, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if bw.isSome:
     propSetInt(args, "bw", bw.get, paAppend)
   if bh.isSome:

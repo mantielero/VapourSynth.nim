@@ -1,12 +1,23 @@
-proc nnedi3(clip:ptr VSNodeRef, field:int; dh=none(int); planes=none(seq[int]); nsize=none(int); nns=none(int); qual=none(int); etype=none(int); pscrn=none(int); opt=none(int); int16_prescreener=none(int); int16_predictor=none(int); exp=none(int); show_mask=none(int); x_nnedi3_weights_bin=none(string); x_cpu=none(string)):ptr VSMap =
+proc nnedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); nsize=none(int); nns=none(int); qual=none(int); etype=none(int); pscrn=none(int); opt=none(int); int16_prescreener=none(int); int16_predictor=none(int); exp=none(int); show_mask=none(int); x_nnedi3_weights_bin=none(string); x_cpu=none(string)):ptr VSMap =
   let plug = getPluginById("xxx.abc.znedi3")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"znedi3\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "field", field, paAppend)
   if dh.isSome:
     propSetInt(args, "dh", dh.get, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if nsize.isSome:
     propSetInt(args, "nsize", nsize.get, paAppend)
   if nns.isSome:

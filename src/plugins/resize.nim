@@ -1,5 +1,16 @@
-proc Bicubic(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Bicubic*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:
@@ -77,8 +88,19 @@ proc Bicubic(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(
 
   return API.invoke(plug, "Bicubic".cstring, args)        
 
-proc Bilinear(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Bilinear*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:
@@ -156,8 +178,19 @@ proc Bilinear(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none
 
   return API.invoke(plug, "Bilinear".cstring, args)        
 
-proc Lanczos(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Lanczos*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:
@@ -235,8 +268,19 @@ proc Lanczos(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(
 
   return API.invoke(plug, "Lanczos".cstring, args)        
 
-proc Point(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Point*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:
@@ -314,8 +358,19 @@ proc Point(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(in
 
   return API.invoke(plug, "Point".cstring, args)        
 
-proc Spline16(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Spline16*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:
@@ -393,8 +448,19 @@ proc Spline16(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none
 
   return API.invoke(plug, "Spline16".cstring, args)        
 
-proc Spline36(clip:ptr VSNodeRef; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
+proc Spline36*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string); range=none(int); range_s=none(string); chromaloc=none(int); chromaloc_s=none(string); matrix_in=none(int); matrix_in_s=none(string); transfer_in=none(int); transfer_in_s=none(string); primaries_in=none(int); primaries_in_s=none(string); range_in=none(int); range_in_s=none(string); chromaloc_in=none(int); chromaloc_in_s=none(string); filter_param_a=none(float); filter_param_b=none(float); resample_filter_uv=none(string); filter_param_a_uv=none(float); filter_param_b_uv=none(float); dither_type=none(string); cpu_type=none(string); prefer_props=none(int); src_left=none(float); src_top=none(float); src_width=none(float); src_height=none(float); nominal_luminance=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.resize")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"resize\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if width.isSome:

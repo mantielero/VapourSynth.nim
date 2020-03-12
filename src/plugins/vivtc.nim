@@ -1,5 +1,16 @@
-proc VDecimate(clip:ptr VSNodeRef; cycle=none(int); chroma=none(int); dupthresh=none(float); scthresh=none(float); blockx=none(int); blocky=none(int); clip2=none(ptr VSNodeRef); ovr=none(string); dryrun=none(int)):ptr VSMap =
+proc VDecimate*(vsmap:ptr VSMap; cycle=none(int); chroma=none(int); dupthresh=none(float); scthresh=none(float); blockx=none(int); blocky=none(int); clip2=none(ptr VSNodeRef); ovr=none(string); dryrun=none(int)):ptr VSMap =
   let plug = getPluginById("org.ivtc.v")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"vivtc\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if cycle.isSome:
@@ -23,8 +34,19 @@ proc VDecimate(clip:ptr VSNodeRef; cycle=none(int); chroma=none(int); dupthresh=
 
   return API.invoke(plug, "VDecimate".cstring, args)        
 
-proc VFM(clip:ptr VSNodeRef, order:int; field=none(int); mode=none(int); mchroma=none(int); cthresh=none(int); mi=none(int); chroma=none(int); blockx=none(int); blocky=none(int); y0=none(int); y1=none(int); scthresh=none(float); micmatch=none(int); micout=none(int); clip2=none(ptr VSNodeRef)):ptr VSMap =
+proc VFM*(vsmap:ptr VSMap, order:int; field=none(int); mode=none(int); mchroma=none(int); cthresh=none(int); mi=none(int); chroma=none(int); blockx=none(int); blocky=none(int); y0=none(int); y1=none(int); scthresh=none(float); micmatch=none(int); micout=none(int); clip2=none(ptr VSNodeRef)):ptr VSMap =
   let plug = getPluginById("org.ivtc.v")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"vivtc\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "order", order, paAppend)

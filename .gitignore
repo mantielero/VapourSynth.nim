@@ -1,1 +1,10 @@
 src/plugin_generator
+test/*
+*.y4m
+*.mkv
+*.bmp
+*.png
+*.yuv
+ex01
+ex01.nim
+profile_results.txt

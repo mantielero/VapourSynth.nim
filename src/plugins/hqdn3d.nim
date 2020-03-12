@@ -1,5 +1,16 @@
-proc Hqdn3d(clip:ptr VSNodeRef; lum_spac=none(float); chrom_spac=none(float); lum_tmp=none(float); chrom_tmp=none(float); restart_lap=none(int)):ptr VSMap =
+proc Hqdn3d*(vsmap:ptr VSMap; lum_spac=none(float); chrom_spac=none(float); lum_tmp=none(float); chrom_tmp=none(float); restart_lap=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.hqdn3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"hqdn3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if lum_spac.isSome:

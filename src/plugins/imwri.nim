@@ -1,7 +1,11 @@
-proc Read(filename:data[]; firstnum=none(int); mismatch=none(int); alpha=none(int); float_output=none(int)):ptr VSMap =
+proc Read*(filename:seq[string]; firstnum=none(int); mismatch=none(int); alpha=none(int); float_output=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.imwri")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"imwri\" not installed properly in your computer")
+
   let args = createMap()
-  (args, "filename", filename, paAppend)
+  for item in filename:
+    propSetData(args, "filename", item, paAppend)
   if firstnum.isSome:
     propSetInt(args, "firstnum", firstnum.get, paAppend)
   if mismatch.isSome:
@@ -13,8 +17,19 @@ proc Read(filename:data[]; firstnum=none(int); mismatch=none(int); alpha=none(in
 
   return API.invoke(plug, "Read".cstring, args)        
 
-proc Write(clip:ptr VSNodeRef, imgformat:string, filename:string; firstnum=none(int); quality=none(int); dither=none(int); compression_type=none(string); overwrite=none(int); alpha=none(ptr VSNodeRef)):ptr VSMap =
+proc Write*(vsmap:ptr VSMap, imgformat:string, filename:string; firstnum=none(int); quality=none(int); dither=none(int); compression_type=none(string); overwrite=none(int); alpha=none(ptr VSNodeRef)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.imwri")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"imwri\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetData(args, "imgformat", imgformat, paAppend)

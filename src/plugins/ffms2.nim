@@ -1,19 +1,25 @@
-proc GetLogLevel():ptr VSMap =
+proc GetLogLevel*():ptr VSMap =
   let plug = getPluginById("com.vapoursynth.ffms2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+
   let args = createMap()
 
   return API.invoke(plug, "GetLogLevel".cstring, args)        
 
-proc Index(source:string; cachefile=none(string); indextracks=none(seq[int]); dumptracks=none(seq[int]); audiofile=none(string); errorhandling=none(int); overwrite=none(int); demuxer=none(string)):ptr VSMap =
+proc Index*(source:string; cachefile=none(string); indextracks=none(seq[int]); dumptracks=none(seq[int]); audiofile=none(string); errorhandling=none(int); overwrite=none(int); demuxer=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.ffms2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+
   let args = createMap()
   propSetData(args, "source", source, paAppend)
   if cachefile.isSome:
     propSetData(args, "cachefile", cachefile.get, paAppend)
   if indextracks.isSome:
-    propSetIntArray(args, "indextracks", indextracks.get, paAppend)
+    propSetIntArray(args, "indextracks", indextracks.get)
   if dumptracks.isSome:
-    propSetIntArray(args, "dumptracks", dumptracks.get, paAppend)
+    propSetIntArray(args, "dumptracks", dumptracks.get)
   if audiofile.isSome:
     propSetData(args, "audiofile", audiofile.get, paAppend)
   if errorhandling.isSome:
@@ -25,15 +31,21 @@ proc Index(source:string; cachefile=none(string); indextracks=none(seq[int]); du
 
   return API.invoke(plug, "Index".cstring, args)        
 
-proc SetLogLevel(level:int):ptr VSMap =
+proc SetLogLevel*(level:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.ffms2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+
   let args = createMap()
   propSetInt(args, "level", level, paAppend)
 
   return API.invoke(plug, "SetLogLevel".cstring, args)        
 
-proc Source(source:string; track=none(int); cache=none(int); cachefile=none(string); fpsnum=none(int); fpsden=none(int); threads=none(int); timecodes=none(string); seekmode=none(int); width=none(int); height=none(int); resizer=none(string); format=none(int); alpha=none(int)):ptr VSMap =
+proc Source*(source:string; track=none(int); cache=none(int); cachefile=none(string); fpsnum=none(int); fpsden=none(int); threads=none(int); timecodes=none(string); seekmode=none(int); width=none(int); height=none(int); resizer=none(string); format=none(int); alpha=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.ffms2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+
   let args = createMap()
   propSetData(args, "source", source, paAppend)
   if track.isSome:
@@ -65,8 +77,11 @@ proc Source(source:string; track=none(int); cache=none(int); cachefile=none(stri
 
   return API.invoke(plug, "Source".cstring, args)        
 
-proc Version():ptr VSMap =
+proc Version*():ptr VSMap =
   let plug = getPluginById("com.vapoursynth.ffms2")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+
   let args = createMap()
 
   return API.invoke(plug, "Version".cstring, args)        

@@ -1,5 +1,12 @@
 import nimterop/types   # Provides "defineEnum"
+import os
 
+when defined(Linux):
+  const
+    libName = "/usr/lib/libvapoursynth.so"
+elif defined(Windows):
+  const
+    libName = "vapoursynth.dll"
 
 defineEnum(VSColorFamily)
 defineEnum(VSSampleType)
@@ -13,16 +20,17 @@ defineEnum(VSMessageType)
 defineEnum(VSPropTypes)
 
 
+
 const
-  headerVapourSynth = "/home/jose/src/nimlang/vapoursynth-R48/include/VapourSynth.h"
-  libName = "/usr/lib/libvapoursynth.so"
-  VAPOURSYNTH_H* = ""
+  #headerVapourSynth = "/home/jose/src/nimlang/vapoursynth-R48/include/VapourSynth.h"
+  #libName = "/usr/lib/libvapoursynth.so"
+  #VAPOURSYNTH_H* = ""
   VAPOURSYNTH_API_MAJOR* = 3
   VAPOURSYNTH_API_MINOR* = 6
   VAPOURSYNTH_API_VERSION* = 196614
-  VS_EXTERN_C* = ""
-  VS_NOEXCEPT* = ""
-  VS_CC* = ""
+  #VS_EXTERN_C* = ""
+  #VS_NOEXCEPT* = ""
+  #VS_CC* = ""
   
   cmGray* = (1000000).VSColorFamily
   cmRGB* = (2000000).VSColorFamily
@@ -105,7 +113,7 @@ const
   ptFrame* = ('v').VSPropTypes
   ptFunction* = ('m').VSPropTypes
 
-{.pragma: impVapourSynth, importc, header: headerVapourSynth.}
+#{.pragma: impVapourSynth, importc, header: headerVapourSynth.}
 
  
 type
@@ -232,18 +240,18 @@ type
     numFrames*: cint
     flags*: cint
   
-  VSGetVapourSynthAPI* {.impVapourSynth.} = proc(version: cint):ptr VSAPI {.cdecl.}
-  VSPublicFunction* {.impVapourSynth.} = proc(`in`: ptr VSMap, `out`: ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
-  VSRegisterFunction* {.impVapourSynth.} = proc(name: cstring, args: cstring, argsFunc: VSPublicFunction, functionData: pointer, plugin: ptr VSPlugin) {.cdecl.}
-  VSConfigPlugin* {.impVapourSynth.} = proc(identifier: cstring, defaultNamespace: cstring, name: cstring, apiVersion: cint, readonly: cint, plugin: ptr VSPlugin) {.cdecl.}
-  VSInitPlugin* {.impVapourSynth.} = proc(configFunc: VSConfigPlugin, registerFunc: VSRegisterFunction, plugin: ptr VSPlugin) {.cdecl.}
-  VSFreeFuncData* {.impVapourSynth.} = proc(userData: pointer) {.cdecl.}
-  VSFilterInit* {.impVapourSynth.} = proc(`in`: ptr VSMap, `out`: ptr VSMap, instanceData: ptr pointer, node: ptr VSNode, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
-  VSFilterGetFrame* {.impVapourSynth.} = proc(n: cint, activationReason: cint, instanceData: ptr pointer, frameData: ptr pointer, frameCtx: ptr VSFrameContext, core: ptr VSCore, vsapi: ptr VSAPI):ptr VSFrameRef {.cdecl.}
-  VSFilterFree* {.impVapourSynth.} = proc(instanceData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
-  VSFrameDoneCallback* {.impVapourSynth.} = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}
-  VSMessageHandler* {.impVapourSynth.} = proc(msgType: cint, msg: cstring, userData: pointer) {.cdecl.}
-  VSMessageHandlerFree* {.impVapourSynth.} = proc(userData: pointer) {.cdecl.}
+  VSGetVapourSynthAPI* = proc(version: cint):ptr VSAPI {.cdecl.}
+  VSPublicFunction*  = proc(`in`: ptr VSMap, `out`: ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
+  VSRegisterFunction*  = proc(name: cstring, args: cstring, argsFunc: VSPublicFunction, functionData: pointer, plugin: ptr VSPlugin) {.cdecl.}
+  VSConfigPlugin* = proc(identifier: cstring, defaultNamespace: cstring, name: cstring, apiVersion: cint, readonly: cint, plugin: ptr VSPlugin) {.cdecl.}
+  VSInitPlugin*  = proc(configFunc: VSConfigPlugin, registerFunc: VSRegisterFunction, plugin: ptr VSPlugin) {.cdecl.}
+  VSFreeFuncData*  = proc(userData: pointer) {.cdecl.}
+  VSFilterInit*  = proc(`in`: ptr VSMap, `out`: ptr VSMap, instanceData: ptr pointer, node: ptr VSNode, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
+  VSFilterGetFrame*  = proc(n: cint, activationReason: cint, instanceData: ptr pointer, frameData: ptr pointer, frameCtx: ptr VSFrameContext, core: ptr VSCore, vsapi: ptr VSAPI):ptr VSFrameRef {.cdecl.}
+  VSFilterFree*  = proc(instanceData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
+  VSFrameDoneCallback*  = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}
+  VSMessageHandler*  = proc(msgType: cint, msg: cstring, userData: pointer) {.cdecl.}
+  VSMessageHandlerFree*  = proc(userData: pointer) {.cdecl.}
  
 
 proc getVapourSynthAPI*(version:cint):ptr VSAPI    {.importc,dynlib: libName.}

@@ -8,28 +8,28 @@ Plugins are loaded and provide a number of functions. We need no make those func
 ]##
 
 type
-  Function = object
-    name:string
-    args:seq[seq[string]]
+  Function* = object
+    name*:string
+    args*:seq[seq[string]]
 
-  Plugin = object
+  Plugin* = object
     id*:string
     namespace*:string
     description*:string
-    functions:seq[Function]
+    functions*:seq[Function]
 
-proc getPluginById(id:string):ptr VSPlugin = 
+proc getPluginById*(id:string):ptr VSPlugin = 
   API.getPluginById(id.cstring, CORE)
 
 #proc(identifier:cstring, core:ptr VSCore):ptr VSPlugin 
 
-proc getFunctions(plugin:ptr VSPlugin):ptr VSMap = 
+proc getFunctions*(plugin:ptr VSPlugin):ptr VSMap = 
   API.getFunctions(plugin)
 
 #proc getPlugins():ptr VSMap = API.getPlugins( CORE )
 
 
-proc getPlugins():seq[Plugin] = #:seq[ tuple[id:string,namespace:string,description:string, functions:seq[tuple[funcname:string, args:seq[seq[string]]] ]] ]   =
+proc getPlugins*():seq[Plugin] = #:seq[ tuple[id:string,namespace:string,description:string, functions:seq[tuple[funcname:string, args:seq[seq[string]]] ]] ]   =
   # http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getplugins
   # http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getfunctions
   # http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getpluginbyid
@@ -69,7 +69,7 @@ proc createPluginFunctions() =
 
 #    invoke*: proc(plugin:ptr VSPlugin, name:cstring, args:ptr VSMap):ptr VSMap {.cdecl.}
 
-proc vsinvoke(plugin:ptr VSPlugin, name:string, args:ptr VSMap):ptr VSMap =
+proc vsinvoke*(plugin:ptr VSPlugin, name:string, args:ptr VSMap):ptr VSMap =
   #[
   Calls functions within plugins (invokes a filter).
 

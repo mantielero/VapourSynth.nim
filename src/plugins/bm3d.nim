@@ -1,13 +1,24 @@
-proc Basic(input:ptr VSNodeRef; ref=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
+proc Basic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
-  if ref.isSome:
-    propSetNode(args, "ref", ref.get, paAppend)
+  if `ref`.isSome:
+    propSetNode(args, "ref", `ref`.get, paAppend)
   if profile.isSome:
     propSetData(args, "profile", profile.get, paAppend)
   if sigma.isSome:
-    propSetFloatArray(args, "sigma", sigma.get, paAppend)
+    propSetFloatArray(args, "sigma", sigma.get)
   if block_size.isSome:
     propSetInt(args, "block_size", block_size.get, paAppend)
   if block_step.isSome:
@@ -27,15 +38,26 @@ proc Basic(input:ptr VSNodeRef; ref=none(ptr VSNodeRef); profile=none(string); s
 
   return API.invoke(plug, "Basic".cstring, args)        
 
-proc Final(input:ptr VSNodeRef, ref:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
+proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
-  propSetNode(args, "ref", ref, paAppend)
+  propSetNode(args, "ref", `ref`, paAppend)
   if profile.isSome:
     propSetData(args, "profile", profile.get, paAppend)
   if sigma.isSome:
-    propSetFloatArray(args, "sigma", sigma.get, paAppend)
+    propSetFloatArray(args, "sigma", sigma.get)
   if block_size.isSome:
     propSetInt(args, "block_size", block_size.get, paAppend)
   if block_step.isSome:
@@ -53,8 +75,19 @@ proc Final(input:ptr VSNodeRef, ref:ptr VSNodeRef; profile=none(string); sigma=n
 
   return API.invoke(plug, "Final".cstring, args)        
 
-proc OPP2RGB(input:ptr VSNodeRef; sample=none(int)):ptr VSMap =
+proc OPP2RGB*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
   if sample.isSome:
@@ -62,8 +95,19 @@ proc OPP2RGB(input:ptr VSNodeRef; sample=none(int)):ptr VSMap =
 
   return API.invoke(plug, "OPP2RGB".cstring, args)        
 
-proc RGB2OPP(input:ptr VSNodeRef; sample=none(int)):ptr VSMap =
+proc RGB2OPP*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
   if sample.isSome:
@@ -71,8 +115,19 @@ proc RGB2OPP(input:ptr VSNodeRef; sample=none(int)):ptr VSMap =
 
   return API.invoke(plug, "RGB2OPP".cstring, args)        
 
-proc VAggregate(input:ptr VSNodeRef; radius=none(int); sample=none(int)):ptr VSMap =
+proc VAggregate*(vsmap:ptr VSMap; radius=none(int); sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
   if radius.isSome:
@@ -82,16 +137,27 @@ proc VAggregate(input:ptr VSNodeRef; radius=none(int); sample=none(int)):ptr VSM
 
   return API.invoke(plug, "VAggregate".cstring, args)        
 
-proc VBasic(input:ptr VSNodeRef; ref=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
+proc VBasic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
-  if ref.isSome:
-    propSetNode(args, "ref", ref.get, paAppend)
+  if `ref`.isSome:
+    propSetNode(args, "ref", `ref`.get, paAppend)
   if profile.isSome:
     propSetData(args, "profile", profile.get, paAppend)
   if sigma.isSome:
-    propSetFloatArray(args, "sigma", sigma.get, paAppend)
+    propSetFloatArray(args, "sigma", sigma.get)
   if radius.isSome:
     propSetInt(args, "radius", radius.get, paAppend)
   if block_size.isSome:
@@ -119,15 +185,26 @@ proc VBasic(input:ptr VSNodeRef; ref=none(ptr VSNodeRef); profile=none(string); 
 
   return API.invoke(plug, "VBasic".cstring, args)        
 
-proc VFinal(input:ptr VSNodeRef, ref:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
+proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var input = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "input", input, paAppend)
-  propSetNode(args, "ref", ref, paAppend)
+  propSetNode(args, "ref", `ref`, paAppend)
   if profile.isSome:
     propSetData(args, "profile", profile.get, paAppend)
   if sigma.isSome:
-    propSetFloatArray(args, "sigma", sigma.get, paAppend)
+    propSetFloatArray(args, "sigma", sigma.get)
   if radius.isSome:
     propSetInt(args, "radius", radius.get, paAppend)
   if block_size.isSome:

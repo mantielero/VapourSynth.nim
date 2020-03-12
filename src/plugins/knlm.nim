@@ -1,5 +1,16 @@
-proc KNLMeansCL(clip:ptr VSNodeRef; d=none(int); a=none(int); s=none(int); h=none(float); channels=none(string); wmode=none(int); wref=none(float); rclip=none(ptr VSNodeRef); device_type=none(string); device_id=none(int); ocl_x=none(int); ocl_y=none(int); ocl_r=none(int); info=none(int)):ptr VSMap =
+proc KNLMeansCL*(vsmap:ptr VSMap; d=none(int); a=none(int); s=none(int); h=none(float); channels=none(string); wmode=none(int); wref=none(float); rclip=none(ptr VSNodeRef); device_type=none(string); device_id=none(int); ocl_x=none(int); ocl_y=none(int); ocl_r=none(int); info=none(int)):ptr VSMap =
   let plug = getPluginById("com.Khanattila.KNLMeansCL")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"knlm\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if d.isSome:

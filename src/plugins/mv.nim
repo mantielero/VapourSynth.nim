@@ -1,5 +1,16 @@
-proc Analyse(super:ptr VSNodeRef; blksize=none(int); blksizev=none(int); levels=none(int); search=none(int); searchparam=none(int); pelsearch=none(int); isb=none(int); lambda=none(int); chroma=none(int); delta=none(int); truemotion=none(int); lsad=none(int); plevel=none(int); global=none(int); pnew=none(int); pzero=none(int); pglobal=none(int); overlap=none(int); overlapv=none(int); divide=none(int); badsad=none(int); badrange=none(int); opt=none(int); meander=none(int); trymany=none(int); fields=none(int); tff=none(int); search_coarse=none(int); dct=none(int)):ptr VSMap =
+proc Analyse*(vsmap:ptr VSMap; blksize=none(int); blksizev=none(int); levels=none(int); search=none(int); searchparam=none(int); pelsearch=none(int); isb=none(int); lambda=none(int); chroma=none(int); delta=none(int); truemotion=none(int); lsad=none(int); plevel=none(int); global=none(int); pnew=none(int); pzero=none(int); pglobal=none(int); overlap=none(int); overlapv=none(int); divide=none(int); badsad=none(int); badrange=none(int); opt=none(int); meander=none(int); trymany=none(int); fields=none(int); tff=none(int); search_coarse=none(int); dct=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var super = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "super", super, paAppend)
   if blksize.isSome:
@@ -63,8 +74,19 @@ proc Analyse(super:ptr VSNodeRef; blksize=none(int); blksizev=none(int); levels=
 
   return API.invoke(plug, "Analyse".cstring, args)        
 
-proc BlockFPS(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mode=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc BlockFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mode=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -89,8 +111,19 @@ proc BlockFPS(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:
 
   return API.invoke(plug, "BlockFPS".cstring, args)        
 
-proc Compensate(clip:ptr VSNodeRef, super:ptr VSNodeRef, vectors:ptr VSNodeRef; scbehavior=none(int); thsad=none(int); fields=none(int); time=none(float); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
+proc Compensate*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; scbehavior=none(int); thsad=none(int); fields=none(int); time=none(float); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -114,8 +147,19 @@ proc Compensate(clip:ptr VSNodeRef, super:ptr VSNodeRef, vectors:ptr VSNodeRef; 
 
   return API.invoke(plug, "Compensate".cstring, args)        
 
-proc Degrain1(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc Degrain1*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -140,8 +184,19 @@ proc Degrain1(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:
 
   return API.invoke(plug, "Degrain1".cstring, args)        
 
-proc Degrain2(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc Degrain2*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -168,8 +223,19 @@ proc Degrain2(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:
 
   return API.invoke(plug, "Degrain2".cstring, args)        
 
-proc Degrain3(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef, mvbw3:ptr VSNodeRef, mvfw3:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc Degrain3*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef, mvbw3:ptr VSNodeRef, mvfw3:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -198,8 +264,19 @@ proc Degrain3(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:
 
   return API.invoke(plug, "Degrain3".cstring, args)        
 
-proc DepanAnalyse(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; mask=none(ptr VSNodeRef); zoom=none(int); rot=none(int); pixaspect=none(float); error=none(float); info=none(int); wrong=none(float); zerow=none(float); thscd1=none(int); thscd2=none(int); fields=none(int); tff=none(int)):ptr VSMap =
+proc DepanAnalyse*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; mask=none(ptr VSNodeRef); zoom=none(int); rot=none(int); pixaspect=none(float); error=none(float); info=none(int); wrong=none(float); zerow=none(float); thscd1=none(int); thscd2=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "vectors", vectors, paAppend)
@@ -230,8 +307,19 @@ proc DepanAnalyse(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; mask=none(ptr VSNod
 
   return API.invoke(plug, "DepanAnalyse".cstring, args)        
 
-proc DepanCompensate(clip:ptr VSNodeRef, data:ptr VSNodeRef; offset=none(float); subpixel=none(int); pixaspect=none(float); matchfields=none(int); mirror=none(int); blur=none(int); info=none(int); fields=none(int); tff=none(int)):ptr VSMap =
+proc DepanCompensate*(vsmap:ptr VSMap, data:ptr VSNodeRef; offset=none(float); subpixel=none(int); pixaspect=none(float); matchfields=none(int); mirror=none(int); blur=none(int); info=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "data", data, paAppend)
@@ -256,8 +344,19 @@ proc DepanCompensate(clip:ptr VSNodeRef, data:ptr VSNodeRef; offset=none(float);
 
   return API.invoke(plug, "DepanCompensate".cstring, args)        
 
-proc DepanEstimate(clip:ptr VSNodeRef; trust=none(float); winx=none(int); winy=none(int); wleft=none(int); wtop=none(int); dxmax=none(int); dymax=none(int); zoommax=none(float); stab=none(float); pixaspect=none(float); info=none(int); show=none(int); fields=none(int); tff=none(int)):ptr VSMap =
+proc DepanEstimate*(vsmap:ptr VSMap; trust=none(float); winx=none(int); winy=none(int); wleft=none(int); wtop=none(int); dxmax=none(int); dymax=none(int); zoommax=none(float); stab=none(float); pixaspect=none(float); info=none(int); show=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if trust.isSome:
@@ -291,8 +390,19 @@ proc DepanEstimate(clip:ptr VSNodeRef; trust=none(float); winx=none(int); winy=n
 
   return API.invoke(plug, "DepanEstimate".cstring, args)        
 
-proc DepanStabilise(clip:ptr VSNodeRef, data:ptr VSNodeRef; cutoff=none(float); damping=none(float); initzoom=none(float); addzoom=none(int); prev=none(int); next=none(int); mirror=none(int); blur=none(int); dxmax=none(float); dymax=none(float); zoommax=none(float); rotmax=none(float); subpixel=none(int); pixaspect=none(float); fitlast=none(int); tzoom=none(float); info=none(int); method=none(int); fields=none(int)):ptr VSMap =
+proc DepanStabilise*(vsmap:ptr VSMap, data:ptr VSNodeRef; cutoff=none(float); damping=none(float); initzoom=none(float); addzoom=none(int); prev=none(int); next=none(int); mirror=none(int); blur=none(int); dxmax=none(float); dymax=none(float); zoommax=none(float); rotmax=none(float); subpixel=none(int); pixaspect=none(float); fitlast=none(int); tzoom=none(float); info=none(int); `method`=none(int); fields=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "data", data, paAppend)
@@ -330,15 +440,26 @@ proc DepanStabilise(clip:ptr VSNodeRef, data:ptr VSNodeRef; cutoff=none(float); 
     propSetFloat(args, "tzoom", tzoom.get, paAppend)
   if info.isSome:
     propSetInt(args, "info", info.get, paAppend)
-  if method.isSome:
-    propSetInt(args, "method", method.get, paAppend)
+  if `method`.isSome:
+    propSetInt(args, "method", `method`.get, paAppend)
   if fields.isSome:
     propSetInt(args, "fields", fields.get, paAppend)
 
   return API.invoke(plug, "DepanStabilise".cstring, args)        
 
-proc Finest(super:ptr VSNodeRef; opt=none(int)):ptr VSMap =
+proc Finest*(vsmap:ptr VSMap; opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var super = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "super", super, paAppend)
   if opt.isSome:
@@ -346,8 +467,19 @@ proc Finest(super:ptr VSNodeRef; opt=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Finest".cstring, args)        
 
-proc Flow(clip:ptr VSNodeRef, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=none(float); mode=none(int); fields=none(int); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
+proc Flow*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=none(float); mode=none(int); fields=none(int); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -369,8 +501,19 @@ proc Flow(clip:ptr VSNodeRef, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=n
 
   return API.invoke(plug, "Flow".cstring, args)        
 
-proc FlowBlur(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; blur=none(float); prec=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc FlowBlur*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; blur=none(float); prec=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -389,8 +532,19 @@ proc FlowBlur(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:
 
   return API.invoke(plug, "FlowBlur".cstring, args)        
 
-proc FlowFPS(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mask=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc FlowFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mask=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -415,8 +569,19 @@ proc FlowFPS(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:p
 
   return API.invoke(plug, "FlowFPS".cstring, args)        
 
-proc FlowInter(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; time=none(float); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc FlowInter*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; time=none(float); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "super", super, paAppend)
@@ -437,8 +602,19 @@ proc FlowInter(clip:ptr VSNodeRef, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw
 
   return API.invoke(plug, "FlowInter".cstring, args)        
 
-proc Mask(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; ml=none(float); gamma=none(float); kind=none(int); time=none(float); ysc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
+proc Mask*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; ml=none(float); gamma=none(float); kind=none(int); time=none(float); ysc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "vectors", vectors, paAppend)
@@ -461,8 +637,19 @@ proc Mask(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; ml=none(float); gamma=none(
 
   return API.invoke(plug, "Mask".cstring, args)        
 
-proc Recalculate(super:ptr VSNodeRef, vectors:ptr VSNodeRef; thsad=none(int); smooth=none(int); blksize=none(int); blksizev=none(int); search=none(int); searchparam=none(int); lambda=none(int); chroma=none(int); truemotion=none(int); pnew=none(int); overlap=none(int); overlapv=none(int); divide=none(int); opt=none(int); meander=none(int); fields=none(int); tff=none(int); dct=none(int)):ptr VSMap =
+proc Recalculate*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thsad=none(int); smooth=none(int); blksize=none(int); blksizev=none(int); search=none(int); searchparam=none(int); lambda=none(int); chroma=none(int); truemotion=none(int); pnew=none(int); overlap=none(int); overlapv=none(int); divide=none(int); opt=none(int); meander=none(int); fields=none(int); tff=none(int); dct=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var super = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "super", super, paAppend)
   propSetNode(args, "vectors", vectors, paAppend)
@@ -505,8 +692,19 @@ proc Recalculate(super:ptr VSNodeRef, vectors:ptr VSNodeRef; thsad=none(int); sm
 
   return API.invoke(plug, "Recalculate".cstring, args)        
 
-proc SCDetection(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; thscd1=none(int); thscd2=none(int)):ptr VSMap =
+proc SCDetection*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thscd1=none(int); thscd2=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "vectors", vectors, paAppend)
@@ -517,8 +715,19 @@ proc SCDetection(clip:ptr VSNodeRef, vectors:ptr VSNodeRef; thscd1=none(int); th
 
   return API.invoke(plug, "SCDetection".cstring, args)        
 
-proc Super(clip:ptr VSNodeRef; hpad=none(int); vpad=none(int); pel=none(int); levels=none(int); chroma=none(int); sharp=none(int); rfilter=none(int); pelclip=none(ptr VSNodeRef); opt=none(int)):ptr VSMap =
+proc Super*(vsmap:ptr VSMap; hpad=none(int); vpad=none(int); pel=none(int); levels=none(int); chroma=none(int); sharp=none(int); rfilter=none(int); pelclip=none(ptr VSNodeRef); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if hpad.isSome:

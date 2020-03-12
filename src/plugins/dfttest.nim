@@ -1,5 +1,16 @@
-proc DFTTest(clip:ptr VSNodeRef; ftype=none(int); sigma=none(float); sigma2=none(float); pmin=none(float); pmax=none(float); sbsize=none(int); smode=none(int); sosize=none(int); tbsize=none(int); tmode=none(int); tosize=none(int); swin=none(int); twin=none(int); sbeta=none(float); tbeta=none(float); zmean=none(int); f0beta=none(float); nlocation=none(seq[int]); alpha=none(float); slocation=none(seq[float]); ssx=none(seq[float]); ssy=none(seq[float]); sst=none(seq[float]); ssystem=none(int); planes=none(seq[int]); opt=none(int)):ptr VSMap =
+proc DFTTest*(vsmap:ptr VSMap; ftype=none(int); sigma=none(float); sigma2=none(float); pmin=none(float); pmax=none(float); sbsize=none(int); smode=none(int); sosize=none(int); tbsize=none(int); tmode=none(int); tosize=none(int); swin=none(int); twin=none(int); sbeta=none(float); tbeta=none(float); zmean=none(int); f0beta=none(float); nlocation=none(seq[int]); alpha=none(float); slocation=none(seq[float]); ssx=none(seq[float]); ssy=none(seq[float]); sst=none(seq[float]); ssystem=none(int); planes=none(seq[int]); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.holywu.dfttest")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"dfttest\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if ftype.isSome:
@@ -37,21 +48,21 @@ proc DFTTest(clip:ptr VSNodeRef; ftype=none(int); sigma=none(float); sigma2=none
   if f0beta.isSome:
     propSetFloat(args, "f0beta", f0beta.get, paAppend)
   if nlocation.isSome:
-    propSetIntArray(args, "nlocation", nlocation.get, paAppend)
+    propSetIntArray(args, "nlocation", nlocation.get)
   if alpha.isSome:
     propSetFloat(args, "alpha", alpha.get, paAppend)
   if slocation.isSome:
-    propSetFloatArray(args, "slocation", slocation.get, paAppend)
+    propSetFloatArray(args, "slocation", slocation.get)
   if ssx.isSome:
-    propSetFloatArray(args, "ssx", ssx.get, paAppend)
+    propSetFloatArray(args, "ssx", ssx.get)
   if ssy.isSome:
-    propSetFloatArray(args, "ssy", ssy.get, paAppend)
+    propSetFloatArray(args, "ssy", ssy.get)
   if sst.isSome:
-    propSetFloatArray(args, "sst", sst.get, paAppend)
+    propSetFloatArray(args, "sst", sst.get)
   if ssystem.isSome:
     propSetInt(args, "ssystem", ssystem.get, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if opt.isSome:
     propSetInt(args, "opt", opt.get, paAppend)
 

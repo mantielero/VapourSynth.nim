@@ -1,5 +1,16 @@
-proc BottomHat(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc BottomHat*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -9,8 +20,19 @@ proc BottomHat(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
 
   return API.invoke(plug, "BottomHat".cstring, args)        
 
-proc Close(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc Close*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -20,8 +42,19 @@ proc Close(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Close".cstring, args)        
 
-proc Dilate(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc Dilate*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -31,8 +64,19 @@ proc Dilate(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Dilate".cstring, args)        
 
-proc Erode(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc Erode*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -42,8 +86,19 @@ proc Erode(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Erode".cstring, args)        
 
-proc Open(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc Open*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -53,8 +108,19 @@ proc Open(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Open".cstring, args)        
 
-proc TopHat(clip:ptr VSNodeRef; size=none(int); shape=none(int)):ptr VSMap =
+proc TopHat*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"morpho\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:

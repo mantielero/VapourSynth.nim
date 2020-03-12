@@ -1,5 +1,16 @@
-proc Deband(clip:ptr VSNodeRef; range=none(int); y=none(int); cb=none(int); cr=none(int); grainy=none(int); grainc=none(int); sample_mode=none(int); seed=none(int); blur_first=none(int); dynamic_grain=none(int); opt=none(int); dither_algo=none(int); keep_tv_range=none(int); output_depth=none(int); random_algo_ref=none(int); random_algo_grain=none(int); random_param_ref=none(float); random_param_grain=none(float); preset=none(string)):ptr VSMap =
+proc Deband*(vsmap:ptr VSMap; range=none(int); y=none(int); cb=none(int); cr=none(int); grainy=none(int); grainc=none(int); sample_mode=none(int); seed=none(int); blur_first=none(int); dynamic_grain=none(int); opt=none(int); dither_algo=none(int); keep_tv_range=none(int); output_depth=none(int); random_algo_ref=none(int); random_algo_grain=none(int); random_param_ref=none(float); random_param_grain=none(float); preset=none(string)):ptr VSMap =
   let plug = getPluginById("net.sapikachu.f3kdb")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"f3kdb\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if range.isSome:

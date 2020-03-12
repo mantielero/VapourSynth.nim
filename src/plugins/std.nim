@@ -1,5 +1,16 @@
-proc AddBorders(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(int); bottom=none(int); color=none(seq[float])):ptr VSMap =
+proc AddBorders*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bottom=none(int); color=none(seq[float])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if left.isSome:
@@ -11,12 +22,23 @@ proc AddBorders(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(in
   if bottom.isSome:
     propSetInt(args, "bottom", bottom.get, paAppend)
   if color.isSome:
-    propSetFloatArray(args, "color", color.get, paAppend)
+    propSetFloatArray(args, "color", color.get)
 
   return API.invoke(plug, "AddBorders".cstring, args)        
 
-proc AssumeFPS(clip:ptr VSNodeRef; src=none(ptr VSNodeRef); fpsnum=none(int); fpsden=none(int)):ptr VSMap =
+proc AssumeFPS*(vsmap:ptr VSMap; src=none(ptr VSNodeRef); fpsnum=none(int); fpsden=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if src.isSome:
@@ -28,23 +50,45 @@ proc AssumeFPS(clip:ptr VSNodeRef; src=none(ptr VSNodeRef); fpsnum=none(int); fp
 
   return API.invoke(plug, "AssumeFPS".cstring, args)        
 
-proc Binarize(clip:ptr VSNodeRef; threshold=none(seq[float]); v0=none(seq[float]); v1=none(seq[float]); planes=none(seq[int])):ptr VSMap =
+proc Binarize*(vsmap:ptr VSMap; threshold=none(seq[float]); v0=none(seq[float]); v1=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if threshold.isSome:
-    propSetFloatArray(args, "threshold", threshold.get, paAppend)
+    propSetFloatArray(args, "threshold", threshold.get)
   if v0.isSome:
-    propSetFloatArray(args, "v0", v0.get, paAppend)
+    propSetFloatArray(args, "v0", v0.get)
   if v1.isSome:
-    propSetFloatArray(args, "v1", v1.get, paAppend)
+    propSetFloatArray(args, "v1", v1.get)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "Binarize".cstring, args)        
 
-proc BlankClip(clip=none(ptr VSNodeRef); width=none(int); height=none(int); format=none(int); length=none(int); fpsnum=none(int); fpsden=none(int); color=none(seq[float]); keep=none(int)):ptr VSMap =
+proc BlankClip*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); length=none(int); fpsnum=none(int); fpsden=none(int); color=none(seq[float]); keep=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = some(tmpSeq[0].nodes[0])
+
+
   let args = createMap()
   if clip.isSome:
     propSetNode(args, "clip", clip.get, paAppend)
@@ -61,18 +105,29 @@ proc BlankClip(clip=none(ptr VSNodeRef); width=none(int); height=none(int); form
   if fpsden.isSome:
     propSetInt(args, "fpsden", fpsden.get, paAppend)
   if color.isSome:
-    propSetFloatArray(args, "color", color.get, paAppend)
+    propSetFloatArray(args, "color", color.get)
   if keep.isSome:
     propSetInt(args, "keep", keep.get, paAppend)
 
   return API.invoke(plug, "BlankClip".cstring, args)        
 
-proc BoxBlur(clip:ptr VSNodeRef; planes=none(seq[int]); hradius=none(int); hpasses=none(int); vradius=none(int); vpasses=none(int)):ptr VSMap =
+proc BoxBlur*(vsmap:ptr VSMap; planes=none(seq[int]); hradius=none(int); hpasses=none(int); vradius=none(int); vpasses=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if hradius.isSome:
     propSetInt(args, "hradius", hradius.get, paAppend)
   if hpasses.isSome:
@@ -84,8 +139,19 @@ proc BoxBlur(clip:ptr VSNodeRef; planes=none(seq[int]); hradius=none(int); hpass
 
   return API.invoke(plug, "BoxBlur".cstring, args)        
 
-proc Cache(clip:ptr VSNodeRef; size=none(int); fixed=none(int); make_linear=none(int)):ptr VSMap =
+proc Cache*(vsmap:ptr VSMap; size=none(int); fixed=none(int); make_linear=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if size.isSome:
@@ -97,8 +163,19 @@ proc Cache(clip:ptr VSNodeRef; size=none(int); fixed=none(int); make_linear=none
 
   return API.invoke(plug, "Cache".cstring, args)        
 
-proc ClipToProp(clip:ptr VSNodeRef, mclip:ptr VSNodeRef; prop=none(string)):ptr VSMap =
+proc ClipToProp*(vsmap:ptr VSMap, mclip:ptr VSNodeRef; prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "mclip", mclip, paAppend)
@@ -107,17 +184,28 @@ proc ClipToProp(clip:ptr VSNodeRef, mclip:ptr VSNodeRef; prop=none(string)):ptr 
 
   return API.invoke(plug, "ClipToProp".cstring, args)        
 
-proc Convolution(clip:ptr VSNodeRef, matrix:seq[float]; bias=none(float); divisor=none(float); planes=none(seq[int]); saturate=none(int); mode=none(string)):ptr VSMap =
+proc Convolution*(vsmap:ptr VSMap, matrix:seq[float]; bias=none(float); divisor=none(float); planes=none(seq[int]); saturate=none(int); mode=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  propSetFloatArray(args, "matrix", matrix, paAppend)
+  propSetFloatArray(args, "matrix", matrix)
   if bias.isSome:
     propSetFloat(args, "bias", bias.get, paAppend)
   if divisor.isSome:
     propSetFloat(args, "divisor", divisor.get, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if saturate.isSome:
     propSetInt(args, "saturate", saturate.get, paAppend)
   if mode.isSome:
@@ -125,8 +213,19 @@ proc Convolution(clip:ptr VSNodeRef, matrix:seq[float]; bias=none(float); diviso
 
   return API.invoke(plug, "Convolution".cstring, args)        
 
-proc Crop(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
+proc Crop*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if left.isSome:
@@ -140,8 +239,19 @@ proc Crop(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(int); bo
 
   return API.invoke(plug, "Crop".cstring, args)        
 
-proc CropAbs(clip:ptr VSNodeRef, width:int, height:int; left=none(int); top=none(int); x=none(int); y=none(int)):ptr VSMap =
+proc CropAbs*(vsmap:ptr VSMap, width:int, height:int; left=none(int); top=none(int); x=none(int); y=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "width", width, paAppend)
@@ -157,8 +267,19 @@ proc CropAbs(clip:ptr VSNodeRef, width:int, height:int; left=none(int); top=none
 
   return API.invoke(plug, "CropAbs".cstring, args)        
 
-proc CropRel(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
+proc CropRel*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if left.isSome:
@@ -172,27 +293,60 @@ proc CropRel(clip:ptr VSNodeRef; left=none(int); right=none(int); top=none(int);
 
   return API.invoke(plug, "CropRel".cstring, args)        
 
-proc Deflate(clip:ptr VSNodeRef; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
+proc Deflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if threshold.isSome:
     propSetFloat(args, "threshold", threshold.get, paAppend)
 
   return API.invoke(plug, "Deflate".cstring, args)        
 
-proc DeleteFrames(clip:ptr VSNodeRef, frames:seq[int]):ptr VSMap =
+proc DeleteFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  propSetIntArray(args, "frames", frames, paAppend)
+  propSetIntArray(args, "frames", frames)
 
   return API.invoke(plug, "DeleteFrames".cstring, args)        
 
-proc DoubleWeave(clip:ptr VSNodeRef; tff=none(int)):ptr VSMap =
+proc DoubleWeave*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if tff.isSome:
@@ -200,73 +354,165 @@ proc DoubleWeave(clip:ptr VSNodeRef; tff=none(int)):ptr VSMap =
 
   return API.invoke(plug, "DoubleWeave".cstring, args)        
 
-proc DuplicateFrames(clip:ptr VSNodeRef, frames:seq[int]):ptr VSMap =
+proc DuplicateFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  propSetIntArray(args, "frames", frames, paAppend)
+  propSetIntArray(args, "frames", frames)
 
   return API.invoke(plug, "DuplicateFrames".cstring, args)        
 
-proc Expr(clips:clip[], expr:data[]; format=none(int)):ptr VSMap =
+proc Expr*(vsmap:ptr VSMap, expr:seq[string]; format=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
-  (args, "expr", expr, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
+  for item in expr:
+    propSetData(args, "expr", item, paAppend)
   if format.isSome:
     propSetInt(args, "format", format.get, paAppend)
 
   return API.invoke(plug, "Expr".cstring, args)        
 
-proc FlipHorizontal(clip:ptr VSNodeRef):ptr VSMap =
+proc FlipHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
 
   return API.invoke(plug, "FlipHorizontal".cstring, args)        
 
-proc FlipVertical(clip:ptr VSNodeRef):ptr VSMap =
+proc FlipVertical*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
 
   return API.invoke(plug, "FlipVertical".cstring, args)        
 
-proc FrameEval(clip:ptr VSNodeRef, eval:func; prop_src=none(clip[])):ptr VSMap =
+proc FrameEval*(vsmap:ptr VSMap, eval:ptr VSFuncRef; prop_src=none(seq[ptr VSNodeRef])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  (args, "eval", eval, paAppend)
+  propSetFunc(args, "eval", eval, paAppend)
   if prop_src.isSome:
-    (args, "prop_src", prop_src.get, paAppend)
+    for item in prop_src.get:
+      propSetNode(args, "prop_src", item, paAppend)
 
   return API.invoke(plug, "FrameEval".cstring, args)        
 
-proc FreezeFrames(clip:ptr VSNodeRef, first:seq[int], last:seq[int], replacement:seq[int]):ptr VSMap =
+proc FreezeFrames*(vsmap:ptr VSMap, first:seq[int], last:seq[int], replacement:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  propSetIntArray(args, "first", first, paAppend)
-  propSetIntArray(args, "last", last, paAppend)
-  propSetIntArray(args, "replacement", replacement, paAppend)
+  propSetIntArray(args, "first", first)
+  propSetIntArray(args, "last", last)
+  propSetIntArray(args, "replacement", replacement)
 
   return API.invoke(plug, "FreezeFrames".cstring, args)        
 
-proc Inflate(clip:ptr VSNodeRef; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
+proc Inflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if threshold.isSome:
     propSetFloat(args, "threshold", threshold.get, paAppend)
 
   return API.invoke(plug, "Inflate".cstring, args)        
 
-proc Interleave(clips:clip[]; extend=none(int); mismatch=none(int)):ptr VSMap =
+proc Interleave*(vsmap:ptr VSMap; extend=none(int); mismatch=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
   if extend.isSome:
     propSetInt(args, "extend", extend.get, paAppend)
   if mismatch.isSome:
@@ -274,49 +520,85 @@ proc Interleave(clips:clip[]; extend=none(int); mismatch=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Interleave".cstring, args)        
 
-proc Invert(clip:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
+proc Invert*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "Invert".cstring, args)        
 
-proc Levels(clip:ptr VSNodeRef; min_in=none(seq[float]); max_in=none(seq[float]); gamma=none(seq[float]); min_out=none(seq[float]); max_out=none(seq[float]); planes=none(seq[int])):ptr VSMap =
+proc Levels*(vsmap:ptr VSMap; min_in=none(seq[float]); max_in=none(seq[float]); gamma=none(seq[float]); min_out=none(seq[float]); max_out=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if min_in.isSome:
-    propSetFloatArray(args, "min_in", min_in.get, paAppend)
+    propSetFloatArray(args, "min_in", min_in.get)
   if max_in.isSome:
-    propSetFloatArray(args, "max_in", max_in.get, paAppend)
+    propSetFloatArray(args, "max_in", max_in.get)
   if gamma.isSome:
-    propSetFloatArray(args, "gamma", gamma.get, paAppend)
+    propSetFloatArray(args, "gamma", gamma.get)
   if min_out.isSome:
-    propSetFloatArray(args, "min_out", min_out.get, paAppend)
+    propSetFloatArray(args, "min_out", min_out.get)
   if max_out.isSome:
-    propSetFloatArray(args, "max_out", max_out.get, paAppend)
+    propSetFloatArray(args, "max_out", max_out.get)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "Levels".cstring, args)        
 
-proc Limiter(clip:ptr VSNodeRef; min=none(seq[float]); max=none(seq[float]); planes=none(seq[int])):ptr VSMap =
+proc Limiter*(vsmap:ptr VSMap; min=none(seq[float]); max=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if min.isSome:
-    propSetFloatArray(args, "min", min.get, paAppend)
+    propSetFloatArray(args, "min", min.get)
   if max.isSome:
-    propSetFloatArray(args, "max", max.get, paAppend)
+    propSetFloatArray(args, "max", max.get)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "Limiter".cstring, args)        
 
-proc LoadPlugin(path:string; altsearchpath=none(int); forcens=none(string); forceid=none(string)):ptr VSMap =
+proc LoadPlugin*(path:string; altsearchpath=none(int); forcens=none(string); forceid=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
   let args = createMap()
   propSetData(args, "path", path, paAppend)
   if altsearchpath.isSome:
@@ -328,8 +610,19 @@ proc LoadPlugin(path:string; altsearchpath=none(int); forcens=none(string); forc
 
   return API.invoke(plug, "LoadPlugin".cstring, args)        
 
-proc Loop(clip:ptr VSNodeRef; times=none(int)):ptr VSMap =
+proc Loop*(vsmap:ptr VSMap; times=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if times.isSome:
@@ -337,18 +630,29 @@ proc Loop(clip:ptr VSNodeRef; times=none(int)):ptr VSMap =
 
   return API.invoke(plug, "Loop".cstring, args)        
 
-proc Lut(clip:ptr VSNodeRef; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(func); bits=none(int); floatout=none(int)):ptr VSMap =
+proc Lut*(vsmap:ptr VSMap; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(ptr VSFuncRef); bits=none(int); floatout=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if lut.isSome:
-    propSetIntArray(args, "lut", lut.get, paAppend)
+    propSetIntArray(args, "lut", lut.get)
   if lutf.isSome:
-    propSetFloatArray(args, "lutf", lutf.get, paAppend)
+    propSetFloatArray(args, "lutf", lutf.get)
   if function.isSome:
-    (args, "function", function.get, paAppend)
+    propSetFunc(args, "function", function.get, paAppend)
   if bits.isSome:
     propSetInt(args, "bits", bits.get, paAppend)
   if floatout.isSome:
@@ -356,19 +660,30 @@ proc Lut(clip:ptr VSNodeRef; planes=none(seq[int]); lut=none(seq[int]); lutf=non
 
   return API.invoke(plug, "Lut".cstring, args)        
 
-proc Lut2(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(func); bits=none(int); floatout=none(int)):ptr VSMap =
+proc Lut2*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(ptr VSFuncRef); bits=none(int); floatout=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   propSetNode(args, "clipb", clipb, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if lut.isSome:
-    propSetIntArray(args, "lut", lut.get, paAppend)
+    propSetIntArray(args, "lut", lut.get)
   if lutf.isSome:
-    propSetFloatArray(args, "lutf", lutf.get, paAppend)
+    propSetFloatArray(args, "lutf", lutf.get)
   if function.isSome:
-    (args, "function", function.get, paAppend)
+    propSetFunc(args, "function", function.get, paAppend)
   if bits.isSome:
     propSetInt(args, "bits", bits.get, paAppend)
   if floatout.isSome:
@@ -376,24 +691,46 @@ proc Lut2(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef; planes=none(seq[int]); lut=n
 
   return API.invoke(plug, "Lut2".cstring, args)        
 
-proc MakeDiff(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
+proc MakeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   propSetNode(args, "clipb", clipb, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "MakeDiff".cstring, args)        
 
-proc MaskedMerge(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; planes=none(seq[int]); first_plane=none(int); premultiplied=none(int)):ptr VSMap =
+proc MaskedMerge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; planes=none(seq[int]); first_plane=none(int); premultiplied=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   propSetNode(args, "clipb", clipb, paAppend)
   propSetNode(args, "mask", mask, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if first_plane.isSome:
     propSetInt(args, "first_plane", first_plane.get, paAppend)
   if premultiplied.isSome:
@@ -401,83 +738,172 @@ proc MaskedMerge(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; p
 
   return API.invoke(plug, "MaskedMerge".cstring, args)        
 
-proc Maximum(clip:ptr VSNodeRef; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
+proc Maximum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if threshold.isSome:
     propSetFloat(args, "threshold", threshold.get, paAppend)
   if coordinates.isSome:
-    propSetIntArray(args, "coordinates", coordinates.get, paAppend)
+    propSetIntArray(args, "coordinates", coordinates.get)
 
   return API.invoke(plug, "Maximum".cstring, args)        
 
-proc Median(clip:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
+proc Median*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "Median".cstring, args)        
 
-proc Merge(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef; weight=none(seq[float])):ptr VSMap =
+proc Merge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; weight=none(seq[float])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   propSetNode(args, "clipb", clipb, paAppend)
   if weight.isSome:
-    propSetFloatArray(args, "weight", weight.get, paAppend)
+    propSetFloatArray(args, "weight", weight.get)
 
   return API.invoke(plug, "Merge".cstring, args)        
 
-proc MergeDiff(clipa:ptr VSNodeRef, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
+proc MergeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   propSetNode(args, "clipb", clipb, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
 
   return API.invoke(plug, "MergeDiff".cstring, args)        
 
-proc Minimum(clip:ptr VSNodeRef; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
+proc Minimum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if threshold.isSome:
     propSetFloat(args, "threshold", threshold.get, paAppend)
   if coordinates.isSome:
-    propSetIntArray(args, "coordinates", coordinates.get, paAppend)
+    propSetIntArray(args, "coordinates", coordinates.get)
 
   return API.invoke(plug, "Minimum".cstring, args)        
 
-proc ModifyFrame(clip:ptr VSNodeRef, clips:clip[], selector:func):ptr VSMap =
+proc ModifyFrame*(vsmap:ptr VSMap, clips:seq[ptr VSNodeRef], selector:ptr VSFuncRef):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
-  (args, "clips", clips, paAppend)
-  (args, "selector", selector, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
+  propSetFunc(args, "selector", selector, paAppend)
 
   return API.invoke(plug, "ModifyFrame".cstring, args)        
 
-proc PEMVerifier(clip:ptr VSNodeRef; upper=none(seq[float]); lower=none(seq[float])):ptr VSMap =
+proc PEMVerifier*(vsmap:ptr VSMap; upper=none(seq[float]); lower=none(seq[float])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if upper.isSome:
-    propSetFloatArray(args, "upper", upper.get, paAppend)
+    propSetFloatArray(args, "upper", upper.get)
   if lower.isSome:
-    propSetFloatArray(args, "lower", lower.get, paAppend)
+    propSetFloatArray(args, "lower", lower.get)
 
   return API.invoke(plug, "PEMVerifier".cstring, args)        
 
-proc PlaneStats(clipa:ptr VSNodeRef; clipb=none(ptr VSNodeRef); plane=none(int); prop=none(string)):ptr VSMap =
+proc PlaneStats*(vsmap:ptr VSMap; clipb=none(ptr VSNodeRef); plane=none(int); prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clipa = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clipa", clipa, paAppend)
   if clipb.isSome:
@@ -489,27 +915,60 @@ proc PlaneStats(clipa:ptr VSNodeRef; clipb=none(ptr VSNodeRef); plane=none(int);
 
   return API.invoke(plug, "PlaneStats".cstring, args)        
 
-proc PreMultiply(clip:ptr VSNodeRef, alpha:ptr VSNodeRef):ptr VSMap =
+proc PreMultiply*(vsmap:ptr VSMap, alpha:ptr VSNodeRef):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetNode(args, "alpha", alpha, paAppend)
 
   return API.invoke(plug, "PreMultiply".cstring, args)        
 
-proc Prewitt(clip:ptr VSNodeRef; planes=none(seq[int]); scale=none(float)):ptr VSMap =
+proc Prewitt*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if scale.isSome:
     propSetFloat(args, "scale", scale.get, paAppend)
 
   return API.invoke(plug, "Prewitt".cstring, args)        
 
-proc PropToClip(clip:ptr VSNodeRef; prop=none(string)):ptr VSMap =
+proc PropToClip*(vsmap:ptr VSMap; prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if prop.isSome:
@@ -517,24 +976,57 @@ proc PropToClip(clip:ptr VSNodeRef; prop=none(string)):ptr VSMap =
 
   return API.invoke(plug, "PropToClip".cstring, args)        
 
-proc Reverse(clip:ptr VSNodeRef):ptr VSMap =
+proc Reverse*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
 
   return API.invoke(plug, "Reverse".cstring, args)        
 
-proc SelectEvery(clip:ptr VSNodeRef, cycle:int, offsets:seq[int]):ptr VSMap =
+proc SelectEvery*(vsmap:ptr VSMap, cycle:int, offsets:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "cycle", cycle, paAppend)
-  propSetIntArray(args, "offsets", offsets, paAppend)
+  propSetIntArray(args, "offsets", offsets)
 
   return API.invoke(plug, "SelectEvery".cstring, args)        
 
-proc SeparateFields(clip:ptr VSNodeRef; tff=none(int)):ptr VSMap =
+proc SeparateFields*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if tff.isSome:
@@ -542,89 +1034,196 @@ proc SeparateFields(clip:ptr VSNodeRef; tff=none(int)):ptr VSMap =
 
   return API.invoke(plug, "SeparateFields".cstring, args)        
 
-proc SetFieldBased(clip:ptr VSNodeRef, value:int):ptr VSMap =
+proc SetFieldBased*(vsmap:ptr VSMap, value:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetInt(args, "value", value, paAppend)
 
   return API.invoke(plug, "SetFieldBased".cstring, args)        
 
-proc SetFrameProp(clip:ptr VSNodeRef, prop:string; delete=none(int); intval=none(seq[int]); floatval=none(seq[float]); data=none(data[])):ptr VSMap =
+proc SetFrameProp*(vsmap:ptr VSMap, prop:string; delete=none(int); intval=none(seq[int]); floatval=none(seq[float]); data=none(seq[string])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   propSetData(args, "prop", prop, paAppend)
   if delete.isSome:
     propSetInt(args, "delete", delete.get, paAppend)
   if intval.isSome:
-    propSetIntArray(args, "intval", intval.get, paAppend)
+    propSetIntArray(args, "intval", intval.get)
   if floatval.isSome:
-    propSetFloatArray(args, "floatval", floatval.get, paAppend)
+    propSetFloatArray(args, "floatval", floatval.get)
   if data.isSome:
-    (args, "data", data.get, paAppend)
+    for item in data.get:
+      propSetData(args, "data", item, paAppend)
 
   return API.invoke(plug, "SetFrameProp".cstring, args)        
 
-proc SetMaxCPU(cpu:string):ptr VSMap =
+proc SetMaxCPU*(cpu:string):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
   let args = createMap()
   propSetData(args, "cpu", cpu, paAppend)
 
   return API.invoke(plug, "SetMaxCPU".cstring, args)        
 
-proc ShufflePlanes(clips:clip[], planes:seq[int], colorfamily:int):ptr VSMap =
+proc ShufflePlanes*(vsmap:ptr VSMap, planes:seq[int], colorfamily:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
-  propSetIntArray(args, "planes", planes, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
+  propSetIntArray(args, "planes", planes)
   propSetInt(args, "colorfamily", colorfamily, paAppend)
 
   return API.invoke(plug, "ShufflePlanes".cstring, args)        
 
-proc Sobel(clip:ptr VSNodeRef; planes=none(seq[int]); scale=none(float)):ptr VSMap =
+proc Sobel*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if planes.isSome:
-    propSetIntArray(args, "planes", planes.get, paAppend)
+    propSetIntArray(args, "planes", planes.get)
   if scale.isSome:
     propSetFloat(args, "scale", scale.get, paAppend)
 
   return API.invoke(plug, "Sobel".cstring, args)        
 
-proc Splice(clips:clip[]; mismatch=none(int)):ptr VSMap =
+proc Splice*(vsmap:ptr VSMap; mismatch=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
   if mismatch.isSome:
     propSetInt(args, "mismatch", mismatch.get, paAppend)
 
   return API.invoke(plug, "Splice".cstring, args)        
 
-proc StackHorizontal(clips:clip[]):ptr VSMap =
+proc StackHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
 
   return API.invoke(plug, "StackHorizontal".cstring, args)        
 
-proc StackVertical(clips:clip[]):ptr VSMap =
+proc StackVertical*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain one item")
+  if tmpSeq[0].nodes.len >= 1:
+    raise newException(ValueError, "the vsmap should contain a seq with nodes")
+  var clips = tmpSeq[0].nodes
+
+
   let args = createMap()
-  (args, "clips", clips, paAppend)
+  for item in clips:
+    propSetNode(args, "clips", item, paAppend)
 
   return API.invoke(plug, "StackVertical".cstring, args)        
 
-proc Transpose(clip:ptr VSNodeRef):ptr VSMap =
+proc Transpose*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
 
   return API.invoke(plug, "Transpose".cstring, args)        
 
-proc Trim(clip:ptr VSNodeRef; first=none(int); last=none(int); length=none(int)):ptr VSMap =
+proc Trim*(vsmap:ptr VSMap; first=none(int); last=none(int); length=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
   if first.isSome:
@@ -636,8 +1235,19 @@ proc Trim(clip:ptr VSNodeRef; first=none(int); last=none(int); length=none(int))
 
   return API.invoke(plug, "Trim".cstring, args)        
 
-proc Turn180(clip:ptr VSNodeRef):ptr VSMap =
+proc Turn180*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  let tmpSeq = vsmap.toSeq
+  if tmpSeq.len != 1:
+    raise newException(ValueError, "the vsmap should contain at least one item")
+  if tmpSeq[0].nodes.len != 1:
+    raise newException(ValueError, "the vsmap should contain one node")
+  var clip = tmpSeq[0].nodes[0]
+
+
   let args = createMap()
   propSetNode(args, "clip", clip, paAppend)
 
