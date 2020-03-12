@@ -48,6 +48,9 @@ Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim
 - [ ] To enable loading AVS scripts (for instance for deinlerlacing).
 - [ ] To take a look at [Home Of VapourSynth Evolution](https://github.com/HomeOfVapourSynthEvolution/havsfunc/blob/master/havsfunc.py)
 
+- [ ] Developping plugins directly in Nim (maybe is already possible). In any case, check: [Escribir Filtros](http://avisynth.nl/index.php/Filter_SDK), [InvertNeg](http://avisynth.nl/index.php/Filter_SDK/InvertNeg), [AddGrain](https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain/blob/master/AddGrain/AddGrain.cpp), [filter in python](https://forum.doom9.org/showthread.php?t=172206)
+
+
 
 
 
