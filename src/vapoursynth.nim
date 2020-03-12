@@ -1,6 +1,19 @@
-import VapourSynthWrapper
-#import nimprof
+#[
+TODO: something like
+- The whole clip: clip[1:end]
+- Reversed: clip[end:-1:1]
+- Odd: clip[1:2:end]
+- Even: clip[2:2:end]
 
+TODO: documentation and integrate it with Github pages
+
+TODO: loading script
+
+TODO: document plugin_generator
+
+TODO: helper functions for +, [], ...
+]#
+import VapourSynthWrapper
 let API = getVapourSynthAPI(3)
 let CORE = API.createCore(0)
 
@@ -20,12 +33,8 @@ include "output"
 
 when isMainModule:
   let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
-  #echo y4mheader(vsmap[0].nodes[0] )
-
-  #vsmap.Pipey4m
   vsmap.Savey4m("borrame.y4m")
-  #import terminal
-  #discard getch()
+
 
 #ffmpeg -i test1.mkv -ss 00:00:12  -frames 1 -vcodec copy -an 1frame.mkv
  #ffmpeg -y -i file.mpg -r 1/1 $filename%03d.bmp | eog img.png

@@ -1,14 +1,9 @@
 ##[
-The objective is to export videos as .y4m
-function VSNodeRef:writeY4MHeader(file)
-  local info = self:videoInfo()
-  local format = info.format
-  if not format or (format.colorFamily ~= core.colorFamily.YUV and format.colorFamily ~= core.colorFamily.GRAY) then
-    error('y4m only supports YUV and Gray formats')
-  end
-  file:write(string.format("YUV4MPEG2 C%s W%d H%d F%d:%d Ip A0:0\n",
-    y4mformat, info.width, info.height, tonumber(info.fpsNum), tonumber(info.fpsDen)))
-end
+Output
+======
+
+Enables piping a video or storing it in a file. The format emplyed is `YUV4MPEG2 <https://wiki.multimedia.cx/index.php/YUV4MPEG2>`_.
+
 ]##
 import strutils,strformat
 
@@ -70,6 +65,11 @@ proc y4mframe(frame:ptr VSFrameRef):seq[uint8] =
 
 
 proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
+  # Y-Cb-Cr plane order
+  # Y is luminance. It is 8 bits (one byte) per pixel. but you must watch the line stride.
+  # The U and V planes are one quarter (half the height and half the width) the resolution of the Y plane. So each byte is 4 pixels (2 wide 2 tall).
+  # YUV 4:2:0 (I420/J420/YV12) It has the luma "luminance" plane Y first, then the U chroma plane and last the V chroma plane.
+
   let vinfo = getVideoInfo(node)
   for i in 0..<vinfo.numFrames:
     strm.writeLine("FRAME")
@@ -89,6 +89,7 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
   strm.flush()
 
 proc Pipey4m*(vsmap:ptr VSMap ) =
+  ## Pipes the video to stdout. The video goes uncompressed in Y4M format
   let d = vsmap.toSeq
   let node = d[0].nodes[0]
   let header = y4mheader( node )
@@ -96,30 +97,16 @@ proc Pipey4m*(vsmap:ptr VSMap ) =
   strm.write(header & "\n" )
   strm.writeY4mFrames( node ) 
 
-proc Savey4m*(vsmap:ptr VSMap, name:string) =
-  # Y-Cb-Cr plane order
-  # Yes data[0] is luminance. It is 8 bits (one byte) per pixel. but you must watch the line stride.
-  # The U and V planes are one quarter (half the height and half the width) the resolution of the Y plane. So each byte is 4 pixels (2 wide 2 tall).
+proc Savey4m*(vsmap:ptr VSMap, filename:string) =
+  ## Saves the video in `filename`
   let d = vsmap.toSeq
   let node = d[0].nodes[0]  
-  let strm = newFileStream(name, fmWrite)
+  let strm = newFileStream(filename, fmWrite)
   
-  #echo vinfo
   let header = y4mheader(node)
-  #echo header
   strm.writeLine( header )
   strm.writeY4mFrames( node ) 
-
   strm.close()
-
-
-#[
-YUV 4:2:0 (I420/J420/YV12) It has the luma "luminance" plane Y first, then the U chroma plane and last the V chroma plane.
-
-https://stackoverflow.com/questions/22340279/extract-luminance-data-using-ffmpeg-libavfilter-specifically-pix-fmt-yuv420p-ty
-]#
-
-
 
 #[
     let vinfo = getVideoInfo(node)
