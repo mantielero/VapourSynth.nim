@@ -1,13 +1,54 @@
 # VapourSynth.nim
 
+## Introduction
+This library will enable you to perform video manipulation. To do it uses [VapourSynth](http://www.vapoursynth.com/) under the hood. With VapourSynth you can do things like this [video restoration](https://youtu.be/OulrI4yaz64).
+
+This is a library for the [Nim programming language](https://nim-lang.org/). Why another programming language?
+
+I won't say it is an easy programming language. But it is for this particular case. For example, in python you do:
+
+```python
+from vapoursynth import core
+video = core.ffms2.Source(source='Rule6.mkv')
+video = core.std.Transpose(video)
+video.set_output()
+```
+
+and play it like:
+```
+$ vspipe --y4m script.vpy - | ffplay -i pipe:
+```
+
+With Nim, you write:
+```nim
+import vapoursynth
+Source("Role6.mkv").Transpose.Pipey4m
+```
+
+Nim is a compiled language (like C). So you need to compile it:
+```
+$ nim c script.nim
+```
+
+and then you can play it like:
+```
+$ ./script | ffplay -i pipe:
+```
 
 
-## Dev notes
+## Current status
+It can load videos, transform them and pipe them (or store them).
 
-!!! note
+Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim/tree/master/src/plugins) are supposed to work (they need to be installed in your environment). 
 
-   Also as long as you exactly match the struct layout to that of C, you don't need importc and header pragmas for the type, and thus don't depend on the headers at all.
+## TODO
 
-!!! note
-   
-   Proc types are {.closure.} by default i.e. fat pointer. You want {.cdecl.} instead.
+- [ ] To enable dealing with frames like an array.
+- [ ] To enable loading plugins manually.
+- [ ] To enable loading AVS scripts (for instance for deinlerlacing).
+- [ ] To take a look at [Home Of VapourSynth Evolution](https://github.com/HomeOfVapourSynthEvolution/havsfunc/blob/master/havsfunc.py)
+
+
+
+
+
