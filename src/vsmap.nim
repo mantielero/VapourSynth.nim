@@ -22,7 +22,7 @@ A map’s contents can be retrieved and modified using a number of functions, al
 
 A map’s contents can be erased with clearMap().
 ]##
-#import tables
+import strformat
 
 type
   Map* = object
@@ -65,12 +65,27 @@ proc len*(vsmap:ptr VSMap):int =
   ## Returns the number of keys contained in a property map.
   API.propNumKeys(vsmap).int
 
+proc checkLimits(vsmap:ptr VSMap, key:string, idx: int) =
+  if idx < 0:
+    raise newException(ValueError, "`idx` shall be >= 0")
+  elif idx >= vsmap.len:
+    raise newException(ValueError, &"for key=\"{key}\", `idx` shall be <= {vsmap.len}")
+
+proc checkError(error:VSGetPropErrors, key:string, idx:int) =
+  case error  
+  of peIndex:
+    raise newException(ValueError, &"the index \"{idx}\" is out of range")
+  of peType:
+    raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
+  else: # peUnset:
+    discard  
+
 proc propGetKey*(vsmap:ptr VSMap, idx:int):string = 
   ## Returns a key from a property map.
-  ## 
-  ## Passing an invalid index will cause a fatal error.
-  ## 
-  ## The pointer is valid as long as the key exists in the map.
+  if idx < 0:
+    raise newException(ValueError, "`idx` shall be >= 0")
+  elif idx >= vsmap.len:
+    raise newException(ValueError, &"`idx` shall be <= {vsmap.len}")
   var key = $API.propGetKey(vsmap, idx.cint)
   #var x = newString(key.len)
   #copyMem(addr(x[0]), addr(key), key.len)
@@ -85,186 +100,143 @@ proc propNumElements*(vsmap:ptr VSMap, key:string):int =
   ## Returns the number of elements associated with a key in a property map. Returns -1 if there is no such key in the map.
   API.propNumElements(vsmap, key.cstring).int
 
-proc propGetData*(vsmap:ptr VSMap, key:string, idx:int, error:ptr cint):string = 
-  ##[
-  Retrieves arbitrary binary data from a map.
-  
-  Returns a pointer to the data on success, or NULL in case of error.
+proc propGetData*(vsmap:ptr VSMap, key:string, idx:int):string = 
+  ## Given a `key` retrieves the string stored at position `idx` from a map.
+  checkLimits(vsmap, key, idx)
+  var err = peUnset.cint
+  result = $API.propGetData(vsmap, key.cstring, idx.cint, err)
+  checkError(err.VSGetPropErrors, key, idx)
 
-  The array returned is guaranteed to be NULL-terminated. The NULL byte is not considered to be part of the array (propGetDataSize doesn’t count it).
-
-  The pointer is valid until the map is destroyed, or until the corresponding key is removed from the map or altered. If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error:
-  
-  - `index`:  Zero-based index of the element. Use propNumElements() to know the total number of elements associated with a key.
-  - `error`: One of VSGetPropErrors, or 0 on success. You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.]##
-  $API.propGetData(vsmap, key.cstring,idx.cint,error)
-
-proc propGetDataSize*(vsmap:ptr VSMap, key:cstring, idx:int, error:ptr cint):int = 
+proc propGetDataSize*(vsmap:ptr VSMap, key:string, idx:int ):int = 
   ## Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
-  API.propGetDataSize(vsmap, key,idx.cint,error).int
+  checkLimits(vsmap, key, idx)  
+  var err = peUnset.cint  
+  result = API.propGetDataSize(vsmap, key.cstring,idx.cint,err).int
+  checkError(err.VSGetPropErrors, key, idx)
+
+proc propGetInt*(vsmap:ptr VSMap, key:string, idx:int):int = 
+  ## Given a `key` retrieves the integer value stored at position `idx` from a map.
+  checkLimits(vsmap, key, idx)  
+  var err = peUnset.cint  
+  result = API.propGetInt(vsmap, key.cstring, idx.cint, err).int
+  checkError(err.VSGetPropErrors, key, idx)
+
+proc propGetFloat*(vsmap:ptr VSMap, key:string, idx:int):float =
+  ## Given a `key` retrieves the integer value stored at position `idx` from a map.
+  checkLimits(vsmap, key, idx)  
+  var err = peUnset.cint  
+  result = API.propGetFloat(vsmap, key.cstring, idx.cint, err).float
+  checkError(err.VSGetPropErrors, key, idx)
+
+proc propGetIntArray*(vsmap:ptr VSMap, key:string):seq[int] = 
+  ## Retrieves an array of integers from a map.
+  var err = peUnset.cint
+  let address = API.propGetIntArray(vsmap, key.cstring, err)
+  let size = vsmap.propNumElements(key)
+  if err == peType:
+    raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
+
+  var data = newSeq[int](size)
+  if size != 0:
+    copyMem(addr data[0], address, size)
+  result = data
+
+proc propGetFloatArray*(vsmap:ptr VSMap, key:string):seq[float] =
+  ## Retrieves an array of floating point numbers from a map.
+  var err = peUnset.cint  
+  let address = API.propGetFloatArray(vsmap, key.cstring, err)
+  let size = vsmap.propNumElements(key)
+  if err == peType:
+    raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
+
+  var data = newSeq[float](size)
+  if size != 0:
+    copyMem(addr data[0], address, size)
+  result = data
+
+proc propGetNode*( vsmap:ptr VSMap, key:string, idx:int):ptr VSNodeRef =
+  ## Retrieves a node from a map.
+  checkLimits(vsmap, key, idx)   
+  var err = peUnset.cint   
+  result = API.propGetNode(vsmap, key.cstring, idx.cint, err)  
+  checkError(err.VSGetPropErrors, key, idx)  
+
+proc propGetFrame*( vsmap:ptr VSMap, key:string, idx:int):ptr VSFrameRef =
+  ## Retrieves a frame from a map.
+  checkLimits(vsmap, key, idx)   
+  var err = peUnset.cint   
+  result = API.propGetFrame(vsmap, key.cstring, idx.cint, err)
+  checkError(err.VSGetPropErrors, key, idx)    
+
+proc propGetFunc*( vsmap:ptr VSMap, key:string, idx:int ):ptr VSFuncRef =
+  ## Retrieves a function from a map.
+  checkLimits(vsmap, key, idx)   
+  var err = peUnset.cint  
+  result = API.propGetFunc(vsmap,key.cstring, idx.cint, err)
+  checkError(err.VSGetPropErrors, key, idx)
 
 
-proc propGetInt*(vsmap:ptr VSMap, key:cstring, idx:int, error:ptr cint):int = 
-  ##[
-  Retrieves an integer from a map.
-  
-  Returns the number on success, or 0 in case of error.
-  
-  If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-  
-  - `index`: Zero-based index of the element. Use propNumElements() to know the total number of elements associated with a key.
-  - `error`: One of , or 0 on success. You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-  ]##
-  # unsafeAddr(error.cint)
-  result = API.propGetInt(vsmap, key,idx.cint, error).int
-  #echo repr(error)
-  #proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):int64 
-
-proc propGetIntArray*(vsmap:ptr VSMap, key:string, error:ptr cint):ptr int64 = #seq[int] =   VSGetPropErrors
-  ##[
-  Retrieves an array of integers from a map. Use this function if there are a lot of numbers associated with a key, because it is faster than calling propGetInt() in a loop.
-
-  Returns a pointer to the first element of the array on success, or NULL in case of error.
-  
-  If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-  
-  Use propNumElements() to know the total number of elements associated with a key.
-
-  error
-    One of VSGetPropErrors, or 0 on success.
-    You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-
-  This function was introduced in API R3.1 (VapourSynth R26).
-  ]##
-  API.propGetIntArray(vsmap, key.cstring, error)
 
 
+# Setting data
+proc append(vsmap:ptr VSMap, key:string, data:string) =
+  ## appends a string
+  let ret = API.propSetData(vsmap, key.cstring, data.cstring, data.len.cint, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append a string to a property with the wrong type")
 
-proc propGetFloat*(vsmap:ptr VSMap, key:string, idx:int, error:ptr cint):float =
-  ##[
-  Retrieves a floating point number from a map.
-  Returns the number on success, or 0 in case of error.
-  
-  If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-  index
-    Zero-based index of the element.
-    Use propNumElements() to know the total number of elements associated with a key.
-  error
-    One of VSGetPropErrors, or 0 on success.
-   You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-  ]##
-  API.propGetFloat(vsmap, key.cstring, idx.cint, error)
+proc append(vsmap:ptr VSMap, key:string, data:int) =
+  ## appends am integer
+  let ret = API.propSetInt(vsmap, key.cstring, data.cint, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append an integer to a property with the wrong type")  
 
-proc propGetFloatArray*(vsmap:ptr VSMap, key:string, error:ptr cint):seq[float] =
-  ##[
-    Retrieves an array of floating point numbers from a map. Use this function if there are a lot of numbers associated with a key, because it is faster than calling propGetFloat() in a loop.
+proc append(vsmap:ptr VSMap, key:string, data:float) =
+  ## appends am integer
+  let ret = API.propSetFloat(vsmap, key.cstring, data.cdouble, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append a float to a property with the wrong type")
 
-    Returns a pointer to the first element of the array on success, or NULL in case of error.
+proc append(vsmap:ptr VSMap, key:string, data:ptr VSNodeRef) =
+  ## appends am integer
+  let ret = API.propSetNode(vsmap, key.cstring, data, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append a node to a property with the wrong type")
 
-    If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
+proc append(vsmap:ptr VSMap, key:string, data:ptr VSFrameRef) =
+  ## appends am integer
+  let ret = API.propSetFrame(vsmap, key.cstring, data, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append a frame to a property with the wrong type")
 
-    Use propNumElements() to know the total number of elements associated with a key.
+proc append(vsmap:ptr VSMap, key:string, data:ptr VSFuncRef) =
+  ## appends am integer
+  let ret = API.propSetFunc(vsmap, key.cstring, data, paAppend.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to append a function to a property with the wrong type")
 
-    error
-            One of VSGetPropErrors, or 0 on success.
-            You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-  ]##
-  let p:pointer= API.propGetFloatArray(vsmap, key.cstring, error)
-  let n = vsmap.propNumElements(key)
-  #result = cast[seq[float]](p)[n]
+proc set(vsmap:ptr VSMap, key:string, data:seq[int]) =
+  ## sets an integer sequence to a key
+  let ret = API.propSetIntArray(vsmap, key.cstring, unsafeAddr(data[0]), data.len.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to set an integer sequence to a property with the wrong type")
+
+proc set(vsmap:ptr VSMap, key:string, data:seq[float]) =
+  ## sets an integer sequence to a key
+  let ret = API.propSetFloatArray(vsmap, key.cstring, unsafeAddr(data[0]), data.len.cint)
+  if ret == 1:
+    raise newException(ValueError, "trying to set a float sequence to a property with the wrong type")
 
 
-proc propGetNode*( vsmap:ptr VSMap, key:string, idx:int, error:ptr cint):ptr VSNodeRef =
-  ##[
-`original doc <http://www.vapoursynth.com/doc/api/vapoursynth.h.html#propgetnode>`_
-
- Retrieves a node from a map.
- 
- Returns a pointer to the node on success, or NULL in case of error.
- 
- This function increases the node’s reference count, so freeNode() must be used when the node is no longer needed.
- 
- If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
- 
- index
-    Zero-based index of the element.
-    Use propNumElements() to know the total number of elements associated with a key.
- 
- error
-    One of VSGetPropErrors, or 0 on success.
-    You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-
-  ]##
-  API.propGetNode(vsmap, key.cstring, idx.cint, error)
-
-proc propGetFrame*( vsmap:ptr VSMap, key:string, idx:int, error:ptr cint):ptr VSFrameRef =
-  ##[
-  Retrieves a frame from a map.
-        Returns a pointer to the frame on success, or NULL in case of error.
-        This function increases the frame’s reference count, so freeFrame() must be used when the frame is no longer needed.
-        If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-        index
-            Zero-based index of the element.
-            Use propNumElements() to know the total number of elements associated with a key.
-        error
-            One of VSGetPropErrors, or 0 on success.
-            You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-  ]##
-  API.propGetFrame(vsmap, key.cstring, idx.cint, error)
-
-proc propGetFunc*( vsmap:ptr VSMap, key:string, idx:int, error:ptr cint):ptr VSFuncRef =
-  ##[
-  Retrieves a function from a map.
-     
-  Returns a pointer to the function on success, or NULL in case of error.
-  
-  This function increases the function’s reference count, so freeFunc() must be used when the function is no longer needed.
-  
-  If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.
-  
-  index
-            Zero-based index of the element.
-            Use propNumElements() to know the total number of elements associated with a key.
-  
-  error
-            One of VSGetPropErrors, or 0 on success.
-            You may pass NULL here, but then any problems encountered while retrieving the property will cause VapourSynth to die with a fatal error.
-  ]##
-  API.propGetFunc(vsmap,key.cstring, idx.cint, error)
-
-# SETTING DATA
+#--- The following should be removed in the future
 proc propSetData*(vsmap:ptr VSMap, key:string, data:string, append:VSPropAppendMode) =
-  #[
-Adds a property to a map.
-
-Multiple values can be associated with one key, but they must all be the same type.
-- key
-    Name of the property. Alphanumeric characters and the underscore may be used.
-- data
-    Value to store.
-    This function copies the data, so the pointer should be freed when no longer needed.
-- size
-    The number of bytes to copy. If this is negative, everything up to the first NULL byte will be copied.
-    This function will always add a NULL byte at the end of the data.
-- append: one of VSPropAppendMode.
-Returns 0 on success, or 1 if trying to append to a property with the wrong type.
-  ]#
+  ## Appends/Replace/Touch a string to a particular key in a map.
   let ret = API.propSetData(vsmap, key.cstring, data.cstring, data.len.cint, append.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append to a property with the wrong type.")
 
 proc propSetInt*(vsmap:ptr VSMap, key:string, val:int, append:VSPropAppendMode) =
-  #[
-        Adds a property to a map.
-        Multiple values can be associated with one key, but they must all be the same type.
-        key
-            Name of the property. Alphanumeric characters and the underscore may be used.
-        i
-            Value to store.
-        append
-            One of VSPropAppendMode.
-        Returns 0 on success, or 1 if trying to append to a property with the wrong type.
-  ]#
+  ## Adds a property to a map.
   let ret = API.propSetInt(vsmap, key.cstring, val.cint, append.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append to a property with the wrong type" )
@@ -382,158 +354,127 @@ proc propSetFunc*(vsmap:ptr VSMap, key:string, `func`:ptr VSFuncRef, append:VSPr
 # ===================================
 #        Friendly API
 # ===================================
-"""
-Gets the values from a VSMap.
-The values are provided as a list. The keys as discarded since they are meaningless.
-Example
-=======
-a = [ ("key1", 1)
-    , ("key2", "Testing")
-    , ("key3", 1.1)
-    , ("key4", [1,2,3])
-    , ("key5", [1.1,2.2,3.3])
-     ]
-vsmap = list2vsmap(a)
-lista = vsmap2list(vsmap)
-"""
-function vsmap2list( vsmap::Ptr{VSMap} )
-    n = propNumKeys( vsmap )
-    items = []
-
-    for i in 0:n-1
-        key = propGetKey( vsmap, i )
-        t   = propGetType( vsmap, key )
-        n_items = propNumElements( vsmap, key)
-        # Lista elementos
-        data = []
-        for elem in 0:n_items-1
-            if t == ptData
-               ptr = propGetData(  vsmap, key, elem, peUnset )
-               cadena = unsafe_string(ptr)
-               push!(data, cadena)
-            elseif t == ptInt
-               valor = propGetInt(  vsmap, key, elem, peUnset )
-               #print(valor)
-               push!(data, valor)
-           elseif t == ptFloat
-              valor = propGetFloat(  vsmap, key, elem, peUnset )
-              #print(valor)
-              push!(data, valor)
-           elseif t == ptNode
-              valor = propGetNode(  vsmap, key, elem, peUnset )
-              #print("NODO: $(valor)\n")
-              push!(data, valor)
-           elseif t == ptFrame
-              valor = propGetFrame(  vsmap, key, elem, peUnset )
-              push!(data, valor)
-           elseif t == ptFunction
-              valor = propGetFunc( vsmap, key, elem, peUnset )
-              push!(data, valor)
-           else
-              print("TODO: el tipo $(t) no está todavía soportado")
-           end
-        end
-        if length(data) == 1
-            data = data[1]
-        end
-        item = (key,data)
-        #println(item)
-        #items = [items item]
-        push!(items, item)
-
-    end
-    items
-end
 ]#
 
 #[
-"""
-Creates a VSMap from an array.
-a = [ ["key", value]
-    , ["key", value]
-    ]
-"""
-function list2vsmap( items ) #::Array{Any,1}
-    vsmap = createMap()
-    for item in items
-        key = item[1]
-        value = item[2]
-        setvalue(vsmap, key, value)
-    end
-    vsmap
-end
-    
-]#
-
+type 
+  Tints      = tuple[key:string,value:seq[int]]
+  Tfloats    = tuple[key:string,value:seq[float]] 
+  Tstrings   = tuple[key:string,value:seq[string]]
+  Tnodes     = tuple[key:string,value:seq[ptr VSNodeRef]]
+  Tframes    = tuple[key:string,value:seq[ptr VSFrameRef]]
+  Tfunctions = tuple[key:string,value:seq[ptr VSFuncRef]]
+  Tunset     = tuple[key:string]
   
-proc `[]`*(vsmap:ptr VSMap, idx:int):Map =   #tuple[key:string,`type`:VSPropTypes, elems:seq[string]] =
+
+proc get(vsmap:ptr VSMap, idx:int):Tints|Tfloats|Tstrings|Tnodes|Tframes|Tfunctions|Tunset =
+  ## Retrieves the value given an index (this is very important to take the first one)
+  # Check range
+  let n = vsmap.len
+  if idx < 0:
+    raise newException(ValueError, "VSMap index <0")  
+  elif idx > n-1:
+    raise newException(ValueError, "VSMap index > than the number of keys available") 
+
+  # Retrieve key, type and number of elements for that key
+  let key:string = propGetKey(vsmap, idx)
+  let `type` = propGetType(vsmap, key)
+  let nElems = vsmap.propNumElements(key)
+    
+  case `type`:
+  of ptData:
+    var elems:seq[string]
+    var error:VSGetPropErrors = peUnset
+    for i in 0..<nElems:
+      elems &= vsmap.propGetData(key,i,nil)
+    let tmp:Tstrings =   (key:key,value:elems)
+    return tmp
+
+  of ptInt:
+    var elems:seq[int]
+    for i in 0..<nElems:
+      elems &= vsmap.propGetInt(key,i,nil)  
+    let tmp:Tints =   (key:key,value:elems)
+    return tmp
+
+  of ptFloat:
+    var elems:seq[float]
+    for i in 0..<nElems:
+      elems &= vsmap.propGetFloat(key,i,nil)  
+    return (key,elems)
+
+  of ptNode:
+    var elems:seq[ptr VSNodeRef]
+    for i in 0..<nElems:
+      elems &= vsmap.propGetNode(key,i,nil)  
+    return (key,elems)
+
+  of ptFrame:
+    var elems:seq[ptr VSFrameRef]
+    for i in 0..<nElems:
+      elems &= vsmap.propGetFrame(key,i,nil)  
+    return (key,elems)
+
+  of ptFunction:
+    var elems:seq[ptr VSFuncRef]
+    for i in 0..<nElems:
+      elems &= vsmap.propGetFunc(key,i,nil)  
+    return (key,elems)
+  
+  else: # ptUnset
+    return (key, nil)
+]# 
+proc `[]`*(vsmap:ptr VSMap, idx:int):Map =
+  # This enables getting item at position `idx` from an vsmap
   let key = propGetKey(vsmap, idx)
   let t = propGetType(vsmap, key)
   var val:Map
   val.key = key
   val.`type` = t
-  #[
-ptUnset* = ('u').VSPropTypes
-ptNode* = ('c').VSPropTypes
-ptFrame* = ('v').VSPropTypes
-ptFunction* = ('m').VSPropTypes
-  ]#
   let nElems = vsmap.propNumElements(key)
     
   if t == ptData:
     var elems:seq[string]
     for i in 0..<nElems:
-      elems &= vsmap.propGetData(key,i,nil)  
+      elems &= vsmap.propGetData(key,i)  
     val.data = elems
 
   elif t == ptInt:
     var elems:seq[int]
     for i in 0..<nElems:
-      elems &= vsmap.propGetInt(key,i,nil)  
+      elems &= vsmap.propGetInt(key, i)  
     val.integers = elems  
 
   elif t == ptFloat:
     var elems:seq[float]
     for i in 0..<nElems:
-      elems &= vsmap.propGetFloat(key,i,nil)  
+      elems &= vsmap.propGetFloat(key,i)  
     val.floats = elems
 
   elif t == ptNode:
     var elems:seq[ptr VSNodeRef]
     for i in 0..<nElems:
-      elems &= vsmap.propGetNode(key,i,nil)  
+      elems &= vsmap.propGetNode(key,i)  
     val.nodes = elems
 
   elif t == ptFrame:
     var elems:seq[ptr VSFrameRef]
     for i in 0..<nElems:
-      elems &= vsmap.propGetFrame(key,i,nil)  
+      elems &= vsmap.propGetFrame(key,i)  
     val.frames = elems
 
   elif t == ptFunction:
     var elems:seq[ptr VSFuncRef]
     for i in 0..<nElems:
-      elems &= vsmap.propGetFunc(key,i,nil)  
+      elems &= vsmap.propGetFunc(key,i)  
     val.functions = elems
   
   #elif t == ptUnset:
   #  continue
 
   return val
-#[
-  ptUnset* = ('u').VSPropTypes
-    ptInt* = ('i').VSPropTypes
-    ptFloat* = ('f').VSPropTypes
-    ptData* = ('s').VSPropTypes
-    ptNode* = ('c').VSPropTypes
-  ptFrame* = ('v').VSPropTypes
-  ptFunction* = ('m').VSPropTypes  
 
-      nodes*:seq[ptr VSNodeRef]
-    frames*:seq[ptr VSFrameRef]
-    functions:*seq[ptr VSFuncRef]
-]#
 proc toSeq*(vsmap:ptr VSMap):seq[ Map ] =
-  #var result:seq[string]
+  ## Reads from VSMap into a sequence.
   for idx in 0..<vsmap.len:
     result &= vsmap[idx]

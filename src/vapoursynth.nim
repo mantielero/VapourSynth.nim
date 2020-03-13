@@ -1,18 +1,23 @@
-#[
+##[
+VapourSynth.nim
+===============
+
+Why?
+----
+
+This will enable you to perform video manipulation. 
+
+
+
+
+TODO
+----
 TODO: something like
-- The whole clip: clip[1:end]
-- Reversed: clip[end:-1:1]
-- Odd: clip[1:2:end]
-- Even: clip[2:2:end]
+
 
 TODO: documentation and integrate it with Github pages
 
-TODO: loading script
-
-TODO: document plugin_generator
-
-TODO: helper functions for +, [], ...
-]#
+]##
 import VapourSynthWrapper
 let API = getVapourSynthAPI(3)
 let CORE = API.createCore(0)
@@ -32,8 +37,15 @@ include "vsframe"
 include "output"
 
 when isMainModule:
-  let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
-  vsmap.Savey4m("borrame.y4m")
+  #let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
+  #vsmap.Savey4m("borrame.y4m")
+  let vsmap = createMap()
+  vsmap.propSetInt("hola", 1, paAppend)
+  echo vsmap.propGetData("hola", -1)
+  #echo vsmap.propGetData("hola", 1)
+  #echo vsmap.get(1)
+  #echo vsmap.toSeq
+
 
 
 #ffmpeg -i test1.mkv -ss 00:00:12  -frames 1 -vcodec copy -an 1frame.mkv

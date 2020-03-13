@@ -181,13 +181,13 @@ type
     propGetKey*: proc(map:ptr VSMap, index:cint):cstring {.cdecl.}
     propNumElements*: proc(map:ptr VSMap, key:cstring):cint {.cdecl.}
     propGetType*: proc(map:ptr VSMap, key:cstring):cchar {.cdecl.}
-    propGetInt*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):int64 {.cdecl.}
-    propGetFloat*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cdouble {.cdecl.}
-    propGetData*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cstring {.cdecl.}
-    propGetDataSize*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):cint {.cdecl.}
-    propGetNode*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSNodeRef {.cdecl.}
-    propGetFrame*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFrameRef {.cdecl.}
-    propGetFunc*: proc(map:ptr VSMap, key:cstring, index:cint, error:ptr cint):ptr VSFuncRef {.cdecl.}
+    propGetInt*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):int64 {.cdecl.}
+    propGetFloat*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):cdouble {.cdecl.}
+    propGetData*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):cstring {.cdecl.}
+    propGetDataSize*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):cint {.cdecl.}
+    propGetNode*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):ptr VSNodeRef {.cdecl.}
+    propGetFrame*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):ptr VSFrameRef {.cdecl.}
+    propGetFunc*: proc(map:ptr VSMap, key:cstring, index:cint, error:var cint):ptr VSFuncRef {.cdecl.}
     propDeleteKey*: proc(map:ptr VSMap, key:cstring):cint {.cdecl.}
     propSetInt*: proc(map:ptr VSMap, key:cstring, i:int64, append:cint):cint {.cdecl.}
     propSetFloat*: proc(map:ptr VSMap, key:cstring, d:cdouble, append:cint):cint {.cdecl.}
@@ -201,8 +201,8 @@ type
     setMessageHandler*: proc(handler:VSMessageHandler, userData:pointer) {.cdecl.}
     setThreadCount*: proc(threads:cint, core:ptr VSCore):cint {.cdecl.}
     getPluginPath*: proc(plugin:ptr VSPlugin):cstring {.cdecl.}
-    propGetIntArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr int64 {.cdecl.}
-    propGetFloatArray*: proc(map:ptr VSMap, key:cstring, error:ptr cint):ptr cdouble {.cdecl.}
+    propGetIntArray*: proc(map:ptr VSMap, key:cstring, error:var cint):ptr int64 {.cdecl.}
+    propGetFloatArray*: proc(map:ptr VSMap, key:cstring, error:var cint):ptr cdouble {.cdecl.}
     propSetIntArray*: proc(map:ptr VSMap, key:cstring, i:ptr int64, size:cint):cint {.cdecl.}
     propSetFloatArray*: proc(map:ptr VSMap, key:cstring, d:ptr cdouble, size:cint):cint {.cdecl.}
     logMessage*: proc(msgType:cint, msg:cstring) {.cdecl.}

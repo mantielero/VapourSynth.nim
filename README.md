@@ -54,6 +54,7 @@ Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim
   - Even: clip[2:2:end]
 
 - [ ] Better documentation
+- [ ] Does it work with nimscript?
 - [ ] Github pages
 - [ ] To enable dealing with frames like an array.
 - [ ] To enable loading plugins manually.
