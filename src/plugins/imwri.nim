@@ -3,17 +3,14 @@ proc Read*(filename:seq[string]; firstnum=none(int); mismatch=none(int); alpha=n
   if plug == nil:
     raise newException(ValueError, "plugin \"imwri\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
   for item in filename:
-    propSetData(args, "filename", item, paAppend)
-  if firstnum.isSome:
-    propSetInt(args, "firstnum", firstnum.get, paAppend)
-  if mismatch.isSome:
-    propSetInt(args, "mismatch", mismatch.get, paAppend)
-  if alpha.isSome:
-    propSetInt(args, "alpha", alpha.get, paAppend)
-  if float_output.isSome:
-    propSetInt(args, "float_output", float_output.get, paAppend)
+    args.append("filename", item)
+  if firstnum.isSome: args.append("firstnum", firstnum.get)
+  if mismatch.isSome: args.append("mismatch", mismatch.get)
+  if alpha.isSome: args.append("alpha", alpha.get)
+  if float_output.isSome: args.append("float_output", float_output.get)
 
   return API.invoke(plug, "Read".cstring, args)        
 
@@ -22,30 +19,25 @@ proc Write*(vsmap:ptr VSMap, imgformat:string, filename:string; firstnum=none(in
   if plug == nil:
     raise newException(ValueError, "plugin \"imwri\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetData(args, "imgformat", imgformat, paAppend)
-  propSetData(args, "filename", filename, paAppend)
-  if firstnum.isSome:
-    propSetInt(args, "firstnum", firstnum.get, paAppend)
-  if quality.isSome:
-    propSetInt(args, "quality", quality.get, paAppend)
-  if dither.isSome:
-    propSetInt(args, "dither", dither.get, paAppend)
-  if compression_type.isSome:
-    propSetData(args, "compression_type", compression_type.get, paAppend)
-  if overwrite.isSome:
-    propSetInt(args, "overwrite", overwrite.get, paAppend)
-  if alpha.isSome:
-    propSetNode(args, "alpha", alpha.get, paAppend)
+  args.append("clip", clip)
+  args.append("imgformat", imgformat)
+  args.append("filename", filename)
+  if firstnum.isSome: args.append("firstnum", firstnum.get)
+  if quality.isSome: args.append("quality", quality.get)
+  if dither.isSome: args.append("dither", dither.get)
+  if compression_type.isSome: args.append("compression_type", compression_type.get)
+  if overwrite.isSome: args.append("overwrite", overwrite.get)
+  if alpha.isSome: args.append("alpha", alpha.get)
 
   return API.invoke(plug, "Write".cstring, args)        
 

@@ -3,35 +3,27 @@ proc EEDI2*(vsmap:ptr VSMap, field:int; mthresh=none(int); lthresh=none(int); vt
   if plug == nil:
     raise newException(ValueError, "plugin \"eedi2\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetInt(args, "field", field, paAppend)
-  if mthresh.isSome:
-    propSetInt(args, "mthresh", mthresh.get, paAppend)
-  if lthresh.isSome:
-    propSetInt(args, "lthresh", lthresh.get, paAppend)
-  if vthresh.isSome:
-    propSetInt(args, "vthresh", vthresh.get, paAppend)
-  if estr.isSome:
-    propSetInt(args, "estr", estr.get, paAppend)
-  if dstr.isSome:
-    propSetInt(args, "dstr", dstr.get, paAppend)
-  if maxd.isSome:
-    propSetInt(args, "maxd", maxd.get, paAppend)
-  if map.isSome:
-    propSetInt(args, "map", map.get, paAppend)
-  if nt.isSome:
-    propSetInt(args, "nt", nt.get, paAppend)
-  if pp.isSome:
-    propSetInt(args, "pp", pp.get, paAppend)
+  args.append("clip", clip)
+  args.append("field", field)
+  if mthresh.isSome: args.append("mthresh", mthresh.get)
+  if lthresh.isSome: args.append("lthresh", lthresh.get)
+  if vthresh.isSome: args.append("vthresh", vthresh.get)
+  if estr.isSome: args.append("estr", estr.get)
+  if dstr.isSome: args.append("dstr", dstr.get)
+  if maxd.isSome: args.append("maxd", maxd.get)
+  if map.isSome: args.append("map", map.get)
+  if nt.isSome: args.append("nt", nt.get)
+  if pp.isSome: args.append("pp", pp.get)
 
   return API.invoke(plug, "EEDI2".cstring, args)        
 

@@ -3,41 +3,30 @@ proc ImageFile*(vsmap:ptr VSMap, file:string; id=none(int); palette=none(seq[int
   if plug == nil:
     raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetData(args, "file", file, paAppend)
-  if id.isSome:
-    propSetInt(args, "id", id.get, paAppend)
-  if palette.isSome:
-    propSetIntArray(args, "palette", palette.get)
-  if gray.isSome:
-    propSetInt(args, "gray", gray.get, paAppend)
-  if info.isSome:
-    propSetInt(args, "info", info.get, paAppend)
-  if flatten.isSome:
-    propSetInt(args, "flatten", flatten.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if matrix.isSome:
-    propSetInt(args, "matrix", matrix.get, paAppend)
-  if matrix_s.isSome:
-    propSetData(args, "matrix_s", matrix_s.get, paAppend)
-  if transfer.isSome:
-    propSetInt(args, "transfer", transfer.get, paAppend)
-  if transfer_s.isSome:
-    propSetData(args, "transfer_s", transfer_s.get, paAppend)
-  if primaries.isSome:
-    propSetInt(args, "primaries", primaries.get, paAppend)
-  if primaries_s.isSome:
-    propSetData(args, "primaries_s", primaries_s.get, paAppend)
+  args.append("clip", clip)
+  args.append("file", file)
+  if id.isSome: args.append("id", id.get)
+  if palette.isSome: args.set("palette", palette.get)
+  if gray.isSome: args.append("gray", gray.get)
+  if info.isSome: args.append("info", info.get)
+  if flatten.isSome: args.append("flatten", flatten.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if matrix.isSome: args.append("matrix", matrix.get)
+  if matrix_s.isSome: args.append("matrix_s", matrix_s.get)
+  if transfer.isSome: args.append("transfer", transfer.get)
+  if transfer_s.isSome: args.append("transfer_s", transfer_s.get)
+  if primaries.isSome: args.append("primaries", primaries.get)
+  if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   return API.invoke(plug, "ImageFile".cstring, args)        
 
@@ -46,47 +35,33 @@ proc Subtitle*(vsmap:ptr VSMap, text:string; start=none(int); `end`=none(int); d
   if plug == nil:
     raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetData(args, "text", text, paAppend)
-  if start.isSome:
-    propSetInt(args, "start", start.get, paAppend)
-  if `end`.isSome:
-    propSetInt(args, "end", `end`.get, paAppend)
-  if debuglevel.isSome:
-    propSetInt(args, "debuglevel", debuglevel.get, paAppend)
-  if fontdir.isSome:
-    propSetData(args, "fontdir", fontdir.get, paAppend)
-  if linespacing.isSome:
-    propSetFloat(args, "linespacing", linespacing.get, paAppend)
-  if margins.isSome:
-    propSetIntArray(args, "margins", margins.get)
-  if sar.isSome:
-    propSetFloat(args, "sar", sar.get, paAppend)
-  if style.isSome:
-    propSetData(args, "style", style.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if matrix.isSome:
-    propSetInt(args, "matrix", matrix.get, paAppend)
-  if matrix_s.isSome:
-    propSetData(args, "matrix_s", matrix_s.get, paAppend)
-  if transfer.isSome:
-    propSetInt(args, "transfer", transfer.get, paAppend)
-  if transfer_s.isSome:
-    propSetData(args, "transfer_s", transfer_s.get, paAppend)
-  if primaries.isSome:
-    propSetInt(args, "primaries", primaries.get, paAppend)
-  if primaries_s.isSome:
-    propSetData(args, "primaries_s", primaries_s.get, paAppend)
+  args.append("clip", clip)
+  args.append("text", text)
+  if start.isSome: args.append("start", start.get)
+  if `end`.isSome: args.append("end", `end`.get)
+  if debuglevel.isSome: args.append("debuglevel", debuglevel.get)
+  if fontdir.isSome: args.append("fontdir", fontdir.get)
+  if linespacing.isSome: args.append("linespacing", linespacing.get)
+  if margins.isSome: args.set("margins", margins.get)
+  if sar.isSome: args.append("sar", sar.get)
+  if style.isSome: args.append("style", style.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if matrix.isSome: args.append("matrix", matrix.get)
+  if matrix_s.isSome: args.append("matrix_s", matrix_s.get)
+  if transfer.isSome: args.append("transfer", transfer.get)
+  if transfer_s.isSome: args.append("transfer_s", transfer_s.get)
+  if primaries.isSome: args.append("primaries", primaries.get)
+  if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   return API.invoke(plug, "Subtitle".cstring, args)        
 
@@ -95,47 +70,33 @@ proc TextFile*(vsmap:ptr VSMap, file:string; charset=none(string); scale=none(fl
   if plug == nil:
     raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetData(args, "file", file, paAppend)
-  if charset.isSome:
-    propSetData(args, "charset", charset.get, paAppend)
-  if scale.isSome:
-    propSetFloat(args, "scale", scale.get, paAppend)
-  if debuglevel.isSome:
-    propSetInt(args, "debuglevel", debuglevel.get, paAppend)
-  if fontdir.isSome:
-    propSetData(args, "fontdir", fontdir.get, paAppend)
-  if linespacing.isSome:
-    propSetFloat(args, "linespacing", linespacing.get, paAppend)
-  if margins.isSome:
-    propSetIntArray(args, "margins", margins.get)
-  if sar.isSome:
-    propSetFloat(args, "sar", sar.get, paAppend)
-  if style.isSome:
-    propSetData(args, "style", style.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if matrix.isSome:
-    propSetInt(args, "matrix", matrix.get, paAppend)
-  if matrix_s.isSome:
-    propSetData(args, "matrix_s", matrix_s.get, paAppend)
-  if transfer.isSome:
-    propSetInt(args, "transfer", transfer.get, paAppend)
-  if transfer_s.isSome:
-    propSetData(args, "transfer_s", transfer_s.get, paAppend)
-  if primaries.isSome:
-    propSetInt(args, "primaries", primaries.get, paAppend)
-  if primaries_s.isSome:
-    propSetData(args, "primaries_s", primaries_s.get, paAppend)
+  args.append("clip", clip)
+  args.append("file", file)
+  if charset.isSome: args.append("charset", charset.get)
+  if scale.isSome: args.append("scale", scale.get)
+  if debuglevel.isSome: args.append("debuglevel", debuglevel.get)
+  if fontdir.isSome: args.append("fontdir", fontdir.get)
+  if linespacing.isSome: args.append("linespacing", linespacing.get)
+  if margins.isSome: args.set("margins", margins.get)
+  if sar.isSome: args.append("sar", sar.get)
+  if style.isSome: args.append("style", style.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if matrix.isSome: args.append("matrix", matrix.get)
+  if matrix_s.isSome: args.append("matrix_s", matrix_s.get)
+  if transfer.isSome: args.append("transfer", transfer.get)
+  if transfer_s.isSome: args.append("transfer_s", transfer_s.get)
+  if primaries.isSome: args.append("primaries", primaries.get)
+  if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   return API.invoke(plug, "TextFile".cstring, args)        
 

@@ -3,74 +3,46 @@ proc Analyse*(vsmap:ptr VSMap; blksize=none(int); blksizev=none(int); levels=non
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var super = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "super", super, paAppend)
-  if blksize.isSome:
-    propSetInt(args, "blksize", blksize.get, paAppend)
-  if blksizev.isSome:
-    propSetInt(args, "blksizev", blksizev.get, paAppend)
-  if levels.isSome:
-    propSetInt(args, "levels", levels.get, paAppend)
-  if search.isSome:
-    propSetInt(args, "search", search.get, paAppend)
-  if searchparam.isSome:
-    propSetInt(args, "searchparam", searchparam.get, paAppend)
-  if pelsearch.isSome:
-    propSetInt(args, "pelsearch", pelsearch.get, paAppend)
-  if isb.isSome:
-    propSetInt(args, "isb", isb.get, paAppend)
-  if lambda.isSome:
-    propSetInt(args, "lambda", lambda.get, paAppend)
-  if chroma.isSome:
-    propSetInt(args, "chroma", chroma.get, paAppend)
-  if delta.isSome:
-    propSetInt(args, "delta", delta.get, paAppend)
-  if truemotion.isSome:
-    propSetInt(args, "truemotion", truemotion.get, paAppend)
-  if lsad.isSome:
-    propSetInt(args, "lsad", lsad.get, paAppend)
-  if plevel.isSome:
-    propSetInt(args, "plevel", plevel.get, paAppend)
-  if global.isSome:
-    propSetInt(args, "global", global.get, paAppend)
-  if pnew.isSome:
-    propSetInt(args, "pnew", pnew.get, paAppend)
-  if pzero.isSome:
-    propSetInt(args, "pzero", pzero.get, paAppend)
-  if pglobal.isSome:
-    propSetInt(args, "pglobal", pglobal.get, paAppend)
-  if overlap.isSome:
-    propSetInt(args, "overlap", overlap.get, paAppend)
-  if overlapv.isSome:
-    propSetInt(args, "overlapv", overlapv.get, paAppend)
-  if divide.isSome:
-    propSetInt(args, "divide", divide.get, paAppend)
-  if badsad.isSome:
-    propSetInt(args, "badsad", badsad.get, paAppend)
-  if badrange.isSome:
-    propSetInt(args, "badrange", badrange.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if meander.isSome:
-    propSetInt(args, "meander", meander.get, paAppend)
-  if trymany.isSome:
-    propSetInt(args, "trymany", trymany.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
-  if search_coarse.isSome:
-    propSetInt(args, "search_coarse", search_coarse.get, paAppend)
-  if dct.isSome:
-    propSetInt(args, "dct", dct.get, paAppend)
+  args.append("super", super)
+  if blksize.isSome: args.append("blksize", blksize.get)
+  if blksizev.isSome: args.append("blksizev", blksizev.get)
+  if levels.isSome: args.append("levels", levels.get)
+  if search.isSome: args.append("search", search.get)
+  if searchparam.isSome: args.append("searchparam", searchparam.get)
+  if pelsearch.isSome: args.append("pelsearch", pelsearch.get)
+  if isb.isSome: args.append("isb", isb.get)
+  if lambda.isSome: args.append("lambda", lambda.get)
+  if chroma.isSome: args.append("chroma", chroma.get)
+  if delta.isSome: args.append("delta", delta.get)
+  if truemotion.isSome: args.append("truemotion", truemotion.get)
+  if lsad.isSome: args.append("lsad", lsad.get)
+  if plevel.isSome: args.append("plevel", plevel.get)
+  if global.isSome: args.append("global", global.get)
+  if pnew.isSome: args.append("pnew", pnew.get)
+  if pzero.isSome: args.append("pzero", pzero.get)
+  if pglobal.isSome: args.append("pglobal", pglobal.get)
+  if overlap.isSome: args.append("overlap", overlap.get)
+  if overlapv.isSome: args.append("overlapv", overlapv.get)
+  if divide.isSome: args.append("divide", divide.get)
+  if badsad.isSome: args.append("badsad", badsad.get)
+  if badrange.isSome: args.append("badrange", badrange.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if meander.isSome: args.append("meander", meander.get)
+  if trymany.isSome: args.append("trymany", trymany.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if tff.isSome: args.append("tff", tff.get)
+  if search_coarse.isSome: args.append("search_coarse", search_coarse.get)
+  if dct.isSome: args.append("dct", dct.get)
 
   return API.invoke(plug, "Analyse".cstring, args)        
 
@@ -79,35 +51,28 @@ proc BlockFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  if num.isSome:
-    propSetInt(args, "num", num.get, paAppend)
-  if den.isSome:
-    propSetInt(args, "den", den.get, paAppend)
-  if mode.isSome:
-    propSetInt(args, "mode", mode.get, paAppend)
-  if ml.isSome:
-    propSetFloat(args, "ml", ml.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  if num.isSome: args.append("num", num.get)
+  if den.isSome: args.append("den", den.get)
+  if mode.isSome: args.append("mode", mode.get)
+  if ml.isSome: args.append("ml", ml.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "BlockFPS".cstring, args)        
 
@@ -116,34 +81,27 @@ proc Compensate*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; sc
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if scbehavior.isSome:
-    propSetInt(args, "scbehavior", scbehavior.get, paAppend)
-  if thsad.isSome:
-    propSetInt(args, "thsad", thsad.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if time.isSome:
-    propSetFloat(args, "time", time.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("vectors", vectors)
+  if scbehavior.isSome: args.append("scbehavior", scbehavior.get)
+  if thsad.isSome: args.append("thsad", thsad.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if time.isSome: args.append("time", time.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if tff.isSome: args.append("tff", tff.get)
 
   return API.invoke(plug, "Compensate".cstring, args)        
 
@@ -152,35 +110,28 @@ proc Degrain1*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  if thsad.isSome:
-    propSetInt(args, "thsad", thsad.get, paAppend)
-  if thsadc.isSome:
-    propSetInt(args, "thsadc", thsadc.get, paAppend)
-  if plane.isSome:
-    propSetInt(args, "plane", plane.get, paAppend)
-  if limit.isSome:
-    propSetInt(args, "limit", limit.get, paAppend)
-  if limitc.isSome:
-    propSetInt(args, "limitc", limitc.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  if thsad.isSome: args.append("thsad", thsad.get)
+  if thsadc.isSome: args.append("thsadc", thsadc.get)
+  if plane.isSome: args.append("plane", plane.get)
+  if limit.isSome: args.append("limit", limit.get)
+  if limitc.isSome: args.append("limitc", limitc.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Degrain1".cstring, args)        
 
@@ -189,37 +140,30 @@ proc Degrain2*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  propSetNode(args, "mvbw2", mvbw2, paAppend)
-  propSetNode(args, "mvfw2", mvfw2, paAppend)
-  if thsad.isSome:
-    propSetInt(args, "thsad", thsad.get, paAppend)
-  if thsadc.isSome:
-    propSetInt(args, "thsadc", thsadc.get, paAppend)
-  if plane.isSome:
-    propSetInt(args, "plane", plane.get, paAppend)
-  if limit.isSome:
-    propSetInt(args, "limit", limit.get, paAppend)
-  if limitc.isSome:
-    propSetInt(args, "limitc", limitc.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  args.append("mvbw2", mvbw2)
+  args.append("mvfw2", mvfw2)
+  if thsad.isSome: args.append("thsad", thsad.get)
+  if thsadc.isSome: args.append("thsadc", thsadc.get)
+  if plane.isSome: args.append("plane", plane.get)
+  if limit.isSome: args.append("limit", limit.get)
+  if limitc.isSome: args.append("limitc", limitc.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Degrain2".cstring, args)        
 
@@ -228,39 +172,32 @@ proc Degrain3*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  propSetNode(args, "mvbw2", mvbw2, paAppend)
-  propSetNode(args, "mvfw2", mvfw2, paAppend)
-  propSetNode(args, "mvbw3", mvbw3, paAppend)
-  propSetNode(args, "mvfw3", mvfw3, paAppend)
-  if thsad.isSome:
-    propSetInt(args, "thsad", thsad.get, paAppend)
-  if thsadc.isSome:
-    propSetInt(args, "thsadc", thsadc.get, paAppend)
-  if plane.isSome:
-    propSetInt(args, "plane", plane.get, paAppend)
-  if limit.isSome:
-    propSetInt(args, "limit", limit.get, paAppend)
-  if limitc.isSome:
-    propSetInt(args, "limitc", limitc.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  args.append("mvbw2", mvbw2)
+  args.append("mvfw2", mvfw2)
+  args.append("mvbw3", mvbw3)
+  args.append("mvfw3", mvfw3)
+  if thsad.isSome: args.append("thsad", thsad.get)
+  if thsadc.isSome: args.append("thsadc", thsadc.get)
+  if plane.isSome: args.append("plane", plane.get)
+  if limit.isSome: args.append("limit", limit.get)
+  if limitc.isSome: args.append("limitc", limitc.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Degrain3".cstring, args)        
 
@@ -269,41 +206,30 @@ proc DepanAnalyse*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; mask=none(ptr VSNodeR
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if mask.isSome:
-    propSetNode(args, "mask", mask.get, paAppend)
-  if zoom.isSome:
-    propSetInt(args, "zoom", zoom.get, paAppend)
-  if rot.isSome:
-    propSetInt(args, "rot", rot.get, paAppend)
-  if pixaspect.isSome:
-    propSetFloat(args, "pixaspect", pixaspect.get, paAppend)
-  if error.isSome:
-    propSetFloat(args, "error", error.get, paAppend)
-  if info.isSome:
-    propSetInt(args, "info", info.get, paAppend)
-  if wrong.isSome:
-    propSetFloat(args, "wrong", wrong.get, paAppend)
-  if zerow.isSome:
-    propSetFloat(args, "zerow", zerow.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
+  args.append("clip", clip)
+  args.append("vectors", vectors)
+  if mask.isSome: args.append("mask", mask.get)
+  if zoom.isSome: args.append("zoom", zoom.get)
+  if rot.isSome: args.append("rot", rot.get)
+  if pixaspect.isSome: args.append("pixaspect", pixaspect.get)
+  if error.isSome: args.append("error", error.get)
+  if info.isSome: args.append("info", info.get)
+  if wrong.isSome: args.append("wrong", wrong.get)
+  if zerow.isSome: args.append("zerow", zerow.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if tff.isSome: args.append("tff", tff.get)
 
   return API.invoke(plug, "DepanAnalyse".cstring, args)        
 
@@ -312,35 +238,27 @@ proc DepanCompensate*(vsmap:ptr VSMap, data:ptr VSNodeRef; offset=none(float); s
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "data", data, paAppend)
-  if offset.isSome:
-    propSetFloat(args, "offset", offset.get, paAppend)
-  if subpixel.isSome:
-    propSetInt(args, "subpixel", subpixel.get, paAppend)
-  if pixaspect.isSome:
-    propSetFloat(args, "pixaspect", pixaspect.get, paAppend)
-  if matchfields.isSome:
-    propSetInt(args, "matchfields", matchfields.get, paAppend)
-  if mirror.isSome:
-    propSetInt(args, "mirror", mirror.get, paAppend)
-  if blur.isSome:
-    propSetInt(args, "blur", blur.get, paAppend)
-  if info.isSome:
-    propSetInt(args, "info", info.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
+  args.append("clip", clip)
+  args.append("data", data)
+  if offset.isSome: args.append("offset", offset.get)
+  if subpixel.isSome: args.append("subpixel", subpixel.get)
+  if pixaspect.isSome: args.append("pixaspect", pixaspect.get)
+  if matchfields.isSome: args.append("matchfields", matchfields.get)
+  if mirror.isSome: args.append("mirror", mirror.get)
+  if blur.isSome: args.append("blur", blur.get)
+  if info.isSome: args.append("info", info.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if tff.isSome: args.append("tff", tff.get)
 
   return API.invoke(plug, "DepanCompensate".cstring, args)        
 
@@ -349,44 +267,31 @@ proc DepanEstimate*(vsmap:ptr VSMap; trust=none(float); winx=none(int); winy=non
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if trust.isSome:
-    propSetFloat(args, "trust", trust.get, paAppend)
-  if winx.isSome:
-    propSetInt(args, "winx", winx.get, paAppend)
-  if winy.isSome:
-    propSetInt(args, "winy", winy.get, paAppend)
-  if wleft.isSome:
-    propSetInt(args, "wleft", wleft.get, paAppend)
-  if wtop.isSome:
-    propSetInt(args, "wtop", wtop.get, paAppend)
-  if dxmax.isSome:
-    propSetInt(args, "dxmax", dxmax.get, paAppend)
-  if dymax.isSome:
-    propSetInt(args, "dymax", dymax.get, paAppend)
-  if zoommax.isSome:
-    propSetFloat(args, "zoommax", zoommax.get, paAppend)
-  if stab.isSome:
-    propSetFloat(args, "stab", stab.get, paAppend)
-  if pixaspect.isSome:
-    propSetFloat(args, "pixaspect", pixaspect.get, paAppend)
-  if info.isSome:
-    propSetInt(args, "info", info.get, paAppend)
-  if show.isSome:
-    propSetInt(args, "show", show.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
+  args.append("clip", clip)
+  if trust.isSome: args.append("trust", trust.get)
+  if winx.isSome: args.append("winx", winx.get)
+  if winy.isSome: args.append("winy", winy.get)
+  if wleft.isSome: args.append("wleft", wleft.get)
+  if wtop.isSome: args.append("wtop", wtop.get)
+  if dxmax.isSome: args.append("dxmax", dxmax.get)
+  if dymax.isSome: args.append("dymax", dymax.get)
+  if zoommax.isSome: args.append("zoommax", zoommax.get)
+  if stab.isSome: args.append("stab", stab.get)
+  if pixaspect.isSome: args.append("pixaspect", pixaspect.get)
+  if info.isSome: args.append("info", info.get)
+  if show.isSome: args.append("show", show.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if tff.isSome: args.append("tff", tff.get)
 
   return API.invoke(plug, "DepanEstimate".cstring, args)        
 
@@ -395,55 +300,37 @@ proc DepanStabilise*(vsmap:ptr VSMap, data:ptr VSNodeRef; cutoff=none(float); da
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "data", data, paAppend)
-  if cutoff.isSome:
-    propSetFloat(args, "cutoff", cutoff.get, paAppend)
-  if damping.isSome:
-    propSetFloat(args, "damping", damping.get, paAppend)
-  if initzoom.isSome:
-    propSetFloat(args, "initzoom", initzoom.get, paAppend)
-  if addzoom.isSome:
-    propSetInt(args, "addzoom", addzoom.get, paAppend)
-  if prev.isSome:
-    propSetInt(args, "prev", prev.get, paAppend)
-  if next.isSome:
-    propSetInt(args, "next", next.get, paAppend)
-  if mirror.isSome:
-    propSetInt(args, "mirror", mirror.get, paAppend)
-  if blur.isSome:
-    propSetInt(args, "blur", blur.get, paAppend)
-  if dxmax.isSome:
-    propSetFloat(args, "dxmax", dxmax.get, paAppend)
-  if dymax.isSome:
-    propSetFloat(args, "dymax", dymax.get, paAppend)
-  if zoommax.isSome:
-    propSetFloat(args, "zoommax", zoommax.get, paAppend)
-  if rotmax.isSome:
-    propSetFloat(args, "rotmax", rotmax.get, paAppend)
-  if subpixel.isSome:
-    propSetInt(args, "subpixel", subpixel.get, paAppend)
-  if pixaspect.isSome:
-    propSetFloat(args, "pixaspect", pixaspect.get, paAppend)
-  if fitlast.isSome:
-    propSetInt(args, "fitlast", fitlast.get, paAppend)
-  if tzoom.isSome:
-    propSetFloat(args, "tzoom", tzoom.get, paAppend)
-  if info.isSome:
-    propSetInt(args, "info", info.get, paAppend)
-  if `method`.isSome:
-    propSetInt(args, "method", `method`.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
+  args.append("clip", clip)
+  args.append("data", data)
+  if cutoff.isSome: args.append("cutoff", cutoff.get)
+  if damping.isSome: args.append("damping", damping.get)
+  if initzoom.isSome: args.append("initzoom", initzoom.get)
+  if addzoom.isSome: args.append("addzoom", addzoom.get)
+  if prev.isSome: args.append("prev", prev.get)
+  if next.isSome: args.append("next", next.get)
+  if mirror.isSome: args.append("mirror", mirror.get)
+  if blur.isSome: args.append("blur", blur.get)
+  if dxmax.isSome: args.append("dxmax", dxmax.get)
+  if dymax.isSome: args.append("dymax", dymax.get)
+  if zoommax.isSome: args.append("zoommax", zoommax.get)
+  if rotmax.isSome: args.append("rotmax", rotmax.get)
+  if subpixel.isSome: args.append("subpixel", subpixel.get)
+  if pixaspect.isSome: args.append("pixaspect", pixaspect.get)
+  if fitlast.isSome: args.append("fitlast", fitlast.get)
+  if tzoom.isSome: args.append("tzoom", tzoom.get)
+  if info.isSome: args.append("info", info.get)
+  if `method`.isSome: args.append("method", `method`.get)
+  if fields.isSome: args.append("fields", fields.get)
 
   return API.invoke(plug, "DepanStabilise".cstring, args)        
 
@@ -452,18 +339,18 @@ proc Finest*(vsmap:ptr VSMap; opt=none(int)):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var super = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "super", super, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("super", super)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Finest".cstring, args)        
 
@@ -472,32 +359,26 @@ proc Flow*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=non
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if time.isSome:
-    propSetFloat(args, "time", time.get, paAppend)
-  if mode.isSome:
-    propSetInt(args, "mode", mode.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("vectors", vectors)
+  if time.isSome: args.append("time", time.get)
+  if mode.isSome: args.append("mode", mode.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if tff.isSome: args.append("tff", tff.get)
 
   return API.invoke(plug, "Flow".cstring, args)        
 
@@ -506,29 +387,25 @@ proc FlowBlur*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  if blur.isSome:
-    propSetFloat(args, "blur", blur.get, paAppend)
-  if prec.isSome:
-    propSetInt(args, "prec", prec.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  if blur.isSome: args.append("blur", blur.get)
+  if prec.isSome: args.append("prec", prec.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "FlowBlur".cstring, args)        
 
@@ -537,35 +414,28 @@ proc FlowFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  if num.isSome:
-    propSetInt(args, "num", num.get, paAppend)
-  if den.isSome:
-    propSetInt(args, "den", den.get, paAppend)
-  if mask.isSome:
-    propSetInt(args, "mask", mask.get, paAppend)
-  if ml.isSome:
-    propSetFloat(args, "ml", ml.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  if num.isSome: args.append("num", num.get)
+  if den.isSome: args.append("den", den.get)
+  if mask.isSome: args.append("mask", mask.get)
+  if ml.isSome: args.append("ml", ml.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "FlowFPS".cstring, args)        
 
@@ -574,31 +444,26 @@ proc FlowInter*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:p
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "mvbw", mvbw, paAppend)
-  propSetNode(args, "mvfw", mvfw, paAppend)
-  if time.isSome:
-    propSetFloat(args, "time", time.get, paAppend)
-  if ml.isSome:
-    propSetFloat(args, "ml", ml.get, paAppend)
-  if blend.isSome:
-    propSetInt(args, "blend", blend.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("super", super)
+  args.append("mvbw", mvbw)
+  args.append("mvfw", mvfw)
+  if time.isSome: args.append("time", time.get)
+  if ml.isSome: args.append("ml", ml.get)
+  if blend.isSome: args.append("blend", blend.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "FlowInter".cstring, args)        
 
@@ -607,33 +472,26 @@ proc Mask*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; ml=none(float); gamma=none(fl
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if ml.isSome:
-    propSetFloat(args, "ml", ml.get, paAppend)
-  if gamma.isSome:
-    propSetFloat(args, "gamma", gamma.get, paAppend)
-  if kind.isSome:
-    propSetInt(args, "kind", kind.get, paAppend)
-  if time.isSome:
-    propSetFloat(args, "time", time.get, paAppend)
-  if ysc.isSome:
-    propSetInt(args, "ysc", ysc.get, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  args.append("vectors", vectors)
+  if ml.isSome: args.append("ml", ml.get)
+  if gamma.isSome: args.append("gamma", gamma.get)
+  if kind.isSome: args.append("kind", kind.get)
+  if time.isSome: args.append("time", time.get)
+  if ysc.isSome: args.append("ysc", ysc.get)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Mask".cstring, args)        
 
@@ -642,53 +500,36 @@ proc Recalculate*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thsad=none(int); smoot
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var super = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "super", super, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if thsad.isSome:
-    propSetInt(args, "thsad", thsad.get, paAppend)
-  if smooth.isSome:
-    propSetInt(args, "smooth", smooth.get, paAppend)
-  if blksize.isSome:
-    propSetInt(args, "blksize", blksize.get, paAppend)
-  if blksizev.isSome:
-    propSetInt(args, "blksizev", blksizev.get, paAppend)
-  if search.isSome:
-    propSetInt(args, "search", search.get, paAppend)
-  if searchparam.isSome:
-    propSetInt(args, "searchparam", searchparam.get, paAppend)
-  if lambda.isSome:
-    propSetInt(args, "lambda", lambda.get, paAppend)
-  if chroma.isSome:
-    propSetInt(args, "chroma", chroma.get, paAppend)
-  if truemotion.isSome:
-    propSetInt(args, "truemotion", truemotion.get, paAppend)
-  if pnew.isSome:
-    propSetInt(args, "pnew", pnew.get, paAppend)
-  if overlap.isSome:
-    propSetInt(args, "overlap", overlap.get, paAppend)
-  if overlapv.isSome:
-    propSetInt(args, "overlapv", overlapv.get, paAppend)
-  if divide.isSome:
-    propSetInt(args, "divide", divide.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if meander.isSome:
-    propSetInt(args, "meander", meander.get, paAppend)
-  if fields.isSome:
-    propSetInt(args, "fields", fields.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
-  if dct.isSome:
-    propSetInt(args, "dct", dct.get, paAppend)
+  args.append("super", super)
+  args.append("vectors", vectors)
+  if thsad.isSome: args.append("thsad", thsad.get)
+  if smooth.isSome: args.append("smooth", smooth.get)
+  if blksize.isSome: args.append("blksize", blksize.get)
+  if blksizev.isSome: args.append("blksizev", blksizev.get)
+  if search.isSome: args.append("search", search.get)
+  if searchparam.isSome: args.append("searchparam", searchparam.get)
+  if lambda.isSome: args.append("lambda", lambda.get)
+  if chroma.isSome: args.append("chroma", chroma.get)
+  if truemotion.isSome: args.append("truemotion", truemotion.get)
+  if pnew.isSome: args.append("pnew", pnew.get)
+  if overlap.isSome: args.append("overlap", overlap.get)
+  if overlapv.isSome: args.append("overlapv", overlapv.get)
+  if divide.isSome: args.append("divide", divide.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if meander.isSome: args.append("meander", meander.get)
+  if fields.isSome: args.append("fields", fields.get)
+  if tff.isSome: args.append("tff", tff.get)
+  if dct.isSome: args.append("dct", dct.get)
 
   return API.invoke(plug, "Recalculate".cstring, args)        
 
@@ -697,21 +538,20 @@ proc SCDetection*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thscd1=none(int); thsc
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetNode(args, "vectors", vectors, paAppend)
-  if thscd1.isSome:
-    propSetInt(args, "thscd1", thscd1.get, paAppend)
-  if thscd2.isSome:
-    propSetInt(args, "thscd2", thscd2.get, paAppend)
+  args.append("clip", clip)
+  args.append("vectors", vectors)
+  if thscd1.isSome: args.append("thscd1", thscd1.get)
+  if thscd2.isSome: args.append("thscd2", thscd2.get)
 
   return API.invoke(plug, "SCDetection".cstring, args)        
 
@@ -720,34 +560,26 @@ proc Super*(vsmap:ptr VSMap; hpad=none(int); vpad=none(int); pel=none(int); leve
   if plug == nil:
     raise newException(ValueError, "plugin \"mv\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if hpad.isSome:
-    propSetInt(args, "hpad", hpad.get, paAppend)
-  if vpad.isSome:
-    propSetInt(args, "vpad", vpad.get, paAppend)
-  if pel.isSome:
-    propSetInt(args, "pel", pel.get, paAppend)
-  if levels.isSome:
-    propSetInt(args, "levels", levels.get, paAppend)
-  if chroma.isSome:
-    propSetInt(args, "chroma", chroma.get, paAppend)
-  if sharp.isSome:
-    propSetInt(args, "sharp", sharp.get, paAppend)
-  if rfilter.isSome:
-    propSetInt(args, "rfilter", rfilter.get, paAppend)
-  if pelclip.isSome:
-    propSetNode(args, "pelclip", pelclip.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
+  args.append("clip", clip)
+  if hpad.isSome: args.append("hpad", hpad.get)
+  if vpad.isSome: args.append("vpad", vpad.get)
+  if pel.isSome: args.append("pel", pel.get)
+  if levels.isSome: args.append("levels", levels.get)
+  if chroma.isSome: args.append("chroma", chroma.get)
+  if sharp.isSome: args.append("sharp", sharp.get)
+  if rfilter.isSome: args.append("rfilter", rfilter.get)
+  if pelclip.isSome: args.append("pelclip", pelclip.get)
+  if opt.isSome: args.append("opt", opt.get)
 
   return API.invoke(plug, "Super".cstring, args)        
 

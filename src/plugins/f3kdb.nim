@@ -3,54 +3,36 @@ proc Deband*(vsmap:ptr VSMap; range=none(int); y=none(int); cb=none(int); cr=non
   if plug == nil:
     raise newException(ValueError, "plugin \"f3kdb\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if range.isSome:
-    propSetInt(args, "range", range.get, paAppend)
-  if y.isSome:
-    propSetInt(args, "y", y.get, paAppend)
-  if cb.isSome:
-    propSetInt(args, "cb", cb.get, paAppend)
-  if cr.isSome:
-    propSetInt(args, "cr", cr.get, paAppend)
-  if grainy.isSome:
-    propSetInt(args, "grainy", grainy.get, paAppend)
-  if grainc.isSome:
-    propSetInt(args, "grainc", grainc.get, paAppend)
-  if sample_mode.isSome:
-    propSetInt(args, "sample_mode", sample_mode.get, paAppend)
-  if seed.isSome:
-    propSetInt(args, "seed", seed.get, paAppend)
-  if blur_first.isSome:
-    propSetInt(args, "blur_first", blur_first.get, paAppend)
-  if dynamic_grain.isSome:
-    propSetInt(args, "dynamic_grain", dynamic_grain.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if dither_algo.isSome:
-    propSetInt(args, "dither_algo", dither_algo.get, paAppend)
-  if keep_tv_range.isSome:
-    propSetInt(args, "keep_tv_range", keep_tv_range.get, paAppend)
-  if output_depth.isSome:
-    propSetInt(args, "output_depth", output_depth.get, paAppend)
-  if random_algo_ref.isSome:
-    propSetInt(args, "random_algo_ref", random_algo_ref.get, paAppend)
-  if random_algo_grain.isSome:
-    propSetInt(args, "random_algo_grain", random_algo_grain.get, paAppend)
-  if random_param_ref.isSome:
-    propSetFloat(args, "random_param_ref", random_param_ref.get, paAppend)
-  if random_param_grain.isSome:
-    propSetFloat(args, "random_param_grain", random_param_grain.get, paAppend)
-  if preset.isSome:
-    propSetData(args, "preset", preset.get, paAppend)
+  args.append("clip", clip)
+  if range.isSome: args.append("range", range.get)
+  if y.isSome: args.append("y", y.get)
+  if cb.isSome: args.append("cb", cb.get)
+  if cr.isSome: args.append("cr", cr.get)
+  if grainy.isSome: args.append("grainy", grainy.get)
+  if grainc.isSome: args.append("grainc", grainc.get)
+  if sample_mode.isSome: args.append("sample_mode", sample_mode.get)
+  if seed.isSome: args.append("seed", seed.get)
+  if blur_first.isSome: args.append("blur_first", blur_first.get)
+  if dynamic_grain.isSome: args.append("dynamic_grain", dynamic_grain.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if dither_algo.isSome: args.append("dither_algo", dither_algo.get)
+  if keep_tv_range.isSome: args.append("keep_tv_range", keep_tv_range.get)
+  if output_depth.isSome: args.append("output_depth", output_depth.get)
+  if random_algo_ref.isSome: args.append("random_algo_ref", random_algo_ref.get)
+  if random_algo_grain.isSome: args.append("random_algo_grain", random_algo_grain.get)
+  if random_param_ref.isSome: args.append("random_param_ref", random_param_ref.get)
+  if random_param_grain.isSome: args.append("random_param_grain", random_param_grain.get)
+  if preset.isSome: args.append("preset", preset.get)
 
   return API.invoke(plug, "Deband".cstring, args)        
 

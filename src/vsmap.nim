@@ -23,6 +23,7 @@ A map’s contents can be retrieved and modified using a number of functions, al
 A map’s contents can be erased with clearMap().
 ]##
 import strformat
+import options
 
 type
   Map* = object
@@ -217,7 +218,8 @@ proc append(vsmap:ptr VSMap, key:string, data:ptr VSFuncRef) =
 
 proc set(vsmap:ptr VSMap, key:string, data:seq[int]) =
   ## sets an integer sequence to a key
-  let ret = API.propSetIntArray(vsmap, key.cstring, unsafeAddr(data[0]), data.len.cint)
+  let p = cast[ptr int64](unsafeAddr(data[0]))
+  let ret = API.propSetIntArray(vsmap, key.cstring, p, data.len.cint)
   if ret == 1:
     raise newException(ValueError, "trying to set an integer sequence to a property with the wrong type")
 
@@ -229,126 +231,13 @@ proc set(vsmap:ptr VSMap, key:string, data:seq[float]) =
 
 
 #--- The following should be removed in the future
+#[
 proc propSetData*(vsmap:ptr VSMap, key:string, data:string, append:VSPropAppendMode) =
   ## Appends/Replace/Touch a string to a particular key in a map.
   let ret = API.propSetData(vsmap, key.cstring, data.cstring, data.len.cint, append.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append to a property with the wrong type.")
-
-proc propSetInt*(vsmap:ptr VSMap, key:string, val:int, append:VSPropAppendMode) =
-  ## Adds a property to a map.
-  let ret = API.propSetInt(vsmap, key.cstring, val.cint, append.cint)
-  if ret == 1:
-    raise newException(ValueError, "trying to append to a property with the wrong type" )
-
-
-proc propSetIntArray*(vsmap:ptr VSMap, key:string, arr:seq[int]) = #seq[int]) =
-  ##[
-  Adds an array of integers to a map. Use this function if there are a lot of numbers to add, because it is faster than calling propSetInt() in a loop.
- 
-  If map already contains a property with this key, that property will be overwritten and all old values will be lost.
- 
-  key
-         Name of the property. Alphanumeric characters and the underscore may be used.
-  i
-            Pointer to the first element of the array to store.
-  size
-     Number of integers to read from the array. It can be 0, in which case no integers are read from the array, and the property will be created empty.
-
-  Returns 0 on success, or 1 if size is negative.
-  ]##
-  let p = cast[ptr int64](unsafeAddr(arr[0]))
-  let ret = API.propSetIntArray(vsmap, key.cstring, p, arr.len.cint)
-  if ret == 1:
-    raise newException(ValueError, "Size is negative")
-
-
-proc propSetFloat*(vsmap:ptr VSMap, key:string, val:float, append:VSPropAppendMode) =
-  ##[
-  Adds a property to a map.
-  
-  Multiple values can be associated with one key, but they must all be the same type.
-  
-  key
-    Name of the property. Alphanumeric characters and the underscore may be used.
-  d
-    Value to store.
-  append
-    One of VSPropAppendMode.
-
-  Returns 0 on success, or 1 if trying to append to a property with the wrong type.
-  ]##
-  let ret = API.propSetFloat(vsmap, key.cstring, val.cdouble, append.cint)
-  if ret == 1:
-    raise newException(ValueError, "trying to append to a property with the wrong type" )
-
-
-
-proc propSetFloatArray*(vsmap:ptr VSMap, key:string, val:seq[float]) =
-#[
-        Adds an array of floating point numbers to a map. Use this function if there are a lot of numbers to add, because it is faster than calling propSetFloat() in a loop.
-        If map already contains a property with this key, that property will be overwritten and all old values will be lost.
-        key
-            Name of the property. Alphanumeric characters and the underscore may be used.
-        d
-            Pointer to the first element of the array to store.
-        size
-            Number of floating point numbers to read from the array. It can be 0, in which case no numbers are read from the array, and the property will be created empty.
-        Returns 0 on success, or 1 if size is negative.
-        This function was introduced in API R3.1 (VapourSynth R26).
 ]#
-  let p = cast[ptr cdouble](unsafeAddr(val[0]))
-  let ret = API.propSetFloatArray(vsmap, key.cstring, p, val.len.cint)
-  if ret == 1:
-    raise newException(ValueError, "size is negative")
-
-
-proc propSetNode*(vsmap:ptr VSMap, key:string, node:ptr VSNodeRef, append:VSPropAppendMode) =
-  ##[
-        Adds a property to a map.
-        Multiple values can be associated with one key, but they must all be the same type.
-        key
-            Name of the property. Alphanumeric characters and the underscore may be used.
-        node
-            Value to store.
-            This function will increase the node’s reference count, so the pointer should be freed when no longer needed.
-  ]##
-  let ret = API.propSetNode(vsmap, key.cstring, node, append.cint)
-  if ret == 1:
-    raise newException(ValueError, "trying to append to a property with the wrong type")
-
-proc propSetFrame*(vsmap:ptr VSMap, key:string, frame:ptr VSFrameRef, append:VSPropAppendMode) =
-  ##[
-    Adds a property to a map.
-    Multiple values can be associated with one key, but they must all be the same type.
-    key
-        Name of the property. Alphanumeric characters and the underscore may be used.
-    f
-        Value to store.
-        This function will increase the frame’s reference count, so the pointer should be freed when no longer needed.
-    append
-        One of VSPropAppendMode.
-  ]##
-  let ret = API.propSetFrame(vsmap, key.cstring, frame, append.cint)
-  if ret == 1:
-    raise newException(ValueError, "trying to append to a property with the wrong type")
-
-
-proc propSetFunc*(vsmap:ptr VSMap, key:string, `func`:ptr VSFuncRef, append:VSPropAppendMode) =
-  ##[
-  Adds a property to a map.
-        Multiple values can be associated with one key, but they must all be the same type.
-        key
-            Name of the property. Alphanumeric characters and the underscore may be used.
-        func
-            Value to store.
-            This function will increase the function’s reference count, so the pointer should be freed when no longer needed.
-        append
-            One of VSPropAppendMode.
-  ]##
-  let ret = API.propSetFunc(vsmap, key.cstring, `func`, append.cint)
-  if ret == 1:
-    raise newException(ValueError, "trying to append to a property with the wrong type")
 
 #[
 # ===================================
@@ -424,7 +313,8 @@ proc get(vsmap:ptr VSMap, idx:int):Tints|Tfloats|Tstrings|Tnodes|Tframes|Tfuncti
   else: # ptUnset
     return (key, nil)
 ]# 
-proc `[]`*(vsmap:ptr VSMap, idx:int):Map =
+#proc `[]`*(vsmap:ptr VSMap, idx:int):Map =
+proc get*(vsmap:ptr VSMap, idx:int):Map =  
   # This enables getting item at position `idx` from an vsmap
   let key = propGetKey(vsmap, idx)
   let t = propGetType(vsmap, key)
@@ -477,4 +367,66 @@ proc `[]`*(vsmap:ptr VSMap, idx:int):Map =
 proc toSeq*(vsmap:ptr VSMap):seq[ Map ] =
   ## Reads from VSMap into a sequence.
   for idx in 0..<vsmap.len:
-    result &= vsmap[idx]
+    result &= vsmap.get(idx)
+
+#[
+proc `[]`*(vsmap:ptr VSMap, idx:int;clip:int=0):vsmap =
+  ## Returns something
+  # Check the that the first item in the vsmap is a Node type
+  let key = propGetKey(vsmap, 0)
+  let t = propGetType(vsmap, key)
+  if t != ptNode:
+    raise newException(ValueError, "slicing on vsmap only works for node")  
+
+  # Get all nodes
+  let nNodes = vsmap.propNumElements(key)
+
+  if clip > nNodes -1:
+     raise newException(ValueError, &"referring to clip number={clip} when there are only {nNodes}")
+
+  # Load the nodes available in 
+  var elems:seq[ptr VSNodeRef]
+  for i in 0..<nElems:
+    elems &= vsmap.propGetNode(key,i)  
+  val.nodes = elems  
+]#
+
+#iterator span*(vsmap: ptr VSMap; first, last: Natural): char {.inline.} =
+#  assert last < vsmap.len
+#  var idx: int = first
+#  while i <= last:
+#    yield a[i]
+#    inc(i)
+
+proc getClip(vsmap:ptr VSMap, clip:Natural):ptr VSMap =
+  ## Retrieves one specific clip when there are many available
+  let key = propGetKey(vsmap, 0)
+  let t   = propGetType(vsmap, key)
+  assert t == ptNode
+  #if t != ptNode:
+  #  raise newException(ValueError, "slicing on vsmap only works for node") 
+  # How many nodes?
+  let nNodes = vsmap.propNumElements(key)
+  assert clip < nNodes - 1
+
+  var new = createMap()
+  let node = vsmap.propGetNode(key,0) 
+  new.append("clip", node)
+  return new
+
+proc `[]`*(vsmap:ptr VSMap;hs:HSlice):ptr VSMap =  #;clip:Natural=0
+  ## vsmap[1..3] (returns a clip -vsmap- including only those frames)
+  ## Only works on one clip
+  let key = propGetKey(vsmap, 0)
+  let t   = propGetType(vsmap, key)
+  assert t == ptNode
+
+  # How many nodes?
+  let nNodes = vsmap.propNumElements(key)
+  assert nNodes == 1
+
+  result = vsmap.Trim(some(hs.a),some(hs.b))
+    
+
+# SelectEvery
+# Splice

@@ -3,6 +3,7 @@ proc GetLogLevel*():ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
 
   return API.invoke(plug, "GetLogLevel".cstring, args)        
@@ -12,22 +13,16 @@ proc Index*(source:string; cachefile=none(string); indextracks=none(seq[int]); d
   if plug == nil:
     raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetData(args, "source", source, paAppend)
-  if cachefile.isSome:
-    propSetData(args, "cachefile", cachefile.get, paAppend)
-  if indextracks.isSome:
-    propSetIntArray(args, "indextracks", indextracks.get)
-  if dumptracks.isSome:
-    propSetIntArray(args, "dumptracks", dumptracks.get)
-  if audiofile.isSome:
-    propSetData(args, "audiofile", audiofile.get, paAppend)
-  if errorhandling.isSome:
-    propSetInt(args, "errorhandling", errorhandling.get, paAppend)
-  if overwrite.isSome:
-    propSetInt(args, "overwrite", overwrite.get, paAppend)
-  if demuxer.isSome:
-    propSetData(args, "demuxer", demuxer.get, paAppend)
+  args.append("source", source)
+  if cachefile.isSome: args.append("cachefile", cachefile.get)
+  if indextracks.isSome: args.set("indextracks", indextracks.get)
+  if dumptracks.isSome: args.set("dumptracks", dumptracks.get)
+  if audiofile.isSome: args.append("audiofile", audiofile.get)
+  if errorhandling.isSome: args.append("errorhandling", errorhandling.get)
+  if overwrite.isSome: args.append("overwrite", overwrite.get)
+  if demuxer.isSome: args.append("demuxer", demuxer.get)
 
   return API.invoke(plug, "Index".cstring, args)        
 
@@ -36,8 +31,9 @@ proc SetLogLevel*(level:int):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetInt(args, "level", level, paAppend)
+  args.append("level", level)
 
   return API.invoke(plug, "SetLogLevel".cstring, args)        
 
@@ -46,34 +42,22 @@ proc Source*(source:string; track=none(int); cache=none(int); cachefile=none(str
   if plug == nil:
     raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetData(args, "source", source, paAppend)
-  if track.isSome:
-    propSetInt(args, "track", track.get, paAppend)
-  if cache.isSome:
-    propSetInt(args, "cache", cache.get, paAppend)
-  if cachefile.isSome:
-    propSetData(args, "cachefile", cachefile.get, paAppend)
-  if fpsnum.isSome:
-    propSetInt(args, "fpsnum", fpsnum.get, paAppend)
-  if fpsden.isSome:
-    propSetInt(args, "fpsden", fpsden.get, paAppend)
-  if threads.isSome:
-    propSetInt(args, "threads", threads.get, paAppend)
-  if timecodes.isSome:
-    propSetData(args, "timecodes", timecodes.get, paAppend)
-  if seekmode.isSome:
-    propSetInt(args, "seekmode", seekmode.get, paAppend)
-  if width.isSome:
-    propSetInt(args, "width", width.get, paAppend)
-  if height.isSome:
-    propSetInt(args, "height", height.get, paAppend)
-  if resizer.isSome:
-    propSetData(args, "resizer", resizer.get, paAppend)
-  if format.isSome:
-    propSetInt(args, "format", format.get, paAppend)
-  if alpha.isSome:
-    propSetInt(args, "alpha", alpha.get, paAppend)
+  args.append("source", source)
+  if track.isSome: args.append("track", track.get)
+  if cache.isSome: args.append("cache", cache.get)
+  if cachefile.isSome: args.append("cachefile", cachefile.get)
+  if fpsnum.isSome: args.append("fpsnum", fpsnum.get)
+  if fpsden.isSome: args.append("fpsden", fpsden.get)
+  if threads.isSome: args.append("threads", threads.get)
+  if timecodes.isSome: args.append("timecodes", timecodes.get)
+  if seekmode.isSome: args.append("seekmode", seekmode.get)
+  if width.isSome: args.append("width", width.get)
+  if height.isSome: args.append("height", height.get)
+  if resizer.isSome: args.append("resizer", resizer.get)
+  if format.isSome: args.append("format", format.get)
+  if alpha.isSome: args.append("alpha", alpha.get)
 
   return API.invoke(plug, "Source".cstring, args)        
 
@@ -82,6 +66,7 @@ proc Version*():ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
 
   return API.invoke(plug, "Version".cstring, args)        

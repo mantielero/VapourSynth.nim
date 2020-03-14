@@ -68,97 +68,122 @@ proc gen_functions():seq[ tuple[key:string,source:string] ] =
       var firstArg = ""
       
       var isFirstArg = true
+
+      # Lets create the function arguments.
       for arg in f.args:
-        if flag:
+        # This is to add a "," or a ";" between each function argument
+        if flag:  # This flag is in order to avoid adding "," or ";" for the first argument
           if arg.len == 2:
             args &= ", "
           elif arg.len == 3:
             args &= "; "        
-        flag = true      
+        flag = true
+
+        # Get the appropriate Nim type from the VapourSynth type
         let newtype = convertType(arg[1])
+        
+        # If the argument is a Nim keyword, then enclused between "`" symbol.
         var argName = arg[0]
         if argName in KEYWORDS:
           argName = &"`{argName}`"
 
-        if arg.len == 2:
+        # Create the arguments for the Nim function
+        if arg.len == 2:    # For the mandatory argument: name:type
           args &= &"{argName}:{newtype}"
-        elif arg.len == 3:
+        elif arg.len == 3:  # For the optional argument: name:type:opc 
           args &= &"{argName}=none({newtype})"
 
-        
+        # For the cases where the first argument is clip, we transform it
+        # into a VSMap, to allow chaining calls
         var isClip = false
         if newtype in ["ptr VSNodeRef", "seq[ptr VSNodeRef]"] and isFirstArg:
           args="vsmap:ptr VSMap"
           isClip = true
         
         if isClip:
+          firstArg &= "\n  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence\n"
+          firstArg &= "  if tmpSeq.len == 0:\n"            
+          firstArg &= "    raise newException(ValueError, \"the vsmap should contain at least one item\")\n"          
+
+          # Just one clip
           if newtype == "ptr VSNodeRef":
-            
-            firstArg &= "\n  let tmpSeq = vsmap.toSeq\n"
-            firstArg &= "  if tmpSeq.len != 1:\n"            
-            firstArg &= "    raise newException(ValueError, \"the vsmap should contain at least one item\")\n"
             firstArg &= "  if tmpSeq[0].nodes.len != 1:\n"
             firstArg &= "    raise newException(ValueError, \"the vsmap should contain one node\")\n"
             if arg.len == 2:
-              firstArg &= &"  var {argName} = tmpSeq[0].nodes[0]\n\n"
+              firstArg &= &"  var {argName} = tmpSeq[0].nodes[0]\n\n" 
             elif arg.len == 3:
               firstArg &= &"  var {argName} = some(tmpSeq[0].nodes[0])\n\n"
-
-          elif newtype == "seq[ptr VSNodeRef]":
-            #echo "ok ", newtype            
-            firstArg &= "\n  let tmpSeq = vsmap.toSeq\n"
-            firstArg &= "  if tmpSeq.len != 1:\n"            
-            firstArg &= "    raise newException(ValueError, \"the vsmap should contain one item\")\n"
+          
+          # For a sequence of clips in the first argument
+          elif newtype == "seq[ptr VSNodeRef]":           
             firstArg &= "  if tmpSeq[0].nodes.len >= 1:\n"
             firstArg &= "    raise newException(ValueError, \"the vsmap should contain a seq with nodes\")\n"
             if arg.len == 2:
               firstArg &= &"  var {argName} = tmpSeq[0].nodes\n\n"            
             elif arg.len == 3:
               firstArg &= &"  var {argName} = some(tmpSeq[0].nodes)\n\n"              
+        
         # We create the map
+        #[
         let funcName = case newtype:
-                       of "int":
-                         "propSetInt"
-                       of "seq[int]":
-                         "propSetIntArray"
-                       of "float":
-                         "propSetFloat"
-                       of "seq[float]":
-                         "propSetFloatArray"
-                       of "string":
-                         "propSetData"
-                       of "seq[string]":
-                         "propSetData"
-                       of "ptr VSNodeRef", "seq[ptr VSNodeRef]":
-                         "propSetNode"
-                       of "ptr VSFrameRef", "seq[ptr VSFrameRef]":
-                         "propSetFrame"                          
-                       of "ptr VSFuncRef", "seq[ptr VSFuncRef]":
-                         "propSetFunc" 
+                       of "int", "string", "float", "ptr VSNodeRef", "ptr VSFrameRef","ptr VSFuncRef", "seq[string]", "seq[ptr VSNodeRef]", "seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]":
+                        "append"
+                       of "seq[int]", "seq[float]":
+                         "set"
                        else:
                          ""
-        
-        if newtype in @["seq[string]","seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 2:
+        ]#
+        let funcName = case newtype:
+                       of "seq[int]", "seq[float]":
+                         "set"
+                       else:
+                         "append"
+        if newtype[0..2] == "seq" and funcName != "set":
+          if arg.len == 2:
+            map &= &"  for item in {argName}:\n"
+            map &= &"    args.{funcName}(\"{arg[0]}\", item)\n"     
+          elif arg.len == 3:
+            map &= &"  if {argName}.isSome:\n"
+            map &= &"    for item in {argName}.get:\n"
+            map &= &"      args.{funcName}(\"{arg[0]}\", item)\n"  
+        else: 
+          if arg.len == 2:
+            map &= &"  args.{funcName}(\"{arg[0]}\", {argName})\n"     
+          elif arg.len == 3:
+            map &= &"  if {argName}.isSome: args.{funcName}(\"{arg[0]}\", {argName}.get)\n"             
+        #[        
+        if newtype in @["seq[string]", "seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 2:
           map &= &"  for item in {argName}:\n"
-          map &= &"    {funcName}(args, \"{arg[0]}\", item, paAppend)\n"
-        elif newtype in @["seq[string]","seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 3:
+          map &= &"    {funcName}(args, \"{arg[0]}\", item)\n"     
+        elif newtype in @["seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 3:
           map &= &"  if {argName}.isSome:\n"
           map &= &"    for item in {argName}.get:\n"
           map &= &"      {funcName}(args, \"{arg[0]}\", item, paAppend)\n"  
-        else:
+        ]#
+        #elif newtype in @["seq[string]"]:
+        #  map &= &"  if {argName}.isSome:\n"
+        #  map &= &"    for item in {argName}.get:\n"
+        #  map &= &"      append(args, \"{arg[0]}\", item)\n"           
+        #[
+        else:  # int, float, string, ... # Not sequence cases
           if funcName in @["propSetIntArray", "propSetFloatArray"]:
             if arg.len == 2:
               map &= &"  {funcName}(args, \"{arg[0]}\", {argName})\n"
             elif arg.len == 3:
               map &= &"  if {argName}.isSome:\n"   # if track.isSome:
               map &= &"    {funcName}(args, \"{arg[0]}\", {argName}.get)\n"        
+          elif funcName in @["append"]:
+            if arg.len == 2:
+              map &= &"  args.append(\"{arg[0]}\", {argName})\n"
+            elif arg.len == 3:
+              map &= &"  if {argName}.isSome: args.append(\"{arg[0]}\", {argName}.get)\n"             
           else:
             if arg.len == 2:
               map &= &"  {funcName}(args, \"{arg[0]}\", {argName}, paAppend)\n"
             elif arg.len == 3:
               map &= &"  if {argName}.isSome:\n"   # if track.isSome:
               map &= &"    {funcName}(args, \"{arg[0]}\", {argName}.get, paAppend)\n"
-
+        ]#
         isFirstArg = false # deactivate the flag
 
       source &= fmt"""
@@ -167,6 +192,7 @@ proc {f.name}*({args}):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"{plugin.id}\" not installed properly in your computer")
 {firstArg}
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
 {map}
   return API.invoke(plug, "{f.name}".cstring, args)        

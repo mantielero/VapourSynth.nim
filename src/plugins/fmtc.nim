@@ -3,42 +3,30 @@ proc bitdepth*(vsmap:ptr VSMap; csp=none(int); bits=none(int); flt=none(int); pl
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if csp.isSome:
-    propSetInt(args, "csp", csp.get, paAppend)
-  if bits.isSome:
-    propSetInt(args, "bits", bits.get, paAppend)
-  if flt.isSome:
-    propSetInt(args, "flt", flt.get, paAppend)
-  if planes.isSome:
-    propSetIntArray(args, "planes", planes.get)
-  if fulls.isSome:
-    propSetInt(args, "fulls", fulls.get, paAppend)
-  if fulld.isSome:
-    propSetInt(args, "fulld", fulld.get, paAppend)
-  if dmode.isSome:
-    propSetInt(args, "dmode", dmode.get, paAppend)
-  if ampo.isSome:
-    propSetFloat(args, "ampo", ampo.get, paAppend)
-  if ampn.isSome:
-    propSetFloat(args, "ampn", ampn.get, paAppend)
-  if dyn.isSome:
-    propSetInt(args, "dyn", dyn.get, paAppend)
-  if staticnoise.isSome:
-    propSetInt(args, "staticnoise", staticnoise.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
-  if patsize.isSome:
-    propSetInt(args, "patsize", patsize.get, paAppend)
+  args.append("clip", clip)
+  if csp.isSome: args.append("csp", csp.get)
+  if bits.isSome: args.append("bits", bits.get)
+  if flt.isSome: args.append("flt", flt.get)
+  if planes.isSome: args.set("planes", planes.get)
+  if fulls.isSome: args.append("fulls", fulls.get)
+  if fulld.isSome: args.append("fulld", fulld.get)
+  if dmode.isSome: args.append("dmode", dmode.get)
+  if ampo.isSome: args.append("ampo", ampo.get)
+  if ampn.isSome: args.append("ampn", ampn.get)
+  if dyn.isSome: args.append("dyn", dyn.get)
+  if staticnoise.isSome: args.append("staticnoise", staticnoise.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
+  if patsize.isSome: args.append("patsize", patsize.get)
 
   return API.invoke(plug, "bitdepth".cstring, args)        
 
@@ -47,20 +35,19 @@ proc histluma*(vsmap:ptr VSMap; full=none(int); amp=none(int)):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if full.isSome:
-    propSetInt(args, "full", full.get, paAppend)
-  if amp.isSome:
-    propSetInt(args, "amp", amp.get, paAppend)
+  args.append("clip", clip)
+  if full.isSome: args.append("full", full.get)
+  if amp.isSome: args.append("amp", amp.get)
 
   return API.invoke(plug, "histluma".cstring, args)        
 
@@ -69,38 +56,28 @@ proc matrix*(vsmap:ptr VSMap; mat=none(string); mats=none(string); matd=none(str
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if mat.isSome:
-    propSetData(args, "mat", mat.get, paAppend)
-  if mats.isSome:
-    propSetData(args, "mats", mats.get, paAppend)
-  if matd.isSome:
-    propSetData(args, "matd", matd.get, paAppend)
-  if fulls.isSome:
-    propSetInt(args, "fulls", fulls.get, paAppend)
-  if fulld.isSome:
-    propSetInt(args, "fulld", fulld.get, paAppend)
-  if coef.isSome:
-    propSetFloatArray(args, "coef", coef.get)
-  if csp.isSome:
-    propSetInt(args, "csp", csp.get, paAppend)
-  if col_fam.isSome:
-    propSetInt(args, "col_fam", col_fam.get, paAppend)
-  if bits.isSome:
-    propSetInt(args, "bits", bits.get, paAppend)
-  if singleout.isSome:
-    propSetInt(args, "singleout", singleout.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
+  args.append("clip", clip)
+  if mat.isSome: args.append("mat", mat.get)
+  if mats.isSome: args.append("mats", mats.get)
+  if matd.isSome: args.append("matd", matd.get)
+  if fulls.isSome: args.append("fulls", fulls.get)
+  if fulld.isSome: args.append("fulld", fulld.get)
+  if coef.isSome: args.set("coef", coef.get)
+  if csp.isSome: args.append("csp", csp.get)
+  if col_fam.isSome: args.append("col_fam", col_fam.get)
+  if bits.isSome: args.append("bits", bits.get)
+  if singleout.isSome: args.append("singleout", singleout.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   return API.invoke(plug, "matrix".cstring, args)        
 
@@ -109,24 +86,21 @@ proc matrix2020cl*(vsmap:ptr VSMap; full=none(int); csp=none(int); bits=none(int
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if full.isSome:
-    propSetInt(args, "full", full.get, paAppend)
-  if csp.isSome:
-    propSetInt(args, "csp", csp.get, paAppend)
-  if bits.isSome:
-    propSetInt(args, "bits", bits.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
+  args.append("clip", clip)
+  if full.isSome: args.append("full", full.get)
+  if csp.isSome: args.append("csp", csp.get)
+  if bits.isSome: args.append("bits", bits.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   return API.invoke(plug, "matrix2020cl".cstring, args)        
 
@@ -135,16 +109,17 @@ proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
+  args.append("clip", clip)
 
   return API.invoke(plug, "nativetostack16".cstring, args)        
 
@@ -153,38 +128,28 @@ proc primaries*(vsmap:ptr VSMap; rs=none(seq[float]); gs=none(seq[float]); bs=no
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if rs.isSome:
-    propSetFloatArray(args, "rs", rs.get)
-  if gs.isSome:
-    propSetFloatArray(args, "gs", gs.get)
-  if bs.isSome:
-    propSetFloatArray(args, "bs", bs.get)
-  if ws.isSome:
-    propSetFloatArray(args, "ws", ws.get)
-  if rd.isSome:
-    propSetFloatArray(args, "rd", rd.get)
-  if gd.isSome:
-    propSetFloatArray(args, "gd", gd.get)
-  if bd.isSome:
-    propSetFloatArray(args, "bd", bd.get)
-  if wd.isSome:
-    propSetFloatArray(args, "wd", wd.get)
-  if prims.isSome:
-    propSetData(args, "prims", prims.get, paAppend)
-  if primd.isSome:
-    propSetData(args, "primd", primd.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
+  args.append("clip", clip)
+  if rs.isSome: args.set("rs", rs.get)
+  if gs.isSome: args.set("gs", gs.get)
+  if bs.isSome: args.set("bs", bs.get)
+  if ws.isSome: args.set("ws", ws.get)
+  if rd.isSome: args.set("rd", rd.get)
+  if gd.isSome: args.set("gd", gd.get)
+  if bd.isSome: args.set("bd", bd.get)
+  if wd.isSome: args.set("wd", wd.get)
+  if prims.isSome: args.append("prims", prims.get)
+  if primd.isSome: args.append("primd", primd.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   return API.invoke(plug, "primaries".cstring, args)        
 
@@ -193,115 +158,71 @@ proc resample*(vsmap:ptr VSMap; w=none(int); h=none(int); sx=none(seq[float]); s
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if w.isSome:
-    propSetInt(args, "w", w.get, paAppend)
-  if h.isSome:
-    propSetInt(args, "h", h.get, paAppend)
-  if sx.isSome:
-    propSetFloatArray(args, "sx", sx.get)
-  if sy.isSome:
-    propSetFloatArray(args, "sy", sy.get)
-  if sw.isSome:
-    propSetFloatArray(args, "sw", sw.get)
-  if sh.isSome:
-    propSetFloatArray(args, "sh", sh.get)
-  if scale.isSome:
-    propSetFloat(args, "scale", scale.get, paAppend)
-  if scaleh.isSome:
-    propSetFloat(args, "scaleh", scaleh.get, paAppend)
-  if scalev.isSome:
-    propSetFloat(args, "scalev", scalev.get, paAppend)
+  args.append("clip", clip)
+  if w.isSome: args.append("w", w.get)
+  if h.isSome: args.append("h", h.get)
+  if sx.isSome: args.set("sx", sx.get)
+  if sy.isSome: args.set("sy", sy.get)
+  if sw.isSome: args.set("sw", sw.get)
+  if sh.isSome: args.set("sh", sh.get)
+  if scale.isSome: args.append("scale", scale.get)
+  if scaleh.isSome: args.append("scaleh", scaleh.get)
+  if scalev.isSome: args.append("scalev", scalev.get)
   if kernel.isSome:
     for item in kernel.get:
-      propSetData(args, "kernel", item, paAppend)
+      args.append("kernel", item)
   if kernelh.isSome:
     for item in kernelh.get:
-      propSetData(args, "kernelh", item, paAppend)
+      args.append("kernelh", item)
   if kernelv.isSome:
     for item in kernelv.get:
-      propSetData(args, "kernelv", item, paAppend)
-  if impulse.isSome:
-    propSetFloatArray(args, "impulse", impulse.get)
-  if impulseh.isSome:
-    propSetFloatArray(args, "impulseh", impulseh.get)
-  if impulsev.isSome:
-    propSetFloatArray(args, "impulsev", impulsev.get)
-  if taps.isSome:
-    propSetIntArray(args, "taps", taps.get)
-  if tapsh.isSome:
-    propSetIntArray(args, "tapsh", tapsh.get)
-  if tapsv.isSome:
-    propSetIntArray(args, "tapsv", tapsv.get)
-  if a1.isSome:
-    propSetFloatArray(args, "a1", a1.get)
-  if a2.isSome:
-    propSetFloatArray(args, "a2", a2.get)
-  if a3.isSome:
-    propSetFloatArray(args, "a3", a3.get)
-  if kovrspl.isSome:
-    propSetIntArray(args, "kovrspl", kovrspl.get)
-  if fh.isSome:
-    propSetFloatArray(args, "fh", fh.get)
-  if fv.isSome:
-    propSetFloatArray(args, "fv", fv.get)
-  if cnorm.isSome:
-    propSetIntArray(args, "cnorm", cnorm.get)
-  if totalh.isSome:
-    propSetFloatArray(args, "totalh", totalh.get)
-  if totalv.isSome:
-    propSetFloatArray(args, "totalv", totalv.get)
-  if invks.isSome:
-    propSetIntArray(args, "invks", invks.get)
-  if invksh.isSome:
-    propSetIntArray(args, "invksh", invksh.get)
-  if invksv.isSome:
-    propSetIntArray(args, "invksv", invksv.get)
-  if invkstaps.isSome:
-    propSetIntArray(args, "invkstaps", invkstaps.get)
-  if invkstapsh.isSome:
-    propSetIntArray(args, "invkstapsh", invkstapsh.get)
-  if invkstapsv.isSome:
-    propSetIntArray(args, "invkstapsv", invkstapsv.get)
-  if csp.isSome:
-    propSetInt(args, "csp", csp.get, paAppend)
-  if css.isSome:
-    propSetData(args, "css", css.get, paAppend)
-  if planes.isSome:
-    propSetFloatArray(args, "planes", planes.get)
-  if fulls.isSome:
-    propSetInt(args, "fulls", fulls.get, paAppend)
-  if fulld.isSome:
-    propSetInt(args, "fulld", fulld.get, paAppend)
-  if center.isSome:
-    propSetIntArray(args, "center", center.get)
-  if cplace.isSome:
-    propSetData(args, "cplace", cplace.get, paAppend)
-  if cplaces.isSome:
-    propSetData(args, "cplaces", cplaces.get, paAppend)
-  if cplaced.isSome:
-    propSetData(args, "cplaced", cplaced.get, paAppend)
-  if interlaced.isSome:
-    propSetInt(args, "interlaced", interlaced.get, paAppend)
-  if interlacedd.isSome:
-    propSetInt(args, "interlacedd", interlacedd.get, paAppend)
-  if tff.isSome:
-    propSetInt(args, "tff", tff.get, paAppend)
-  if tffd.isSome:
-    propSetInt(args, "tffd", tffd.get, paAppend)
-  if flt.isSome:
-    propSetInt(args, "flt", flt.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
+      args.append("kernelv", item)
+  if impulse.isSome: args.set("impulse", impulse.get)
+  if impulseh.isSome: args.set("impulseh", impulseh.get)
+  if impulsev.isSome: args.set("impulsev", impulsev.get)
+  if taps.isSome: args.set("taps", taps.get)
+  if tapsh.isSome: args.set("tapsh", tapsh.get)
+  if tapsv.isSome: args.set("tapsv", tapsv.get)
+  if a1.isSome: args.set("a1", a1.get)
+  if a2.isSome: args.set("a2", a2.get)
+  if a3.isSome: args.set("a3", a3.get)
+  if kovrspl.isSome: args.set("kovrspl", kovrspl.get)
+  if fh.isSome: args.set("fh", fh.get)
+  if fv.isSome: args.set("fv", fv.get)
+  if cnorm.isSome: args.set("cnorm", cnorm.get)
+  if totalh.isSome: args.set("totalh", totalh.get)
+  if totalv.isSome: args.set("totalv", totalv.get)
+  if invks.isSome: args.set("invks", invks.get)
+  if invksh.isSome: args.set("invksh", invksh.get)
+  if invksv.isSome: args.set("invksv", invksv.get)
+  if invkstaps.isSome: args.set("invkstaps", invkstaps.get)
+  if invkstapsh.isSome: args.set("invkstapsh", invkstapsh.get)
+  if invkstapsv.isSome: args.set("invkstapsv", invkstapsv.get)
+  if csp.isSome: args.append("csp", csp.get)
+  if css.isSome: args.append("css", css.get)
+  if planes.isSome: args.set("planes", planes.get)
+  if fulls.isSome: args.append("fulls", fulls.get)
+  if fulld.isSome: args.append("fulld", fulld.get)
+  if center.isSome: args.set("center", center.get)
+  if cplace.isSome: args.append("cplace", cplace.get)
+  if cplaces.isSome: args.append("cplaces", cplaces.get)
+  if cplaced.isSome: args.append("cplaced", cplaced.get)
+  if interlaced.isSome: args.append("interlaced", interlaced.get)
+  if interlacedd.isSome: args.append("interlacedd", interlacedd.get)
+  if tff.isSome: args.append("tff", tff.get)
+  if tffd.isSome: args.append("tffd", tffd.get)
+  if flt.isSome: args.append("flt", flt.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   return API.invoke(plug, "resample".cstring, args)        
 
@@ -310,16 +231,17 @@ proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
+  args.append("clip", clip)
 
   return API.invoke(plug, "stack16tonative".cstring, args)        
 
@@ -328,38 +250,31 @@ proc transfer*(vsmap:ptr VSMap; transs=none(seq[string]); transd=none(seq[string
   if plug == nil:
     raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
+  args.append("clip", clip)
   if transs.isSome:
     for item in transs.get:
-      propSetData(args, "transs", item, paAppend)
+      args.append("transs", item)
   if transd.isSome:
     for item in transd.get:
-      propSetData(args, "transd", item, paAppend)
-  if cont.isSome:
-    propSetFloat(args, "cont", cont.get, paAppend)
-  if gcor.isSome:
-    propSetFloat(args, "gcor", gcor.get, paAppend)
-  if bits.isSome:
-    propSetInt(args, "bits", bits.get, paAppend)
-  if flt.isSome:
-    propSetInt(args, "flt", flt.get, paAppend)
-  if fulls.isSome:
-    propSetInt(args, "fulls", fulls.get, paAppend)
-  if fulld.isSome:
-    propSetInt(args, "fulld", fulld.get, paAppend)
-  if cpuopt.isSome:
-    propSetInt(args, "cpuopt", cpuopt.get, paAppend)
-  if blacklvl.isSome:
-    propSetFloat(args, "blacklvl", blacklvl.get, paAppend)
+      args.append("transd", item)
+  if cont.isSome: args.append("cont", cont.get)
+  if gcor.isSome: args.append("gcor", gcor.get)
+  if bits.isSome: args.append("bits", bits.get)
+  if flt.isSome: args.append("flt", flt.get)
+  if fulls.isSome: args.append("fulls", fulls.get)
+  if fulld.isSome: args.append("fulld", fulld.get)
+  if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
+  if blacklvl.isSome: args.append("blacklvl", blacklvl.get)
 
   return API.invoke(plug, "transfer".cstring, args)        
 

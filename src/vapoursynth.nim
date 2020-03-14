@@ -18,7 +18,7 @@ TODO: something like
 TODO: documentation and integrate it with Github pages
 
 ]##
-import VapourSynthWrapper
+include "VapourSynthWrapper"
 let API = getVapourSynthAPI(3)
 let CORE = API.createCore(0)
 

@@ -3,28 +3,23 @@ proc Add*(vsmap:ptr VSMap; `var`=none(float); uvar=none(float); hcorr=none(float
   if plug == nil:
     raise newException(ValueError, "plugin \"grain\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if `var`.isSome:
-    propSetFloat(args, "var", `var`.get, paAppend)
-  if uvar.isSome:
-    propSetFloat(args, "uvar", uvar.get, paAppend)
-  if hcorr.isSome:
-    propSetFloat(args, "hcorr", hcorr.get, paAppend)
-  if vcorr.isSome:
-    propSetFloat(args, "vcorr", vcorr.get, paAppend)
-  if seed.isSome:
-    propSetInt(args, "seed", seed.get, paAppend)
-  if constant.isSome:
-    propSetInt(args, "constant", constant.get, paAppend)
+  args.append("clip", clip)
+  if `var`.isSome: args.append("var", `var`.get)
+  if uvar.isSome: args.append("uvar", uvar.get)
+  if hcorr.isSome: args.append("hcorr", hcorr.get)
+  if vcorr.isSome: args.append("vcorr", vcorr.get)
+  if seed.isSome: args.append("seed", seed.get)
+  if constant.isSome: args.append("constant", constant.get)
 
   return API.invoke(plug, "Add".cstring, args)        
 

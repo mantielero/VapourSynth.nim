@@ -3,26 +3,22 @@ proc MotionMask*(vsmap:ptr VSMap; planes=none(seq[int]); th1=none(seq[int]); th2
   if plug == nil:
     raise newException(ValueError, "plugin \"motionmask\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  if planes.isSome:
-    propSetIntArray(args, "planes", planes.get)
-  if th1.isSome:
-    propSetIntArray(args, "th1", th1.get)
-  if th2.isSome:
-    propSetIntArray(args, "th2", th2.get)
-  if tht.isSome:
-    propSetInt(args, "tht", tht.get, paAppend)
-  if sc_value.isSome:
-    propSetInt(args, "sc_value", sc_value.get, paAppend)
+  args.append("clip", clip)
+  if planes.isSome: args.set("planes", planes.get)
+  if th1.isSome: args.set("th1", th1.get)
+  if th2.isSome: args.set("th2", th2.get)
+  if tht.isSome: args.append("tht", tht.get)
+  if sc_value.isSome: args.append("sc_value", sc_value.get)
 
   return API.invoke(plug, "MotionMask".cstring, args)        
 

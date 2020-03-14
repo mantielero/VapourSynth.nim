@@ -3,43 +3,31 @@ proc nnedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); ns
   if plug == nil:
     raise newException(ValueError, "plugin \"nnedi3\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq
-  if tmpSeq.len != 1:
+  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  if tmpSeq.len == 0:
     raise newException(ValueError, "the vsmap should contain at least one item")
   if tmpSeq[0].nodes.len != 1:
     raise newException(ValueError, "the vsmap should contain one node")
   var clip = tmpSeq[0].nodes[0]
 
 
+  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  propSetNode(args, "clip", clip, paAppend)
-  propSetInt(args, "field", field, paAppend)
-  if dh.isSome:
-    propSetInt(args, "dh", dh.get, paAppend)
-  if planes.isSome:
-    propSetIntArray(args, "planes", planes.get)
-  if nsize.isSome:
-    propSetInt(args, "nsize", nsize.get, paAppend)
-  if nns.isSome:
-    propSetInt(args, "nns", nns.get, paAppend)
-  if qual.isSome:
-    propSetInt(args, "qual", qual.get, paAppend)
-  if etype.isSome:
-    propSetInt(args, "etype", etype.get, paAppend)
-  if pscrn.isSome:
-    propSetInt(args, "pscrn", pscrn.get, paAppend)
-  if opt.isSome:
-    propSetInt(args, "opt", opt.get, paAppend)
-  if int16_prescreener.isSome:
-    propSetInt(args, "int16_prescreener", int16_prescreener.get, paAppend)
-  if int16_predictor.isSome:
-    propSetInt(args, "int16_predictor", int16_predictor.get, paAppend)
-  if exp.isSome:
-    propSetInt(args, "exp", exp.get, paAppend)
-  if show_mask.isSome:
-    propSetInt(args, "show_mask", show_mask.get, paAppend)
-  if combed_only.isSome:
-    propSetInt(args, "combed_only", combed_only.get, paAppend)
+  args.append("clip", clip)
+  args.append("field", field)
+  if dh.isSome: args.append("dh", dh.get)
+  if planes.isSome: args.set("planes", planes.get)
+  if nsize.isSome: args.append("nsize", nsize.get)
+  if nns.isSome: args.append("nns", nns.get)
+  if qual.isSome: args.append("qual", qual.get)
+  if etype.isSome: args.append("etype", etype.get)
+  if pscrn.isSome: args.append("pscrn", pscrn.get)
+  if opt.isSome: args.append("opt", opt.get)
+  if int16_prescreener.isSome: args.append("int16_prescreener", int16_prescreener.get)
+  if int16_predictor.isSome: args.append("int16_predictor", int16_predictor.get)
+  if exp.isSome: args.append("exp", exp.get)
+  if show_mask.isSome: args.append("show_mask", show_mask.get)
+  if combed_only.isSome: args.append("combed_only", combed_only.get)
 
   return API.invoke(plug, "nnedi3".cstring, args)        
 
