@@ -66,7 +66,7 @@ The are two requirements in order to be able to use a function from a plugin:
 
 > Note that this wrappers are created automatically. You just need to install any plugin in your computer and then execute [plugin_generator](https://github.com/mantielero/VapourSynth.nim/blob/master/src/plugin_generator.nim). It will create the folder `plugins` for all the available plugins in your computer.
 
-Then the function is called directly. For instance, the already used function `Source` is provided by the plugin [ffms2][https://github.com/mantielero/VapourSynth.nim/blob/master/src/plugins/ffms2.nim#L44]:
+Then the function is called directly. For instance, the already used function `Source` is provided by the plugin [ffms2](https://github.com/mantielero/VapourSynth.nim/blob/master/src/plugins/ffms2.nim#L44):
 ```nim
 import vapoursynth
 Source("video.mkv").Pipey4m
@@ -81,7 +81,7 @@ Mandatory parameters are passed straight away, like in the case of `Source`, whe
 Source("video.mkv")
 ```
 
-Optional parameters requires importing the `option` module and needs using the keyword `some`. For example:
+Optional parameters requires importing the `options` module, which provides the keyword `some`. It is used as follows:
 
 ```nim
 import vapoursynth, options
@@ -131,6 +131,70 @@ Pipey4m(clip2)
 > Hereafter, I will omit the `import vapoursynth` line
 
 
+## Custom filter
+### VapourSynth plugins
+[Writting plugins](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#writing-plugins) in VapourSynth requires five functions:
+
+ - `VapourSynthPluginInit`: entry point. Its purpose is to configure the plugin and to register the filters the plugin wants to export. (It has the function signature `VSFilterInit`)
+ - `<foo>Create`: user defined function tasked with creating a filter instance. (It has the function signature `VSPublicFunction`)
+ - `<foo>Init`: A filter’s "init" function. This function is called by `createFilter()` (indirectly). (It has the function signature `VSFilterInit`)
+ - `<foo>GetFrame`: A filter's "getframe" function. It is called by the core when it needs the filter to generate a frame. (It has the function signature `VSFilterGetFrame`)
+ - `<foo>Free`: a "free" function. This is where the filter should free everything it allocated, including its instance data. (Function signature: `VSFilterFree`)
+
+Another thing a filter requires is an object for storing a filter instance’s private data. This object will usually contain the filter’s input nodes (if it has any) and a VSVideoInfo struct describing the video the filter wants to return.
+
+- [filter skeleton](https://github.com/vapoursynth/vapoursynth/blob/master/sdk/filter_skeleton.c)
+- [invert example](https://github.com/vapoursynth/vapoursynth/blob/master/sdk/invert_example.c)
+- [vscript example](https://github.com/vapoursynth/vapoursynth/blob/master/sdk/vsscript_example.c)
+
+
+Regarding `<foo>GetFrame`, this is the main function that gets called when a frame should be produced. It will, in most cases, get called several times to produce one frame. This state is being kept track of by the value of `activationReason`. The first call to produce a certain frame n is always arInitial. In this state you should request all the input frames you need. Always do it in ascending order to play nice with the upstream filters. Once all frames are ready, the filter will be called with arAllFramesReady. It is now time to do the actual processing.
+
+Depending on activationReason, calls: `requestFrameFilter` otherwise: `getFrameFilter`, `getFrameHeight`, `getFrameWidth`
+
+> When creating a new frame for output it is VERY EXTREMELY SUPER IMPORTANT to supply the "dominant" source frame to copy properties from. Frame props are an essential part of the filter chain and you should NEVER break it.
+
+Calls: `newVideoFrame`
+
+> Then, It's processing loop time! Loop over all the planes
+
+
+```c
+int plane;
+for (plane = 0; plane < fi->numPlanes; plane++) {
+    const uint8_t *srcp = vsapi->getReadPtr(src, plane);
+    int src_stride = vsapi->getStride(src, plane);
+    uint8_t *dstp = vsapi->getWritePtr(dst, plane);
+    int dst_stride = vsapi->getStride(dst, plane); // note that if a frame has the same dimensions and format, the stride is guaranteed to be the same. int dst_stride = src_stride would be fine too in this filter.
+    // Since planes may be subsampled you have to query the height of them individually
+    int h = vsapi->getFrameHeight(src, plane);
+    int y;
+    int w = vsapi->getFrameWidth(src, plane);
+    int x;
+
+    for (y = 0; y < h; y++) {
+        for (x = 0; x < w; x++)
+            dstp[x] = ~srcp[x];
+
+        dstp += dst_stride;
+        srcp += src_stride;
+    }
+}
+```
+
+> Release the source frame
+
+> Return destination
+
+## Nim filter
+La clave es la función [createFilter](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#createfilter) y quizá la función [registerFunction](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#registerfunction).
+
+
+
+The idea is to avoid all that an just to have a Nim function.
+Probably using [ModifyFrame](http://www.vapoursynth.com/doc/functions/modifyframe.html), and then something equivalent to `getFrame`
+
+https://github.com/vapoursynth/vapoursynth/blob/aa075b009fd4bdbf6aad7b4784092e79eb2f680c/src/core/simplefilters.c#L1620
 
 
 
@@ -161,5 +225,12 @@ Pipey4m(clip2)
 ### Note on plugins function's signatures
 Rather than a clip, the input is always a `ptr VSMap`. Given than `invoke` returns `ptr VSMap`, this enables chaining function scheme shown in the example.
 
+# Vapoursynth Tutorial 
+https://hackmd.io/@Se1ry_ZUSminEO7QQyVHAQ/HJwtY1WV7?type=view
+
+
+# Avisynth
+https://forum.doom9.org/showthread.php?t=175141
+https://forum.doom9.org/showthread.php?t=165957
 
 

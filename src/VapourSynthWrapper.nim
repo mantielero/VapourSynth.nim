@@ -256,3 +256,5 @@ type
 
 proc getVapourSynthAPI*(version:cint):ptr VSAPI    {.importc,dynlib: libName.}
 
+# Needed for plugins
+proc singleClipFree*(instanceData:pointer, core:ptr VSCore, vsapi: ptr VSAPI)    {.importc,dynlib: libName.}

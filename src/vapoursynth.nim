@@ -19,8 +19,8 @@ TODO: documentation and integrate it with Github pages
 
 ]##
 include "VapourSynthWrapper"
-let API = getVapourSynthAPI(3)
-let CORE = API.createCore(0)
+let API* = getVapourSynthAPI(3)
+let CORE* = API.createCore(0)
 
 include "vsmap"
 include "vsplugins"

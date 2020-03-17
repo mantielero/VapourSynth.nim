@@ -1,10 +1,16 @@
 src/plugin_generator
 test/*
-*.y4m
+docs/*
+!test/*.nim
 *.mkv
+!/test/2sec.mkv
+src/vapoursynth
+src/htmldocs/*
+*.y4m
 *.bmp
 *.png
 *.yuv
+*.ffindex
 ex01
 ex01.nim
 profile_results.txt
