@@ -22,14 +22,14 @@ type
     numFrames*: int
     flags*: int
 
-  Plane = object
-    width: int
-    height: int
-    id: int
-    `ptr`: pointer
-    stride:int
+  Plane* = object
+    width*: int
+    height*: int
+    id*: int
+    `ptr`*: pointer
+    stride*:int
 
-proc toFormat(format:ptr VSFormat):Format =
+proc toFormat*(format:ptr VSFormat):Format =
   # Get name
   let n = format.name.len
   var name = newString(n)
@@ -47,7 +47,7 @@ proc toFormat(format:ptr VSFormat):Format =
                    subSamplingH: format.subSamplingH.int,
                    numPlanes: format.numPlanes.int )  
 
-proc getVideoInfo(node:ptr VSNodeRef):VideoInfo =
+proc getVideoInfo*(node:ptr VSNodeRef):VideoInfo =
     let vinfo = API.getVideoInfo(node)
     let format = vinfo.format.toFormat
     result = VideoInfo( format: format,
@@ -58,7 +58,7 @@ proc getVideoInfo(node:ptr VSNodeRef):VideoInfo =
                         numFrames: vinfo.numFrames.int,
                         flags: vinfo.flags.int )
 
-proc getFrame(node:ptr VSNodeRef, frame_number:int):ptr VSFrameRef =
+proc getFrame*(node:ptr VSNodeRef, frame_number:int):ptr VSFrameRef =
   ## http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getframe
   #let errorSize = 256
   #var errorMsg = newString(errorSize)
@@ -66,31 +66,34 @@ proc getFrame(node:ptr VSNodeRef, frame_number:int):ptr VSFrameRef =
   if result == nil:
     raise newException( ValueError, "requested frame does not exists")
   
-proc freeFrame(frame:ptr VSFrameRef) =
+proc freeFrame*(frame:ptr VSFrameRef) =
   ## Deletes a frame reference, releasing the caller’s ownership of the frame.
   ## It is safe to pass NULL.
   API.freeFrame(frame)
 
-proc getFrameFormat(frame:ptr VSFrameRef):ptr VSFormat =
+proc getFrameFormat*(frame:ptr VSFrameRef):ptr VSFormat =
   result = API.getFrameFormat(frame) 
   #result = format.toFormat
 
-proc getFrameWidth(frame:ptr VSFrameRef, plane:int):int =
+proc getFrameWidth*(frame:ptr VSFrameRef, plane:int):int =
   ## Returns the width of a plane of a given frame, in pixels. The width depends on the plane number because of the possible chroma subsampling.
   return API.getFrameWidth(frame, plane.cint).int
 
-proc getFrameHeight(frame:ptr VSFrameRef, plane:int):int =
+proc getFrameHeight*(frame:ptr VSFrameRef, plane:int):int =
   ## Returns the height of a plane of a given frame, in pixels. The height depends on the plane number because of the possible chroma subsampling.
   return API.getFrameHeight(frame, plane.cint)
 
-proc getReadPtr(frame:ptr VSFrameRef, plane:int):pointer =
+proc getReadPtr*(frame:ptr VSFrameRef, plane:int):pointer =
   return API.getReadPtr(frame, plane.cint)
 
-proc getStride( frame: ptr VSFrameRef, plane:int ):int =
+proc getWritePtr*(frame:ptr VSFrameRef, plane:int):pointer =
+  return API.getWritePtr(frame, plane.cint)
+
+proc getStride*( frame: ptr VSFrameRef, plane:int ):int =
   ## Returns the distance in bytes between two consecutive lines of a plane of a frame. The stride is always positive (`getStride <http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getstride>`_).
   return API.getStride(frame, plane.cint)
 
-proc get(plane:Plane, row:int, column:int):uint8 =
+proc get*(plane:Plane, row:int, column:int):uint8 =
   if row < 0:
     raise newException(ValueError, "row <0")
   elif row >= plane.height:
@@ -125,7 +128,7 @@ for(int y = 0 ; y < height; ++y ) # Filas
 ]#
 
 
-proc getPlane(frame:ptr VSFrameRef, plane:int):Plane =
+proc getPlane*(frame:ptr VSFrameRef, plane:int):Plane =
   let format = getFrameFormat(frame).toFormat
   if plane > format.numPlanes-1:
     raise newException(ValueError, "the plane requested is above the number of planes available")

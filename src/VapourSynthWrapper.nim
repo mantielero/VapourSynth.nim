@@ -149,7 +149,7 @@ type
     getPluginByNs*: proc(ns:cstring, core:ptr VSCore):ptr VSPlugin {.cdecl.}
     getPlugins*: proc(core:ptr VSCore):ptr VSMap {.cdecl.}
     getFunctions*: proc(plugin:ptr VSPlugin):ptr VSMap {.cdecl.}
-    createFilter*: proc(`in`:ptr VSMap, `out`:ptr VSMap, name:cstring, init:VSFilterInit, getFrame:VSFilterGetFrame, free:VSFilterFree, filterMode:cint, flags:cint, instanceData:pointer, core:ptr VSCore) {.cdecl.}
+    createFilter*: proc(`in`:ptr VSMap, `out`:var ptr VSMap, name:cstring, init:VSFilterInit, getFrame:VSFilterGetFrame, free:VSFilterFree, filterMode:cint, flags:cint, instanceData:pointer, core:ptr VSCore) {.cdecl.}
     setError*: proc(map:ptr VSMap, errorMessage:cstring) {.cdecl.}
     getError*: proc(map:ptr VSMap):cstring {.cdecl.}
     setFilterError*: proc(errorMessage:cstring, frameCtx:ptr VSFrameContext) {.cdecl.}
@@ -166,7 +166,7 @@ type
     getReadPtr*: proc(f:ptr VSFrameRef, plane:cint):ptr uint8 {.cdecl.}
     getWritePtr*: proc(f:ptr VSFrameRef, plane:cint):ptr uint8 {.cdecl.}
     createFunc*: proc(`func`:VSPublicFunction, userData:pointer, free:VSFreeFuncData, core:ptr VSCore, vsapi:ptr VSAPI):ptr VSFuncRef {.cdecl.}
-    callFunc*: proc(`func`:ptr VSFuncRef, `in`:ptr VSMap, `out`:ptr VSMap, core:ptr VSCore, vsapi:ptr VSAPI) {.cdecl.}
+    callFunc*: proc(`func`:ptr VSFuncRef, `in`:ptr VSMap, `out`:var ptr VSMap, core:ptr VSCore, vsapi:ptr VSAPI) {.cdecl.}
     createMap*: proc(None:void):ptr VSMap {.cdecl.}
     freeMap*: proc(map:ptr VSMap) {.cdecl.}
     clearMap*: proc(map:ptr VSMap) {.cdecl.}
@@ -241,12 +241,12 @@ type
     flags*: cint
   
   VSGetVapourSynthAPI* = proc(version: cint):ptr VSAPI {.cdecl.}
-  VSPublicFunction*  = proc(`in`: ptr VSMap, `out`: ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
+  VSPublicFunction*  = proc(`in`: ptr VSMap, `out`: var ptr VSMap, userData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSRegisterFunction*  = proc(name: cstring, args: cstring, argsFunc: VSPublicFunction, functionData: pointer, plugin: ptr VSPlugin) {.cdecl.}
   VSConfigPlugin* = proc(identifier: cstring, defaultNamespace: cstring, name: cstring, apiVersion: cint, readonly: cint, plugin: ptr VSPlugin) {.cdecl.}
   VSInitPlugin*  = proc(configFunc: VSConfigPlugin, registerFunc: VSRegisterFunction, plugin: ptr VSPlugin) {.cdecl.}
   VSFreeFuncData*  = proc(userData: pointer) {.cdecl.}
-  VSFilterInit*  = proc(`in`: ptr VSMap, `out`: ptr VSMap, instanceData: ptr pointer, node: ptr VSNode, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
+  VSFilterInit*  = proc(`in`: ptr VSMap, `out`: var ptr VSMap, instanceData: ptr pointer, node: ptr VSNode, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSFilterGetFrame*  = proc(n: cint, activationReason: cint, instanceData: ptr pointer, frameData: ptr pointer, frameCtx: ptr VSFrameContext, core: ptr VSCore, vsapi: ptr VSAPI):ptr VSFrameRef {.cdecl.}
   VSFilterFree*  = proc(instanceData: pointer, core: ptr VSCore, vsapi: ptr VSAPI) {.cdecl.}
   VSFrameDoneCallback*  = proc(userData: pointer, f: ptr VSFrameRef, n: cint, None: ptr VSNodeRef, errorMsg: cstring) {.cdecl.}

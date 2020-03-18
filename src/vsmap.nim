@@ -180,50 +180,50 @@ proc propGetFunc*( vsmap:ptr VSMap, key:string, idx:int ):ptr VSFuncRef =
 
 
 # Setting data
-proc append(vsmap:ptr VSMap, key:string, data:string) =
+proc append*(vsmap:ptr VSMap, key:string, data:string) =
   ## appends a string
   let ret = API.propSetData(vsmap, key.cstring, data.cstring, data.len.cint, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append a string to a property with the wrong type")
 
-proc append(vsmap:ptr VSMap, key:string, data:int) =
+proc append*(vsmap:ptr VSMap, key:string, data:int) =
   ## appends am integer
   let ret = API.propSetInt(vsmap, key.cstring, data.cint, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append an integer to a property with the wrong type")  
 
-proc append(vsmap:ptr VSMap, key:string, data:float) =
+proc append*(vsmap:ptr VSMap, key:string, data:float) =
   ## appends am integer
   let ret = API.propSetFloat(vsmap, key.cstring, data.cdouble, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append a float to a property with the wrong type")
 
-proc append(vsmap:ptr VSMap, key:string, data:ptr VSNodeRef) =
+proc append*(vsmap:ptr VSMap, key:string, data:ptr VSNodeRef) =
   ## appends am integer
   let ret = API.propSetNode(vsmap, key.cstring, data, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append a node to a property with the wrong type")
 
-proc append(vsmap:ptr VSMap, key:string, data:ptr VSFrameRef) =
+proc append*(vsmap:ptr VSMap, key:string, data:ptr VSFrameRef) =
   ## appends am integer
   let ret = API.propSetFrame(vsmap, key.cstring, data, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append a frame to a property with the wrong type")
 
-proc append(vsmap:ptr VSMap, key:string, data:ptr VSFuncRef) =
+proc append*(vsmap:ptr VSMap, key:string, data:ptr VSFuncRef) =
   ## appends am integer
   let ret = API.propSetFunc(vsmap, key.cstring, data, paAppend.cint)
   if ret == 1:
     raise newException(ValueError, "trying to append a function to a property with the wrong type")
 
-proc set(vsmap:ptr VSMap, key:string, data:seq[int]) =
+proc set*(vsmap:ptr VSMap, key:string, data:seq[int]) =
   ## sets an integer sequence to a key
   let p = cast[ptr int64](unsafeAddr(data[0]))
   let ret = API.propSetIntArray(vsmap, key.cstring, p, data.len.cint)
   if ret == 1:
     raise newException(ValueError, "trying to set an integer sequence to a property with the wrong type")
 
-proc set(vsmap:ptr VSMap, key:string, data:seq[float]) =
+proc set*(vsmap:ptr VSMap, key:string, data:seq[float]) =
   ## sets an integer sequence to a key
   let ret = API.propSetFloatArray(vsmap, key.cstring, unsafeAddr(data[0]), data.len.cint)
   if ret == 1:
