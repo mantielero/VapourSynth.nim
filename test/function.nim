@@ -232,10 +232,6 @@ proc cropAbsCreate1( `in`:ptr VSMap,
     data1[] = d
     #echo repr data1
 
-    # I introduced the following to avoid having nil 
-    #var `out`:ptr VSMap
-    #`out` = vsapi.createMap()
-    
     echo "===== WHICH ONE IS nil ====="
     echo "IN:"    
     echo repr `in`
@@ -253,7 +249,6 @@ proc cropAbsCreate1( `in`:ptr VSMap,
     echo repr core
     echo "==========================="
     
-    `out` = createMap()
     let tmp1:VSFilterInit     = cropInit1
     let tmp2:VSFilterGetFrame = cropGetFrame1
     let tmp3:VSFilterFree = cropFree1
@@ -294,7 +289,8 @@ echo "[INFO] `in` created"
 var `out`:ptr VSMap  # `out` is declared, but contains 
 
 echo "[INFO] Calling 'callFunc'"
-API.callFunc(myfunc, `in`, `out`, CORE, API)
+`out` =createMap() 
+API.callFunc(myfunc, `in`, `out`, nil, nil)
 
 echo repr `out`
 # Save the result in a file

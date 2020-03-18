@@ -55,5 +55,18 @@ proc Simple*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
 
 #-------------------------------------------------
 # Reads the file, applies the Simple filter and saves the result in a file
-Source("2sec.mkv").Simple.Savey4m("deleteme.y4m")
+Source("2sec.mkv").ModifyFrame(Simple).Savey4m("deleteme.y4m")
 
+#[
+struct VSFuncRef {
+    PExtFunction func;
+    VSFuncRef(const PExtFunction &func) : func(func) {}
+    VSFuncRef(PExtFunction &&func) : func(func) {}
+};    
+]#
+
+#[
+    let tmp = BlankClip( format=3000010.some, #(pfYUV420P8.int).some,
+                     length=1000.some,
+                     color=@[255, 128, 128].some )
+]#
