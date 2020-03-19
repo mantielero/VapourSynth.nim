@@ -1,7 +1,90 @@
 import ../src/vapoursynth
 import options
 
-proc Simple*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
+type
+  CropData* {.bycopy.} = object
+    node*:ptr VSNodeRef
+    vi*:ptr VSVideoInfo
+    x*:int
+    y*:int
+    width*:int
+    height*:int
+
+
+proc cropInit1( `in`: ptr VSMap, 
+                `out`: var ptr VSMap, 
+                userData: ptr pointer,   ## void **instanceData
+                node: ptr VSNode,
+                core: ptr VSCore, 
+                vsapi: ptr VSAPI) {.cdecl,exportc.} =
+  echo "[INFO] 'createFilter':'cropInit1': starting"
+  let data = cast[ptr CropData](userData[])
+  vsapi.setVideoInfo(data.vi, 1.cint, node)  # Set videoinfo in node
+  echo "[INFO] 'createFilter'>'cropInit1': DONE"
+
+
+proc cropGetFrame1( n:cint,
+                    activationReason:cint,
+                    instanceData:ptr pointer,
+                    frameData:ptr pointer, 
+                    frameCtx: ptr VSFrameContext,
+                    core:ptr VSCore,
+                    vsapi:ptr VSAPI ):ptr VSFrameRef {.cdecl,exportc.} =
+    #var d:CropData = cast[CropData](cast[ptr CropData](instanceData))
+    echo "[INFO] Starting GetFrame"
+    let d = cast[ptr CropData](instanceData[])  
+    #let fd = 
+
+    if activationReason.VSActivationReason == arInitial:
+        #echo repr d.node
+        vsapi.requestFrameFilter(n.cint, d.node, frameCtx)
+
+    elif activationReason.VSActivationReason == arAllFramesReady:
+        #var msg:array[150, char]
+        echo "Frame"
+        let src:ptr VSFrameRef = vsapi.getFrameFilter(n.cint, d.node, frameCtx)
+        let fi:ptr VSFormat    = d.vi.format  #vsapi.getFrameFormat(src)
+        let width:int = vsapi.getFrameWidth(src, 0.cint).int   # For plane 0
+        let height:int = vsapi.getFrameHeight(src, 0.cint).int # For plane 0
+        let y:int = if (fi.id == pfCompatBGR32): (height - d.height - d.y)
+                    else: d.y
+
+        let dst:ptr VSFrameRef = vsapi.newVideoFrame( fi, d.width.cint, d.height.cint, src, core )
+        
+        for plane in 0..<fi.numPlanes:
+            let srcstride:int   = vsapi.getStride(src, plane)
+            let dststride:int   = vsapi.getStride(dst, plane)
+            let srcdata:pointer = vsapi.getReadPtr(src, plane)
+            let dstdata:pointer = vsapi.getWritePtr(dst, plane)
+            #srcdata += srcstride * (y >> (plane ? fi->subSamplingH : 0));
+            #srcdata += (d->x >> (plane ? fi->subSamplingW : 0)) * fi->bytesPerSample;
+            #vs_bitblt(dstdata, dststride, srcdata, srcstride, (d->width >> (plane ? fi->subSamplingW : 0)) * fi->bytesPerSample, vsapi->getFrameHeight(dst, plane));
+        
+
+        vsapi.freeFrame(src)
+
+        if (d.y and 1) > 0:  #(d.y and 1):  # No lo entiendo
+            let props:ptr VSMap = vsapi.getFramePropsRW(dst)
+            var error = peUnset.cint
+            var fb:int = vsapi.propGetInt(props, "_FieldBased".cstring, 0.cint, error).int
+            if fb == 1 or fb == 2:
+                let tmp = if fb == 1: 2
+                          else: 1
+                discard vsapi.propSetInt(props, "_FieldBased".cstring, tmp.int64, paReplace.cint)
+        
+        return dst
+    return nil
+
+proc cropFree1(instanceData:pointer, core:ptr VSCore, vsapi:ptr VSAPI) {.cdecl,exportc.} =
+    echo "[INFO] Starting 'cropFree1'"
+    echo repr instanceData
+    let data = cast[ptr CropData](instanceData)
+    vsapi.freeNode(data.node)
+    #GCunref(data)
+    dealloc(data)
+    echo "[INFO] 'cropFree1' done"
+    
+proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=none(int)):ptr VSMap =
     let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
     if tmpSeq.len == 0:
       raise newException(ValueError, "the vsmap should contain at least one item")
@@ -9,18 +92,56 @@ proc Simple*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
       raise newException(ValueError, "the vsmap should contain one node")
     var clip = tmpSeq[0].nodes[0] # This is a node
     var outnode:ptr VSNodeRef
-    #var newclip = API.cloneNodeRef(clip)
-    #API.freeNode(clip)
-    var tmpout:ptr VSMap
-    vsapi.createFilter( clip, tmpout, 
-                        "Crop1".cstring, 
-                        nil, 
-                        nil, 
-                        cropFree1, 
-                        fmParallel.cint, 
-                        0.cint, 
-                        data1,
-                        core )
+    
+    
+    var tmpout = createMap()
+
+    # UserData
+    var d:CropData    
+    d.node   = vsmap.propGetNode( "clip", 0 )
+    d.vi     = API.getVideoInfo(d.node) #.getVideoInfo()
+    # Defaults
+    d.width  = 300
+    d.height = 200
+    d.x      = 10
+    d.y      = 20 
+    # Assign the function parameters if given
+    if x.isSome: d.x = x.get
+    if y.isSome: d.y = y.get
+    if width.isSome: d.width = width.get
+    if height.isSome: d.height = height.get
+    
+    # Move data to the heap
+    var data1 = cast[ptr CropData]( alloc0(sizeof(d)) )
+    data1[] = d    
+
+    echo "===== WHICH ONE IS nil ====="
+    echo "IN:"    
+    echo repr vsmap
+    echo "OUT:"
+    echo repr tmpout
+    echo "cropInit1:"    
+    echo repr cropInit1
+    echo "cropGetFrame1:"
+    echo repr cropGetFrame1
+    echo "cropFree1:"
+    echo repr cropFree1
+    echo "data1"   
+    echo repr data1
+    echo "core"   
+    echo repr CORE
+    echo "==========================="    
+    echo "[INFO] 'createFilter': starting"
+    API.createFilter( vsmap, tmpout, 
+                      "Crop1".cstring,
+                      cropInit1,      #cast[VSFilterInit](nil), 
+                      cast[VSFilterGetFrame](nil), #cropGetFrame1,  #
+                      nil,#cropFree1, #cast[VSFilterFree](nil), 
+                      fmParallel.cint, 
+                      0.cint, 
+                      data1,
+                      CORE )
+    echo "[INFO] 'createFilter': DONE"                    
     #------------------
     let vinfo = getVideoInfo(clip)
     for i in 0..<vinfo.numFrames:
@@ -38,7 +159,6 @@ proc Simple*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
           let address = dst.getWritePtr(i)
           let width = plane.width
           let height = plane.height
-          #let size = width * height  
           for row in 0..<height:
             let newaddress = cast[pointer](cast[int](address) + row*plane.stride)
             for j in 0..10:

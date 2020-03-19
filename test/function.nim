@@ -257,7 +257,7 @@ proc cropAbsCreate1( `in`:ptr VSMap,
                         "Crop1".cstring, 
                         cropInit1, 
                         cropGetFrame1, 
-                        cropFree1, 
+                        nil,#cropFree1, 
                         fmParallel.cint, 
                         0.cint, 
                         data1,
@@ -276,9 +276,10 @@ proc cropFree(userData: pointer) {.cdecl.} =
 #=========================================================
 # EXECUTION PHASE
 #=========================================================
+var tmpdata:CropData
 let myfunc:ptr VSFuncRef = API.createFunc( cropAbsCreate1, 
-                                           cast[pointer](nil), #cast[pointer](unsafeAddr(a)), #
-                                           cropFree, 
+                                           cast[pointer](unsafeAddr(tmpdata)), #cast[pointer](nil), #cast[pointer](unsafeAddr(a)), #
+                                           nil, #cropFree, 
                                            CORE, 
                                            API) 
       
@@ -290,6 +291,16 @@ var `out`:ptr VSMap  # `out` is declared, but contains
 
 echo "[INFO] Calling 'callFunc'"
 `out` =createMap() 
+#[
+func
+Function to be called.
+
+in
+Arguments passed to func.
+
+out
+Returned values from func.  
+]#
 API.callFunc(myfunc, `in`, `out`, nil, nil)
 
 echo repr `out`
