@@ -134,9 +134,9 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     echo "[INFO] 'createFilter': starting"
     API.createFilter( vsmap, tmpout, 
                       "Crop1".cstring,
-                      cropInit1,      #cast[VSFilterInit](nil), 
-                      cast[VSFilterGetFrame](nil), #cropGetFrame1,  #
-                      nil,#cropFree1, #cast[VSFilterFree](nil), 
+                      cropInit1, 
+                      cropGetFrame1,
+                      nil,
                       fmParallel.cint, 
                       0.cint, 
                       data1,
