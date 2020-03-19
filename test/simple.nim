@@ -91,11 +91,11 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     if tmpSeq[0].nodes.len != 1:
       raise newException(ValueError, "the vsmap should contain one node")
     var clip = tmpSeq[0].nodes[0] # This is a node
-    var outnode:ptr VSNodeRef
+    #var outnode:ptr VSNodeRef
     
     
     var tmpout = createMap()
-
+    #tmpout.append("clip",outnode)
     # UserData
     var d:CropData    
     d.node   = vsmap.propGetNode( "clip", 0 )
@@ -169,9 +169,9 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
             #strm.writeData(address, plane.width)          
     # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
     #if planes.isSome: args.set("planes", planes.get)
-    var outclip = createMap()
-    outclip.append("clip", outnode)#clip)
-    return outclip
+    #var outclip = createMap()
+    #outclip.append("clip", outnode)#clip)
+    return tmpout
 
 #-------------------------------------------------
 # Reads the file, applies the Simple filter and saves the result in a file
