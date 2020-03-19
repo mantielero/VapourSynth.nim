@@ -136,7 +136,7 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
                       "Crop1".cstring,
                       cropInit1, 
                       cropGetFrame1,
-                      nil,
+                      cropFree1,
                       fmParallel.cint, 
                       0.cint, 
                       data1,
