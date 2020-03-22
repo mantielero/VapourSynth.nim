@@ -14,6 +14,7 @@ proc y4mheader(node:ptr VSNodeRef):string =
   ##
   ## TODO: A: pixel aspect ratio desconocido (0:0)  
   let vinfo = getVideoInfo( node)
+
   if not (vinfo.format.colorFamily in [cmYUV, cmGray]):
     raise newException(ValueError, ".y4m only supports YUV and Gray formats")
   var format = ""
@@ -41,8 +42,11 @@ proc y4mheader(node:ptr VSNodeRef):string =
     format &= tmp
     tmp = if bitsPerSample > 8: &"p{bitsPerSample}" else: ""
     format &= tmp
-
+  #echo repr vinfo
+  #echo "WIDTH: ",vinfo.width
+  #echo "HEIGHT: ",vinfo.height
   result = &"YUV4MPEG2 C{format} W{vinfo.width} H{vinfo.height} F{vinfo.fpsNum}:{vinfo.fpsDen} Ip A0:0"
+  #echo result
 
 #[
 proc y4mframe(frame:ptr VSFrameRef):seq[uint8] =
@@ -71,7 +75,9 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
   # YUV 4:2:0 (I420/J420/YV12) It has the luma "luminance" plane Y first, then the U chroma plane and last the V chroma plane.
 
   let vinfo = getVideoInfo(node)
+  #echo "Number of frames: ", vinfo.numFrames
   for i in 0..<vinfo.numFrames:
+    echo "Writting frame: ", i
     strm.writeLine("FRAME")
     let frame = node.getFrame(i)
     let format = frame.getFrameFormat.toFormat

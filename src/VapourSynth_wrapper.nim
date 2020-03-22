@@ -78,8 +78,8 @@ type
 
   VSVideoInfo* {.bycopy.} = object
     format*: ptr VSFormat
-    fpsNum*: cint
-    fpsDen*: cint
+    fpsNum*: int64 #cint
+    fpsDen*: int64 
     width*: cint
     height*: cint
     numFrames*: cint           ##  api 3.2 - no longer allowed to be 0

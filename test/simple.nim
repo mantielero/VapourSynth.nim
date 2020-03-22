@@ -19,7 +19,14 @@ proc cropInit1( `in`: ptr VSMap,
                 vsapi: ptr VSAPI) {.cdecl,exportc.} =
   #echo "[INFO] 'createFilter':'cropInit1': starting"
   let data = cast[ptr CropData](userData[])
+  #echo "SETTING VIDEO INFO-----"
+  #echo repr data.vi
+  #echo repr node
+  #echo "-----------------------\n\n\n"
+
   vsapi.setVideoInfo(data.vi, 1.cint, node)  # Set videoinfo in node
+  #let vinfo = getVideoInfo( node)
+  #echo repr vinfo
   #echo "[INFO] 'createFilter'>'cropInit1': DONE"
 
 #[
@@ -46,36 +53,71 @@ proc cropGetFrame1( n:cint,
                     core:ptr VSCore,
                     vsapi:ptr VSAPI ):ptr VSFrameRef {.cdecl,exportc.} =
     #var d:CropData = cast[CropData](cast[ptr CropData](instanceData))
-    #echo "[INFO] Starting GetFrame"
-    let d = cast[ptr CropData](instanceData[])  
+    let d = cast[ptr CropData](instanceData[])
+    #echo repr d.width
     #let fd = 
 
     if activationReason.VSActivationReason == arInitial:
-        #echo repr d.node
         vsapi.requestFrameFilter(n.cint, d.node, frameCtx)
 
     elif activationReason.VSActivationReason == arAllFramesReady:
-        #var msg:array[150, char]
-        echo "Frame"
         let src:ptr VSFrameRef = vsapi.getFrameFilter(n.cint, d.node, frameCtx)
         let fi:ptr VSFormat    = d.vi.format  #vsapi.getFrameFormat(src)
+        echo repr fi
         let width:int = vsapi.getFrameWidth(src, 0.cint).int   # For plane 0
         let height:int = vsapi.getFrameHeight(src, 0.cint).int # For plane 0
         let y:int = if (fi.id.VSPresetFormat == pfCompatBGR32): (height - d.height - d.y)
                     else: d.y
-        #echo y
-        let dst:ptr VSFrameRef = vsapi.newVideoFrame( fi, d.width.cint, d.height.cint, src, core )
-        
+
+        #let dst:ptr VSFrameRef = vsapi.newVideoFrame( fi, d.width.cint, d.height.cint, src, core )
+        let dst:ptr VSFrameRef = API.copyFrame(src, CORE)
+
+        #[
+        for row in 0..<plane.height:
+          let address = cast[pointer](cast[int](plane.`ptr`) + row*plane.stride)
+          strm.writeData(address, plane.width)
+        ]#
+        #[
         for plane in 0..<fi.numPlanes:
             let srcstride:int   = vsapi.getStride(src, plane)
             let dststride:int   = vsapi.getStride(dst, plane)
-            let srcdata:pointer = vsapi.getReadPtr(src, plane)
+            var srcdata:pointer = vsapi.getReadPtr(src, plane)
             let dstdata:pointer = vsapi.getWritePtr(dst, plane)
-            #srcdata += srcstride * (y >> (plane ? fi->subSamplingH : 0));
+            let tmpy = if plane > 0: fi.subSamplingH else: 0
+            
+            var tmp:int = if plane > 0: fi.subSamplingW else: 0
+            let tmpx = (d.x shr tmp) * fi.bytesPerSample
+            tmp = cast[int](srcdata) + srcstride * (y shr tmpy) + tmpx
+            srcdata = cast[pointer](tmp)
+        ]#
+            #for row in 0..<plane.height:
+            #  let srcAddress = cast[pointer](cast[int](plane.`ptr`) + row*plane.stride)
+
+
+              #strm.writeData(address, plane.width)
             #srcdata += (d->x >> (plane ? fi->subSamplingW : 0)) * fi->bytesPerSample;
             #vs_bitblt(dstdata, dststride, srcdata, srcstride, (d->width >> (plane ? fi->subSamplingW : 0)) * fi->bytesPerSample, vsapi->getFrameHeight(dst, plane));
-        
+            #Copies bytes from one plane to another. Basically, it is memcpy in a loop.
 
+#[
+  static inline void vs_bitblt(void *dstp, int dst_stride, const void *srcp, int src_stride, size_t row_size, size_t height) {
+    if (height) {
+        if (src_stride == dst_stride && src_stride == (int)row_size) {
+            memcpy(dstp, srcp, row_size * height);
+        } else {
+            const uint8_t *srcp8 = (const uint8_t *)srcp;
+            uint8_t *dstp8 = (uint8_t *)dstp;
+            size_t i;
+            for (i = 0; i < height; i++) {
+                memcpy(dstp8, srcp8, row_size);
+                srcp8 += src_stride;
+                dstp8 += dst_stride;
+            }
+        }
+    }
+}
+]#
+        #echo "ok1"
         vsapi.freeFrame(src)
         if (d.y and 1) > 0:  #(d.y and 1):  # No lo entiendo
             let props:ptr VSMap = vsapi.getFramePropsRW(dst)
@@ -110,7 +152,7 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     
     
     var tmpout = createMap()
-    #tmpout.append("clip",outnode)
+    
     # UserData
     var d:CropData    
     d.node   = vsmap.propGetNode( "clip", 0 )
@@ -149,8 +191,7 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     echo "==========================="    
     echo "[INFO] 'createFilter': starting"
     ]#
-    echo repr vsmap.toSeq
-    echo repr tmpout.toSeq
+
     #let tmp11:VSFilterInit = cropInit1
     #let tmp12:VSFilterGetFrame = cropGetFrame1
     #let tmp13:VSFilterFree = cropFree1     
@@ -163,6 +204,9 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
                       0.cint, 
                       data1,
                       CORE )
+    #echo "\n\nOUTPUT MAP:"
+    #echo repr tmpout.toSeq                      
+    #tmpout.append("clip",outnode)
     #echo "[INFO] 'createFilter': DONE"                    
     #------------------
     #[
@@ -201,7 +245,7 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
 
 #-------------------------------------------------
 # Reads the file, applies the Simple filter and saves the result in a file
-Source("2sec.mkv").Simple.Savey4m("deleteme.y4m")
+Source("2sec.mkv").Simple.Savey4m("original.y4m")
 #let clip1 = Source("2sec.mkv")
 #let clip2 = clip1.Simple
 #clip2.Pipey4m

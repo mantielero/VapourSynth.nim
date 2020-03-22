@@ -49,6 +49,10 @@ proc toFormat*(format:ptr VSFormat):Format =
 
 proc getVideoInfo*(node:ptr VSNodeRef):VideoInfo =
     let vinfo = API.getVideoInfo(node)
+    let tmp = cast[VSVideoInfo](vinfo)
+    #echo "------ VINFO ----------------"
+    #echo repr vinfo
+    #echo "----------------------\n\n\n"
     let format = vinfo.format.toFormat
     result = VideoInfo( format: format,
                         fpsNum: vinfo.fpsNum.int,
@@ -57,11 +61,13 @@ proc getVideoInfo*(node:ptr VSNodeRef):VideoInfo =
                         height: vinfo.height.int,
                         numFrames: vinfo.numFrames.int,
                         flags: vinfo.flags.int )
+    #echo repr result
 
 proc getFrame*(node:ptr VSNodeRef, frame_number:int):ptr VSFrameRef =
   ## http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getframe
   #let errorSize = 256
   #var errorMsg = newString(errorSize)
+  #echo "Frame number: ", frame_number
   result = API.getFrame(frame_number.cint, node, nil, 0 )  #errorMsg, errorSize.cint)
   if result == nil:
     raise newException( ValueError, "requested frame does not exists")
