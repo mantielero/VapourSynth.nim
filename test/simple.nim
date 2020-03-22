@@ -12,17 +12,32 @@ type
 
 
 proc cropInit1( `in`: ptr VSMap, 
-                `out`: var ptr VSMap, 
-                userData: ptr pointer,   ## void **instanceData
+                `out`: ptr VSMap, 
+                userData: ptr pointer, 
                 node: ptr VSNode,
                 core: ptr VSCore, 
                 vsapi: ptr VSAPI) {.cdecl,exportc.} =
-  echo "[INFO] 'createFilter':'cropInit1': starting"
+  #echo "[INFO] 'createFilter':'cropInit1': starting"
   let data = cast[ptr CropData](userData[])
   vsapi.setVideoInfo(data.vi, 1.cint, node)  # Set videoinfo in node
-  echo "[INFO] 'createFilter'>'cropInit1': DONE"
+  #echo "[INFO] 'createFilter'>'cropInit1': DONE"
 
+#[
+proc (in: ptr VSMap, 
+      out: var ptr VSMap, 
+      userData: ptr pointer, 
+      node: ptr VSNode, 
+      core: ptr VSCore, 
+      vsapi: ptr VSAPI){.cdecl, locks: <unknown>.}> 
 
+proc (in: ptr VSMap, 
+      out: ptr VSMap, 
+      instanceData: ptr pointer, 
+      node: ptr VSNode, 
+      core: ptr VSCore, 
+      vsapi: ptr VSAPI){.cdecl.}'
+
+]#
 proc cropGetFrame1( n:cint,
                     activationReason:cint,
                     instanceData:ptr pointer,
@@ -31,7 +46,7 @@ proc cropGetFrame1( n:cint,
                     core:ptr VSCore,
                     vsapi:ptr VSAPI ):ptr VSFrameRef {.cdecl,exportc.} =
     #var d:CropData = cast[CropData](cast[ptr CropData](instanceData))
-    echo "[INFO] Starting GetFrame"
+    #echo "[INFO] Starting GetFrame"
     let d = cast[ptr CropData](instanceData[])  
     #let fd = 
 
@@ -46,9 +61,9 @@ proc cropGetFrame1( n:cint,
         let fi:ptr VSFormat    = d.vi.format  #vsapi.getFrameFormat(src)
         let width:int = vsapi.getFrameWidth(src, 0.cint).int   # For plane 0
         let height:int = vsapi.getFrameHeight(src, 0.cint).int # For plane 0
-        let y:int = if (fi.id == pfCompatBGR32): (height - d.height - d.y)
+        let y:int = if (fi.id.VSPresetFormat == pfCompatBGR32): (height - d.height - d.y)
                     else: d.y
-
+        #echo y
         let dst:ptr VSFrameRef = vsapi.newVideoFrame( fi, d.width.cint, d.height.cint, src, core )
         
         for plane in 0..<fi.numPlanes:
@@ -62,16 +77,16 @@ proc cropGetFrame1( n:cint,
         
 
         vsapi.freeFrame(src)
-
         if (d.y and 1) > 0:  #(d.y and 1):  # No lo entiendo
             let props:ptr VSMap = vsapi.getFramePropsRW(dst)
-            var error = peUnset.cint
-            var fb:int = vsapi.propGetInt(props, "_FieldBased".cstring, 0.cint, error).int
+            var err = peUnset.cint
+            var perr = cast[ptr cint](unsafeAddr(err))  
+            var fb:int = vsapi.propGetInt(props, "_FieldBased".cstring, 0.cint, perr).int
             if fb == 1 or fb == 2:
                 let tmp = if fb == 1: 2
                           else: 1
-                discard vsapi.propSetInt(props, "_FieldBased".cstring, tmp.int64, paReplace.cint)
-        
+                discard vsapi.propSetInt(props, "_FieldBased".cstring, tmp.cint, paReplace.cint)
+        #echo "OK"        
         return dst
     return nil
 
@@ -101,8 +116,8 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     d.node   = vsmap.propGetNode( "clip", 0 )
     d.vi     = API.getVideoInfo(d.node) #.getVideoInfo()
     # Defaults
-    d.width  = 300
-    d.height = 200
+    d.width  = 854
+    d.height = 480
     d.x      = 10
     d.y      = 20 
     # Assign the function parameters if given
@@ -115,6 +130,7 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     var data1 = cast[ptr CropData]( alloc0(sizeof(d)) )
     data1[] = d    
 
+    #[
     echo "===== WHICH ONE IS nil ====="
     echo "IN:"    
     echo repr vsmap
@@ -132,6 +148,12 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
     echo repr CORE
     echo "==========================="    
     echo "[INFO] 'createFilter': starting"
+    ]#
+    echo repr vsmap.toSeq
+    echo repr tmpout.toSeq
+    #let tmp11:VSFilterInit = cropInit1
+    #let tmp12:VSFilterGetFrame = cropGetFrame1
+    #let tmp13:VSFilterFree = cropFree1     
     API.createFilter( vsmap, tmpout, 
                       "Crop1".cstring,
                       cropInit1, 
@@ -141,8 +163,9 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
                       0.cint, 
                       data1,
                       CORE )
-    echo "[INFO] 'createFilter': DONE"                    
+    #echo "[INFO] 'createFilter': DONE"                    
     #------------------
+    #[
     let vinfo = getVideoInfo(clip)
     for i in 0..<vinfo.numFrames:
         #strm.writeLine("FRAME")
@@ -167,13 +190,19 @@ proc Simple*(vsmap:ptr VSMap; x=none(int);y=none(int);width=none(int);height=non
                address[] = 255.uint8
                #echo repr address, " ", address[]
             #strm.writeData(address, plane.width)          
+    ]#
     # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
     #if planes.isSome: args.set("planes", planes.get)
     #var outclip = createMap()
     #outclip.append("clip", outnode)#clip)
+    #echo "OK----"
+    #echo repr tmpout
     return tmpout
 
 #-------------------------------------------------
 # Reads the file, applies the Simple filter and saves the result in a file
 Source("2sec.mkv").Simple.Savey4m("deleteme.y4m")
+#let clip1 = Source("2sec.mkv")
+#let clip2 = clip1.Simple
+#clip2.Pipey4m
 

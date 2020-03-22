@@ -73,6 +73,7 @@ proc checkLimits(vsmap:ptr VSMap, key:string, idx: int) =
     raise newException(ValueError, &"for key=\"{key}\", `idx` shall be <= {vsmap.len}")
 
 proc checkError(error:VSGetPropErrors, key:string, idx:int) =
+  #echo "ERROR"
   case error  
   of peIndex:
     raise newException(ValueError, &"the index \"{idx}\" is out of range")
@@ -105,36 +106,41 @@ proc propGetData*(vsmap:ptr VSMap, key:string, idx:int):string =
   ## Given a `key` retrieves the string stored at position `idx` from a map.
   checkLimits(vsmap, key, idx)
   var err = peUnset.cint
-  result = $API.propGetData(vsmap, key.cstring, idx.cint, err)
+  var perr = cast[ptr cint](unsafeAddr(err))  
+  result = $API.propGetData(vsmap, key.cstring, idx.cint, perr)
   checkError(err.VSGetPropErrors, key, idx)
 
 proc propGetDataSize*(vsmap:ptr VSMap, key:string, idx:int ):int = 
   ## Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
   checkLimits(vsmap, key, idx)  
-  var err = peUnset.cint  
-  result = API.propGetDataSize(vsmap, key.cstring,idx.cint,err).int
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err))  
+  result = API.propGetDataSize(vsmap, key.cstring,idx.cint,perr).int
   checkError(err.VSGetPropErrors, key, idx)
 
 proc propGetInt*(vsmap:ptr VSMap, key:string, idx:int):int = 
   ## Given a `key` retrieves the integer value stored at position `idx` from a map.
   checkLimits(vsmap, key, idx)  
-  var err = peUnset.cint  
-  result = API.propGetInt(vsmap, key.cstring, idx.cint, err).int
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err))  
+  result = API.propGetInt(vsmap, key.cstring, idx.cint, perr).int
   checkError(err.VSGetPropErrors, key, idx)
 
 proc propGetFloat*(vsmap:ptr VSMap, key:string, idx:int):float =
   ## Given a `key` retrieves the integer value stored at position `idx` from a map.
   checkLimits(vsmap, key, idx)  
-  var err = peUnset.cint  
-  result = API.propGetFloat(vsmap, key.cstring, idx.cint, err).float
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err)) 
+  result = API.propGetFloat(vsmap, key.cstring, idx.cint, perr).float
   checkError(err.VSGetPropErrors, key, idx)
 
 proc propGetIntArray*(vsmap:ptr VSMap, key:string):seq[int] = 
   ## Retrieves an array of integers from a map.
   var err = peUnset.cint
-  let address = API.propGetIntArray(vsmap, key.cstring, err)
+  var perr = cast[ptr cint](unsafeAddr(err))
+  let address = API.propGetIntArray(vsmap, key.cstring, perr)
   let size = vsmap.propNumElements(key)
-  if err == peType:
+  if err.VSGetPropErrors == peType:
     raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
 
   var data = newSeq[int](size)
@@ -144,10 +150,11 @@ proc propGetIntArray*(vsmap:ptr VSMap, key:string):seq[int] =
 
 proc propGetFloatArray*(vsmap:ptr VSMap, key:string):seq[float] =
   ## Retrieves an array of floating point numbers from a map.
-  var err = peUnset.cint  
-  let address = API.propGetFloatArray(vsmap, key.cstring, err)
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err)) 
+  let address = API.propGetFloatArray(vsmap, key.cstring, perr)
   let size = vsmap.propNumElements(key)
-  if err == peType:
+  if err.VSGetPropErrors == peType:
     raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
 
   var data = newSeq[float](size)
@@ -157,23 +164,26 @@ proc propGetFloatArray*(vsmap:ptr VSMap, key:string):seq[float] =
 
 proc propGetNode*( vsmap:ptr VSMap, key:string, idx:int):ptr VSNodeRef =
   ## Retrieves a node from a map.
-  checkLimits(vsmap, key, idx)   
-  var err = peUnset.cint   
-  result = API.propGetNode(vsmap, key.cstring, idx.cint, err)  
-  checkError(err.VSGetPropErrors, key, idx)  
+  checkLimits(vsmap, key, idx)
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err))   
+  result = API.propGetNode(vsmap, key.cstring, idx.cint, perr)  
+  checkError(err.VSGetPropErrors, key, idx)
 
 proc propGetFrame*( vsmap:ptr VSMap, key:string, idx:int):ptr VSFrameRef =
   ## Retrieves a frame from a map.
   checkLimits(vsmap, key, idx)   
-  var err = peUnset.cint   
-  result = API.propGetFrame(vsmap, key.cstring, idx.cint, err)
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err))  
+  result = API.propGetFrame(vsmap, key.cstring, idx.cint, perr)
   checkError(err.VSGetPropErrors, key, idx)    
 
 proc propGetFunc*( vsmap:ptr VSMap, key:string, idx:int ):ptr VSFuncRef =
   ## Retrieves a function from a map.
   checkLimits(vsmap, key, idx)   
-  var err = peUnset.cint  
-  result = API.propGetFunc(vsmap,key.cstring, idx.cint, err)
+  var err = peUnset.cint
+  var perr = cast[ptr cint](unsafeAddr(err))  
+  result = API.propGetFunc(vsmap,key.cstring, idx.cint, perr)
   checkError(err.VSGetPropErrors, key, idx)
 
 
@@ -218,7 +228,7 @@ proc append*(vsmap:ptr VSMap, key:string, data:ptr VSFuncRef) =
 
 proc set*(vsmap:ptr VSMap, key:string, data:seq[int]) =
   ## sets an integer sequence to a key
-  let p = cast[ptr int64](unsafeAddr(data[0]))
+  let p = cast[ptr cint](unsafeAddr(data[0]))
   let ret = API.propSetIntArray(vsmap, key.cstring, p, data.len.cint)
   if ret == 1:
     raise newException(ValueError, "trying to set an integer sequence to a property with the wrong type")
