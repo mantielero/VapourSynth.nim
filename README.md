@@ -152,9 +152,9 @@ real	0m0,215s
 user	0m0,143s
 sys	0m0,041s
 ```
-I don't how much would it take in pure python.
+I don't know how much would it take in pure python.
 
-The bad news: right now, it looks pretty much like a C filter.
+The bad news: right now, it looks pretty much like a C filter: [mycrop.nim](https://github.com/mantielero/VapourSynth.nim/blob/02820715470ab9f9c152f8a68dc76a60893290db/test/mycrop.nim).
 
 The good news: there is a lot of margin for improvement thanks to Nim's metaprogramming.
 
