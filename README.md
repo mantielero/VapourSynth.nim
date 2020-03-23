@@ -37,10 +37,14 @@ $ ./script | ffplay -i pipe:
 
 
 ## Current status
-It can load videos, transform them and pipe them (or store them).
+It can load videos, transform them and pipe them to stdout (or store them in a file).
 
 Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim/tree/master/src/plugins) are supposed to work (they need to be installed in your environment). 
 
+How to implement Nim functions as filters is shown in:
+
+- `test/simple.nim <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/simple.nim>`_: a very simple passthrough filter with comments
+- `test/mycrop.nim <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/mycrop.nim>`_: a crop filter inspired on `cropRelCreate <https://github.com/vapoursynth/vapoursynth/blob/R48/src/core/simplefilters.c#L251>_. Just crops a video giving `top`, `bottom`, `left` and `right`.
 
 ## Some examples
 ### Piping a video
@@ -58,6 +62,9 @@ Source("video.mkv")[0..100].Pipey4m
 import vapoursynth
 Source("video.mkv")[0..100].Transpose.Pipey4m
 ```
+
+> Functions can be chained because, rather than a clip, the input is always a `ptr VSMap`. Given that `invoke` returns `ptr VSMap`.
+
 ### Aplying one function from a plugin
 The are two requirements in order to be able to use a function from a plugin:
 
@@ -71,7 +78,6 @@ Then the function is called directly. For instance, the already used function `S
 import vapoursynth
 Source("video.mkv").Pipey4m
 ```
-
 
 
 ### Passing parameters
@@ -98,7 +104,7 @@ proc myfilter(vsmap:ptr VSMap, w:int, h:int):ptr VSMap = vsmap.Bicubic(width=som
 Source("video.mkv").myfilter(320,200).Pipey4m
 ```
 
-If you wish you can improve the readibility by doing:
+If you wish, you can improve the readibility by doing:
 ```nim
 Source("video.mkv").myfilter(w=320,h=200).Pipey4m
 ```
@@ -131,8 +137,32 @@ Pipey4m(clip2)
 > Hereafter, I will omit the `import vapoursynth` line
 
 
-## Custom filter
-### VapourSynth plugins
+# Custom filters
+A big difference with respect Python is that filters implemented directly in Nim should be fast.
+
+Cropping 100 frames from `this video <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/2sec.mkv>`_ (854x480) with the following configuration:
+```nim
+Source("2sec.mkv").CropRel(top=some(150),bottom=some(150)).Savey4m("original.y4m")
+```
+
+takes:
+```
+$ time ./mycrop
+real	0m0,215s
+user	0m0,143s
+sys	0m0,041s
+```
+I don't how much would it take in pure python.
+
+The bad news: right now, it looks pretty much like a C filter.
+
+The good news: there is a lot of margin for improvement thanks to Nim's metaprogramming.
+
+# Additional notes. 
+
+## VapourSynth plugins
+These are a few references about how to develop plugins in vapoursynth using C. The principles remain with Nim. Nonetheless, I will try to make this a bit easier in the future.
+
 [Writting plugins](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#writing-plugins) in VapourSynth requires five functions:
 
  - `VapourSynthPluginInit`: entry point. Its purpose is to configure the plugin and to register the filters the plugin wants to export. (It has the function signature `VSFilterInit`)
@@ -154,61 +184,20 @@ Depending on activationReason, calls: `requestFrameFilter` otherwise: `getFrameF
 
 > When creating a new frame for output it is VERY EXTREMELY SUPER IMPORTANT to supply the "dominant" source frame to copy properties from. Frame props are an essential part of the filter chain and you should NEVER break it.
 
-Calls: `newVideoFrame`
-
-> Then, It's processing loop time! Loop over all the planes
-
-
-```c
-int plane;
-for (plane = 0; plane < fi->numPlanes; plane++) {
-    const uint8_t *srcp = vsapi->getReadPtr(src, plane);
-    int src_stride = vsapi->getStride(src, plane);
-    uint8_t *dstp = vsapi->getWritePtr(dst, plane);
-    int dst_stride = vsapi->getStride(dst, plane); // note that if a frame has the same dimensions and format, the stride is guaranteed to be the same. int dst_stride = src_stride would be fine too in this filter.
-    // Since planes may be subsampled you have to query the height of them individually
-    int h = vsapi->getFrameHeight(src, plane);
-    int y;
-    int w = vsapi->getFrameWidth(src, plane);
-    int x;
-
-    for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++)
-            dstp[x] = ~srcp[x];
-
-        dstp += dst_stride;
-        srcp += src_stride;
-    }
-}
-```
-
 > Release the source frame
 
 > Return destination
 
-## Nim filter
-La clave es la función [createFilter](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#createfilter) y quizá la función [registerFunction](http://www.vapoursynth.com/doc/api/vapoursynth.h.html#registerfunction).
-
-
-
-The idea is to avoid all that an just to have a Nim function.
-Probably using [ModifyFrame](http://www.vapoursynth.com/doc/functions/modifyframe.html), and then something equivalent to `getFrame`
-
-https://github.com/vapoursynth/vapoursynth/blob/aa075b009fd4bdbf6aad7b4784092e79eb2f680c/src/core/simplefilters.c#L1620
-
-
 
 ## TODO
 
-- [DONE] Simplify the wrapper with some overloading.
-- [ ] To use better naming given the advantages provided by Nim.
-- [DONE] Better handling of errors.
 - [PARTIAL] Helper functions for +, [], ...
 
   - [DONE] The whole clip: clip[1:]
   - Reversed: clip[end:-1:1]
   - Odd: clip[1:2:end]
   - Even: clip[2:2:end]
+  - Some functions no write filters
 
 - [ ] Better documentation
 - [WON'T WORK] Does it work with nimscript? Given Nimscript limitation: "Nim's FFI (foreign function interface) is not available in NimScript. This means that any stdlib module which relies on importc can not be used in the VM."
@@ -217,13 +206,8 @@ https://github.com/vapoursynth/vapoursynth/blob/aa075b009fd4bdbf6aad7b4784092e79
 - [ ] To enable loading plugins manually.
 - [ ] To enable loading AVS scripts (for instance for deinlerlacing). Options are [AviSource](http://avisynth.nl/index.php/AviSource). [VS_AvsReader](https://github.com/chikuzen/VS_AvsReader) and [vsavsreader](https://forum.doom9.org/showthread.php?t=165957)
 - [ ] To take a look at [Home Of VapourSynth Evolution](https://github.com/HomeOfVapourSynthEvolution/havsfunc/blob/master/havsfunc.py)
+- [ ] To compare with this [filter in pure python](https://forum.doom9.org/showthread.php?t=172206)
 
-- [ ] Developping plugins directly in Nim (maybe is already possible). In any case, check: [Escribir Filtros](http://avisynth.nl/index.php/Filter_SDK), [InvertNeg](http://avisynth.nl/index.php/Filter_SDK/InvertNeg), [AddGrain](https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain/blob/master/AddGrain/AddGrain.cpp), [filter in python](https://forum.doom9.org/showthread.php?t=172206)
-
-
-## Note for developpers
-### Note on plugins function's signatures
-Rather than a clip, the input is always a `ptr VSMap`. Given than `invoke` returns `ptr VSMap`, this enables chaining function scheme shown in the example.
 
 # Vapoursynth Tutorial 
 https://hackmd.io/@Se1ry_ZUSminEO7QQyVHAQ/HJwtY1WV7?type=view
@@ -233,4 +217,4 @@ https://hackmd.io/@Se1ry_ZUSminEO7QQyVHAQ/HJwtY1WV7?type=view
 https://forum.doom9.org/showthread.php?t=175141
 https://forum.doom9.org/showthread.php?t=165957
 
-
+[AddGrain](https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain/blob/master/AddGrain/AddGrain.cpp), 

@@ -77,7 +77,7 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
   let vinfo = getVideoInfo(node)
   #echo "Number of frames: ", vinfo.numFrames
   for i in 0..<vinfo.numFrames:
-    echo "Writting frame: ", i
+    #echo "Writting frame: ", i
     strm.writeLine("FRAME")
     let frame = node.getFrame(i)
     let format = frame.getFrameFormat.toFormat
