@@ -43,8 +43,8 @@ Currently, the following [plugins](https://github.com/mantielero/VapourSynth.nim
 
 How to implement Nim functions as filters is shown in:
 
-- `test/simple.nim <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/simple.nim>`_: a very simple passthrough filter with comments
-- `test/mycrop.nim <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/mycrop.nim>`_: a crop filter inspired on `cropRelCreate <https://github.com/vapoursynth/vapoursynth/blob/R48/src/core/simplefilters.c#L251>_. Just crops a video giving `top`, `bottom`, `left` and `right`.
+- [test/simple.nim](https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/simple.nim): a very simple passthrough filter with comments
+- [test/mycrop.nim](https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/mycrop.nim): a crop filter inspired on [cropRelCreate](https://github.com/vapoursynth/vapoursynth/blob/R48/src/core/simplefilters.c#L251). Just crops a video giving `top`, `bottom`, `left` and `right`.
 
 ## Some examples
 ### Piping a video
@@ -140,7 +140,7 @@ Pipey4m(clip2)
 # Custom filters
 A big difference with respect Python is that filters implemented directly in Nim should be fast.
 
-Cropping 100 frames from `this video <https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/2sec.mkv>`_ (854x480) with the following configuration:
+Cropping 100 frames from [this video](https://github.com/mantielero/VapourSynth.nim/blob/a022a045694c2bf1e93d821ff87f6a0a8916f098/test/2sec.mkv) (854x480) with the following configuration:
 ```nim
 Source("2sec.mkv").CropRel(top=some(150),bottom=some(150)).Savey4m("original.y4m")
 ```
