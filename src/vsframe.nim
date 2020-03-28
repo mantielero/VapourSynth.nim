@@ -132,6 +132,7 @@ proc getStride*( frame: ptr VSFrameRef, plane:int ):int =
   ## Returns the distance in bytes between two consecutive lines of a plane of a frame. The stride is always positive (`getStride <http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getstride>`_).
   return API.getStride(frame, plane.cint)
 
+#[
 proc get*(plane:Plane, row:int, column:int):uint8 =
   if row < 0:
     raise newException(ValueError, "row <0")
@@ -152,7 +153,7 @@ proc get*(plane:Plane, row:int, column:int):uint8 =
   #let address = cast[pointer]( cast[int](plane.`ptr`) + tmp )
   #cast[uint8](address)
   #cast[uint8]( plane.`ptr`)[row*plane.stride + column ]
-
+]#
 #[
 https://stackoverflow.com/questions/22340279/extract-luminance-data-using-ffmpeg-libavfilter-specifically-pix-fmt-yuv420p-ty
 
@@ -247,3 +248,14 @@ proc newVideoFrame*(src:ptr VSFrameRef,width:Natural,height:Natural):ptr VSFrame
   let fi = API.getFrameFormat(src)
   API.newVideoFrame(fi, width.cint, height.cint, src, CORE)
 
+
+# TODO: This should take into account the bytesPerSample
+proc get*(plane:var Plane, row:int, col:int):int = 
+  if row < 0 or col < 0 or row > plane.height-1 or col > plane.width-1:
+    return 0
+  var tmp = cast[ptr UncheckedArray[uint8]](cast[int](plane.ptrIniRead) + plane.stride * row )
+  return int(tmp[col * plane.bytesPerSample])
+
+proc set*(plane:var Plane, row:int, col:int, val:uint8) = 
+  var tmp = cast[ptr UncheckedArray[uint8]](cast[int](plane.ptrIniWrite) + plane.stride * row )
+  tmp[col * plane.bytesPerSample] = val

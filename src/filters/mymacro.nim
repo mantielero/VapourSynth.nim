@@ -90,7 +90,7 @@ macro newFilter*(fname:untyped, body:untyped):untyped =
 
   let dataSymbol = newIdentNode("data")
   funcBody.add quote do:
-    var `dataSymbol`: MyCropRelData
+    var `dataSymbol`: `userDataType`
 
 
   for p in parameters:
