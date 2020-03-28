@@ -27,11 +27,8 @@ newFilter("DrawFrame"):
                                 srcPlane.get(row,col+1) * 2 +
                                 srcPlane.get(row+1,col-1) +
                                 srcPlane.get(row+1,col) * 2 +
-                                srcPlane.get(row+1,col+1) ).int              
-              value = (value / 16).int  #(value.float / 16.0).uint8
-              
-              #let value = srcPlane.get(row, col) 
-              dstPlane.set(row, col , value.uint8)
+                                srcPlane.get(row+1,col+1) ).int
+              dstPlane.set(row, col , (value / 16).uint8)
 
 
 #[
