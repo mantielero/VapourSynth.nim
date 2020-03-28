@@ -75,6 +75,7 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
   # YUV 4:2:0 (I420/J420/YV12) It has the luma "luminance" plane Y first, then the U chroma plane and last the V chroma plane.
 
   let vinfo = getVideoInfo(node)
+  #echo "output video: ", repr vinfo
   #echo "Number of frames: ", vinfo.numFrames
   for i in 0..<vinfo.numFrames:
     #echo "Writting frame: ", i
@@ -88,7 +89,7 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
       let size = width * height
 
       for row in 0..<plane.height:
-        let address = cast[pointer](cast[int](plane.`ptr`) + row*plane.stride)
+        let address = cast[pointer](cast[int](plane.ptrIniRead) + row*plane.stride)
         strm.writeData(address, plane.width)
     
     freeFrame( frame )  # Once we have dealt with all the planes

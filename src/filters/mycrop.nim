@@ -1,4 +1,4 @@
-import ../src/vapoursynth
+import ../vapoursynth
 import options, strformat
 ##[
 Let's implement the CropRel function from the `simplefilters.c <https://github.com/vapoursynth/vapoursynth/blob/master/src/core/simplefilters.c#L260>`_.
@@ -55,6 +55,7 @@ proc mycropGetFrame( n:cint,
       # when the filter’s activation reason is `arAllFramesReady` or `arFrameReady`.
       vsapi.requestFrameFilter(n.cint, data.node, frameCtx)
 
+
   elif activationReason.VSActivationReason == arAllFramesReady:
       # It is safe to request a frame more than once. An unimportant consequence
       # of requesting a frame more than once is that the getframe function may be
@@ -86,26 +87,6 @@ proc mycropGetFrame( n:cint,
         srcdata = cast[pointer](cast[int](srcdata) +  jumpLeft * fi.bytesPerSample)
         
         # vs_bitblt(dstdata, dststride, srcdata, srcstride, (d->width >> (plane ? fi->subSamplingW : 0)) * fi->bytesPerSample, vsapi->getFrameHeight(dst, plane));
-        #[
-static inline void vs_bitblt(void *dstp, int dst_stride, 
-                             const void *srcp, int src_stride, 
-                             size_t row_size, size_t height) {
-    if (height) {
-        if (src_stride == dst_stride && src_stride == (int)row_size) {
-            memcpy(dstp, srcp, row_size * height);
-        } else {
-            const uint8_t *srcp8 = (const uint8_t *)srcp;
-            uint8_t *dstp8 = (uint8_t *)dstp;
-            size_t i;
-            for (i = 0; i < height; i++) {
-                memcpy(dstp8, srcp8, row_size);
-                srcp8 += src_stride;
-                dstp8 += dst_stride;
-            }
-        }
-    }
-}            
-        ]#
         if data.vi.height > 0:
           let tmp = data.vi.width shr (if plane > 0:  fi.subSamplingW else: 0)
           let row_size = tmp * fi.bytesPerSample
@@ -116,8 +97,6 @@ static inline void vs_bitblt(void *dstp, int dst_stride,
               copyMem(dstdata, srcdata, row_size)
               srcdata = cast[pointer](cast[int](srcdata) + srcstride)
               dstdata = cast[pointer](cast[int](dstdata) + dststride)
-
-        
 
       # Create destination frame as a copy of the original one.
       #let dst:ptr VSFrameRef = API.copyFrame(src, CORE)
@@ -222,4 +201,4 @@ proc MyCropRel*(inClip:ptr VSMap; left=none(Natural);right=none(Natural);top=non
 #---   EXECUTION -----
 #---------------------
 # Reads the file, applies the Simple filter and saves the result in a file
-Source("2sec.mkv").CropRel(top=some(150),bottom=some(150)).Savey4m("original.y4m")
+Source("../../test/2sec.mkv").CropRel(top=some(150),bottom=some(150)).Savey4m("original.y4m")
