@@ -22,7 +22,8 @@ proc SmoothFps*(vsmap:ptr VSMap, super:ptr VSNodeRef, sdata:int, vectors:ptr VSN
   if src.isSome: args.append("src", src.get)
   if fps.isSome: args.append("fps", fps.get)
 
-  return API.invoke(plug, "SmoothFps".cstring, args)        
+  result = API.invoke(plug, "SmoothFps".cstring, args)
+  API.freeMap(args)        
 
 proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src=none(ptr VSNodeRef); src=none(ptr VSNodeRef); fps=none(float)):ptr VSMap =
   let plug = getPluginById("com.svp-team.flow2")
@@ -45,5 +46,6 @@ proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src=none(ptr VSNodeRef); 
   if src.isSome: args.append("src", src.get)
   if fps.isSome: args.append("fps", fps.get)
 
-  return API.invoke(plug, "SmoothFps_NVOF".cstring, args)        
+  result = API.invoke(plug, "SmoothFps_NVOF".cstring, args)
+  API.freeMap(args)        
 

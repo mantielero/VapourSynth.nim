@@ -20,5 +20,6 @@ proc MotionMask*(vsmap:ptr VSMap; planes=none(seq[int]); th1=none(seq[int]); th2
   if tht.isSome: args.append("tht", tht.get)
   if sc_value.isSome: args.append("sc_value", sc_value.get)
 
-  return API.invoke(plug, "MotionMask".cstring, args)        
+  result = API.invoke(plug, "MotionMask".cstring, args)
+  API.freeMap(args)        
 

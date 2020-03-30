@@ -30,5 +30,6 @@ proc nnedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); ns
   if x_nnedi3_weights_bin.isSome: args.append("x_nnedi3_weights_bin", x_nnedi3_weights_bin.get)
   if x_cpu.isSome: args.append("x_cpu", x_cpu.get)
 
-  return API.invoke(plug, "nnedi3".cstring, args)        
+  result = API.invoke(plug, "nnedi3".cstring, args)
+  API.freeMap(args)        
 

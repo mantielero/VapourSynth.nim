@@ -19,5 +19,6 @@ proc Deblock*(vsmap:ptr VSMap; quant=none(int); aoffset=none(int); boffset=none(
   if boffset.isSome: args.append("boffset", boffset.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Deblock".cstring, args)        
+  result = API.invoke(plug, "Deblock".cstring, args)
+  API.freeMap(args)        
 

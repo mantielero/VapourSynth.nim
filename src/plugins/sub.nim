@@ -28,7 +28,8 @@ proc ImageFile*(vsmap:ptr VSMap, file:string; id=none(int); palette=none(seq[int
   if primaries.isSome: args.append("primaries", primaries.get)
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
-  return API.invoke(plug, "ImageFile".cstring, args)        
+  result = API.invoke(plug, "ImageFile".cstring, args)
+  API.freeMap(args)        
 
 proc Subtitle*(vsmap:ptr VSMap, text:string; start=none(int); `end`=none(int); debuglevel=none(int); fontdir=none(string); linespacing=none(float); margins=none(seq[int]); sar=none(float); style=none(string); blend=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.subtext")
@@ -63,7 +64,8 @@ proc Subtitle*(vsmap:ptr VSMap, text:string; start=none(int); `end`=none(int); d
   if primaries.isSome: args.append("primaries", primaries.get)
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
-  return API.invoke(plug, "Subtitle".cstring, args)        
+  result = API.invoke(plug, "Subtitle".cstring, args)
+  API.freeMap(args)        
 
 proc TextFile*(vsmap:ptr VSMap, file:string; charset=none(string); scale=none(float); debuglevel=none(int); fontdir=none(string); linespacing=none(float); margins=none(seq[int]); sar=none(float); style=none(string); blend=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.subtext")
@@ -98,5 +100,6 @@ proc TextFile*(vsmap:ptr VSMap, file:string; charset=none(string); scale=none(fl
   if primaries.isSome: args.append("primaries", primaries.get)
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
-  return API.invoke(plug, "TextFile".cstring, args)        
+  result = API.invoke(plug, "TextFile".cstring, args)
+  API.freeMap(args)        
 

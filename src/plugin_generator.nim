@@ -1,4 +1,4 @@
-import VapourSynthWrapper, strformat, strutils
+import VapourSynth_wrapper, strformat, strutils
 
 let API = getVapourSynthAPI(3)
 let CORE = API.createCore(0)
@@ -195,7 +195,8 @@ proc {f.name}*({args}):ptr VSMap =
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
 {map}
-  return API.invoke(plug, "{f.name}".cstring, args)        
+  result = API.invoke(plug, "{f.name}".cstring, args)
+  API.freeMap(args)        
 
 """
     plugins_list &= (plugin.id, source)

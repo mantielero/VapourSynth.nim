@@ -29,5 +29,6 @@ proc KNLMeansCL*(vsmap:ptr VSMap; d=none(int); a=none(int); s=none(int); h=none(
   if ocl_r.isSome: args.append("ocl_r", ocl_r.get)
   if info.isSome: args.append("info", info.get)
 
-  return API.invoke(plug, "KNLMeansCL".cstring, args)        
+  result = API.invoke(plug, "KNLMeansCL".cstring, args)
+  API.freeMap(args)        
 

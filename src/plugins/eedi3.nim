@@ -31,5 +31,6 @@ proc eedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); alp
   if vthresh2.isSome: args.append("vthresh2", vthresh2.get)
   if sclip.isSome: args.append("sclip", sclip.get)
 
-  return API.invoke(plug, "eedi3".cstring, args)        
+  result = API.invoke(plug, "eedi3".cstring, args)
+  API.freeMap(args)        
 

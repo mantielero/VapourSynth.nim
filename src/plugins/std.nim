@@ -20,7 +20,8 @@ proc AddBorders*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int)
   if bottom.isSome: args.append("bottom", bottom.get)
   if color.isSome: args.set("color", color.get)
 
-  return API.invoke(plug, "AddBorders".cstring, args)        
+  result = API.invoke(plug, "AddBorders".cstring, args)
+  API.freeMap(args)        
 
 proc AssumeFPS*(vsmap:ptr VSMap; src=none(ptr VSNodeRef); fpsnum=none(int); fpsden=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -42,7 +43,8 @@ proc AssumeFPS*(vsmap:ptr VSMap; src=none(ptr VSNodeRef); fpsnum=none(int); fpsd
   if fpsnum.isSome: args.append("fpsnum", fpsnum.get)
   if fpsden.isSome: args.append("fpsden", fpsden.get)
 
-  return API.invoke(plug, "AssumeFPS".cstring, args)        
+  result = API.invoke(plug, "AssumeFPS".cstring, args)
+  API.freeMap(args)        
 
 proc Binarize*(vsmap:ptr VSMap; threshold=none(seq[float]); v0=none(seq[float]); v1=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -65,24 +67,25 @@ proc Binarize*(vsmap:ptr VSMap; threshold=none(seq[float]); v0=none(seq[float]);
   if v1.isSome: args.set("v1", v1.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Binarize".cstring, args)        
+  result = API.invoke(plug, "Binarize".cstring, args)
+  API.freeMap(args)        
 
-proc BlankClip*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(int); length=none(int); fpsnum=none(int); fpsden=none(int); color=none(seq[float]); keep=none(int)):ptr VSMap =
+proc BlankClip*( width=none(int); height=none(int); format=none(int); length=none(int); fpsnum=none(int); fpsden=none(int); color=none(seq[float]); keep=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   if plug == nil:
     raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = some(tmpSeq[0].nodes[0])
+  #let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  #if tmpSeq.len == 0:
+  #  raise newException(ValueError, "the vsmap should contain at least one item")
+  #if tmpSeq[0].nodes.len != 1:
+  #  raise newException(ValueError, "the vsmap should contain one node")
+  #var clip = some(tmpSeq[0].nodes[0])
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  if clip.isSome: args.append("clip", clip.get)
+  #if clip.isSome: args.append("clip", clip.get)
   if width.isSome: args.append("width", width.get)
   if height.isSome: args.append("height", height.get)
   if format.isSome: args.append("format", format.get)
@@ -92,7 +95,8 @@ proc BlankClip*(vsmap:ptr VSMap; width=none(int); height=none(int); format=none(
   if color.isSome: args.set("color", color.get)
   if keep.isSome: args.append("keep", keep.get)
 
-  return API.invoke(plug, "BlankClip".cstring, args)        
+  result = API.invoke(plug, "BlankClip".cstring, args)
+  API.freeMap(args)        
 
 proc BoxBlur*(vsmap:ptr VSMap; planes=none(seq[int]); hradius=none(int); hpasses=none(int); vradius=none(int); vpasses=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -116,7 +120,8 @@ proc BoxBlur*(vsmap:ptr VSMap; planes=none(seq[int]); hradius=none(int); hpasses
   if vradius.isSome: args.append("vradius", vradius.get)
   if vpasses.isSome: args.append("vpasses", vpasses.get)
 
-  return API.invoke(plug, "BoxBlur".cstring, args)        
+  result = API.invoke(plug, "BoxBlur".cstring, args)
+  API.freeMap(args)        
 
 proc Cache*(vsmap:ptr VSMap; size=none(int); fixed=none(int); make_linear=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -138,7 +143,8 @@ proc Cache*(vsmap:ptr VSMap; size=none(int); fixed=none(int); make_linear=none(i
   if fixed.isSome: args.append("fixed", fixed.get)
   if make_linear.isSome: args.append("make_linear", make_linear.get)
 
-  return API.invoke(plug, "Cache".cstring, args)        
+  result = API.invoke(plug, "Cache".cstring, args)
+  API.freeMap(args)        
 
 proc ClipToProp*(vsmap:ptr VSMap, mclip:ptr VSNodeRef; prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -159,7 +165,8 @@ proc ClipToProp*(vsmap:ptr VSMap, mclip:ptr VSNodeRef; prop=none(string)):ptr VS
   args.append("mclip", mclip)
   if prop.isSome: args.append("prop", prop.get)
 
-  return API.invoke(plug, "ClipToProp".cstring, args)        
+  result = API.invoke(plug, "ClipToProp".cstring, args)
+  API.freeMap(args)        
 
 proc Convolution*(vsmap:ptr VSMap, matrix:seq[float]; bias=none(float); divisor=none(float); planes=none(seq[int]); saturate=none(int); mode=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -184,7 +191,8 @@ proc Convolution*(vsmap:ptr VSMap, matrix:seq[float]; bias=none(float); divisor=
   if saturate.isSome: args.append("saturate", saturate.get)
   if mode.isSome: args.append("mode", mode.get)
 
-  return API.invoke(plug, "Convolution".cstring, args)        
+  result = API.invoke(plug, "Convolution".cstring, args)
+  API.freeMap(args)        
 
 proc Crop*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -207,7 +215,8 @@ proc Crop*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bott
   if top.isSome: args.append("top", top.get)
   if bottom.isSome: args.append("bottom", bottom.get)
 
-  return API.invoke(plug, "Crop".cstring, args)        
+  result = API.invoke(plug, "Crop".cstring, args)
+  API.freeMap(args)        
 
 proc CropAbs*(vsmap:ptr VSMap, width:int, height:int; left=none(int); top=none(int); x=none(int); y=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -232,7 +241,8 @@ proc CropAbs*(vsmap:ptr VSMap, width:int, height:int; left=none(int); top=none(i
   if x.isSome: args.append("x", x.get)
   if y.isSome: args.append("y", y.get)
 
-  return API.invoke(plug, "CropAbs".cstring, args)        
+  result = API.invoke(plug, "CropAbs".cstring, args)
+  API.freeMap(args)        
 
 proc CropRel*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); bottom=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -255,7 +265,8 @@ proc CropRel*(vsmap:ptr VSMap; left=none(int); right=none(int); top=none(int); b
   if top.isSome: args.append("top", top.get)
   if bottom.isSome: args.append("bottom", bottom.get)
 
-  return API.invoke(plug, "CropRel".cstring, args)        
+  result = API.invoke(plug, "CropRel".cstring, args)
+  API.freeMap(args)        
 
 proc Deflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -276,7 +287,8 @@ proc Deflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr
   if planes.isSome: args.set("planes", planes.get)
   if threshold.isSome: args.append("threshold", threshold.get)
 
-  return API.invoke(plug, "Deflate".cstring, args)        
+  result = API.invoke(plug, "Deflate".cstring, args)
+  API.freeMap(args)        
 
 proc DeleteFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -296,7 +308,8 @@ proc DeleteFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   args.append("clip", clip)
   args.set("frames", frames)
 
-  return API.invoke(plug, "DeleteFrames".cstring, args)        
+  result = API.invoke(plug, "DeleteFrames".cstring, args)
+  API.freeMap(args)        
 
 proc DoubleWeave*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -316,7 +329,8 @@ proc DoubleWeave*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
   args.append("clip", clip)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "DoubleWeave".cstring, args)        
+  result = API.invoke(plug, "DoubleWeave".cstring, args)
+  API.freeMap(args)        
 
 proc DuplicateFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -336,7 +350,8 @@ proc DuplicateFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   args.append("clip", clip)
   args.set("frames", frames)
 
-  return API.invoke(plug, "DuplicateFrames".cstring, args)        
+  result = API.invoke(plug, "DuplicateFrames".cstring, args)
+  API.freeMap(args)        
 
 proc Expr*(vsmap:ptr VSMap, expr:seq[string]; format=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -359,7 +374,8 @@ proc Expr*(vsmap:ptr VSMap, expr:seq[string]; format=none(int)):ptr VSMap =
     args.append("expr", item)
   if format.isSome: args.append("format", format.get)
 
-  return API.invoke(plug, "Expr".cstring, args)        
+  result = API.invoke(plug, "Expr".cstring, args)
+  API.freeMap(args)        
 
 proc FlipHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -378,7 +394,8 @@ proc FlipHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "FlipHorizontal".cstring, args)        
+  result = API.invoke(plug, "FlipHorizontal".cstring, args)
+  API.freeMap(args)        
 
 proc FlipVertical*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -397,7 +414,8 @@ proc FlipVertical*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "FlipVertical".cstring, args)        
+  result = API.invoke(plug, "FlipVertical".cstring, args)
+  API.freeMap(args)        
 
 proc FrameEval*(vsmap:ptr VSMap, eval:ptr VSFuncRef; prop_src=none(seq[ptr VSNodeRef])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -420,7 +438,8 @@ proc FrameEval*(vsmap:ptr VSMap, eval:ptr VSFuncRef; prop_src=none(seq[ptr VSNod
     for item in prop_src.get:
       args.append("prop_src", item)
 
-  return API.invoke(plug, "FrameEval".cstring, args)        
+  result = API.invoke(plug, "FrameEval".cstring, args)
+  API.freeMap(args)        
 
 proc FreezeFrames*(vsmap:ptr VSMap, first:seq[int], last:seq[int], replacement:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -442,7 +461,8 @@ proc FreezeFrames*(vsmap:ptr VSMap, first:seq[int], last:seq[int], replacement:s
   args.set("last", last)
   args.set("replacement", replacement)
 
-  return API.invoke(plug, "FreezeFrames".cstring, args)        
+  result = API.invoke(plug, "FreezeFrames".cstring, args)
+  API.freeMap(args)        
 
 proc Inflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -463,9 +483,10 @@ proc Inflate*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float)):ptr
   if planes.isSome: args.set("planes", planes.get)
   if threshold.isSome: args.append("threshold", threshold.get)
 
-  return API.invoke(plug, "Inflate".cstring, args)        
+  result = API.invoke(plug, "Inflate".cstring, args)
+  API.freeMap(args)        
 
-proc Interleave*(vsmap:ptr VSMap; extend=none(int); mismatch=none(int)):ptr VSMap =
+proc Interleave*(vsmap:ptr VSMap; extend=none(int); mismatch=none(int); modify_duration=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   if plug == nil:
     raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
@@ -484,8 +505,10 @@ proc Interleave*(vsmap:ptr VSMap; extend=none(int); mismatch=none(int)):ptr VSMa
     args.append("clips", item)
   if extend.isSome: args.append("extend", extend.get)
   if mismatch.isSome: args.append("mismatch", mismatch.get)
+  if modify_duration.isSome: args.append("modify_duration", modify_duration.get)
 
-  return API.invoke(plug, "Interleave".cstring, args)        
+  result = API.invoke(plug, "Interleave".cstring, args)
+  API.freeMap(args)        
 
 proc Invert*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -505,7 +528,8 @@ proc Invert*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   args.append("clip", clip)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Invert".cstring, args)        
+  result = API.invoke(plug, "Invert".cstring, args)
+  API.freeMap(args)        
 
 proc Levels*(vsmap:ptr VSMap; min_in=none(seq[float]); max_in=none(seq[float]); gamma=none(seq[float]); min_out=none(seq[float]); max_out=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -530,7 +554,8 @@ proc Levels*(vsmap:ptr VSMap; min_in=none(seq[float]); max_in=none(seq[float]); 
   if max_out.isSome: args.set("max_out", max_out.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Levels".cstring, args)        
+  result = API.invoke(plug, "Levels".cstring, args)
+  API.freeMap(args)        
 
 proc Limiter*(vsmap:ptr VSMap; min=none(seq[float]); max=none(seq[float]); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -552,7 +577,8 @@ proc Limiter*(vsmap:ptr VSMap; min=none(seq[float]); max=none(seq[float]); plane
   if max.isSome: args.set("max", max.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Limiter".cstring, args)        
+  result = API.invoke(plug, "Limiter".cstring, args)
+  API.freeMap(args)        
 
 proc LoadPlugin*(path:string; altsearchpath=none(int); forcens=none(string); forceid=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -566,7 +592,8 @@ proc LoadPlugin*(path:string; altsearchpath=none(int); forcens=none(string); for
   if forcens.isSome: args.append("forcens", forcens.get)
   if forceid.isSome: args.append("forceid", forceid.get)
 
-  return API.invoke(plug, "LoadPlugin".cstring, args)        
+  result = API.invoke(plug, "LoadPlugin".cstring, args)
+  API.freeMap(args)        
 
 proc Loop*(vsmap:ptr VSMap; times=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -586,7 +613,8 @@ proc Loop*(vsmap:ptr VSMap; times=none(int)):ptr VSMap =
   args.append("clip", clip)
   if times.isSome: args.append("times", times.get)
 
-  return API.invoke(plug, "Loop".cstring, args)        
+  result = API.invoke(plug, "Loop".cstring, args)
+  API.freeMap(args)        
 
 proc Lut*(vsmap:ptr VSMap; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(ptr VSFuncRef); bits=none(int); floatout=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -611,7 +639,8 @@ proc Lut*(vsmap:ptr VSMap; planes=none(seq[int]); lut=none(seq[int]); lutf=none(
   if bits.isSome: args.append("bits", bits.get)
   if floatout.isSome: args.append("floatout", floatout.get)
 
-  return API.invoke(plug, "Lut".cstring, args)        
+  result = API.invoke(plug, "Lut".cstring, args)
+  API.freeMap(args)        
 
 proc Lut2*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int]); lut=none(seq[int]); lutf=none(seq[float]); function=none(ptr VSFuncRef); bits=none(int); floatout=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -637,7 +666,8 @@ proc Lut2*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int]); lut=none
   if bits.isSome: args.append("bits", bits.get)
   if floatout.isSome: args.append("floatout", floatout.get)
 
-  return API.invoke(plug, "Lut2".cstring, args)        
+  result = API.invoke(plug, "Lut2".cstring, args)
+  API.freeMap(args)        
 
 proc MakeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -658,7 +688,8 @@ proc MakeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr 
   args.append("clipb", clipb)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "MakeDiff".cstring, args)        
+  result = API.invoke(plug, "MakeDiff".cstring, args)
+  API.freeMap(args)        
 
 proc MaskedMerge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; planes=none(seq[int]); first_plane=none(int); premultiplied=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -682,7 +713,8 @@ proc MaskedMerge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; plan
   if first_plane.isSome: args.append("first_plane", first_plane.get)
   if premultiplied.isSome: args.append("premultiplied", premultiplied.get)
 
-  return API.invoke(plug, "MaskedMerge".cstring, args)        
+  result = API.invoke(plug, "MaskedMerge".cstring, args)
+  API.freeMap(args)        
 
 proc Maximum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -704,7 +736,8 @@ proc Maximum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coo
   if threshold.isSome: args.append("threshold", threshold.get)
   if coordinates.isSome: args.set("coordinates", coordinates.get)
 
-  return API.invoke(plug, "Maximum".cstring, args)        
+  result = API.invoke(plug, "Maximum".cstring, args)
+  API.freeMap(args)        
 
 proc Median*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -724,7 +757,8 @@ proc Median*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   args.append("clip", clip)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Median".cstring, args)        
+  result = API.invoke(plug, "Median".cstring, args)
+  API.freeMap(args)        
 
 proc Merge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; weight=none(seq[float])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -745,7 +779,8 @@ proc Merge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; weight=none(seq[float])):ptr V
   args.append("clipb", clipb)
   if weight.isSome: args.set("weight", weight.get)
 
-  return API.invoke(plug, "Merge".cstring, args)        
+  result = API.invoke(plug, "Merge".cstring, args)
+  API.freeMap(args)        
 
 proc MergeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -766,7 +801,8 @@ proc MergeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr
   args.append("clipb", clipb)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "MergeDiff".cstring, args)        
+  result = API.invoke(plug, "MergeDiff".cstring, args)
+  API.freeMap(args)        
 
 proc Minimum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coordinates=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -788,7 +824,8 @@ proc Minimum*(vsmap:ptr VSMap; planes=none(seq[int]); threshold=none(float); coo
   if threshold.isSome: args.append("threshold", threshold.get)
   if coordinates.isSome: args.set("coordinates", coordinates.get)
 
-  return API.invoke(plug, "Minimum".cstring, args)        
+  result = API.invoke(plug, "Minimum".cstring, args)
+  API.freeMap(args)        
 
 proc ModifyFrame*(vsmap:ptr VSMap, clips:seq[ptr VSNodeRef], selector:ptr VSFuncRef):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -810,7 +847,8 @@ proc ModifyFrame*(vsmap:ptr VSMap, clips:seq[ptr VSNodeRef], selector:ptr VSFunc
     args.append("clips", item)
   args.append("selector", selector)
 
-  return API.invoke(plug, "ModifyFrame".cstring, args)        
+  result = API.invoke(plug, "ModifyFrame".cstring, args)
+  API.freeMap(args)        
 
 proc PEMVerifier*(vsmap:ptr VSMap; upper=none(seq[float]); lower=none(seq[float])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -831,7 +869,8 @@ proc PEMVerifier*(vsmap:ptr VSMap; upper=none(seq[float]); lower=none(seq[float]
   if upper.isSome: args.set("upper", upper.get)
   if lower.isSome: args.set("lower", lower.get)
 
-  return API.invoke(plug, "PEMVerifier".cstring, args)        
+  result = API.invoke(plug, "PEMVerifier".cstring, args)
+  API.freeMap(args)        
 
 proc PlaneStats*(vsmap:ptr VSMap; clipb=none(ptr VSNodeRef); plane=none(int); prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -853,7 +892,8 @@ proc PlaneStats*(vsmap:ptr VSMap; clipb=none(ptr VSNodeRef); plane=none(int); pr
   if plane.isSome: args.append("plane", plane.get)
   if prop.isSome: args.append("prop", prop.get)
 
-  return API.invoke(plug, "PlaneStats".cstring, args)        
+  result = API.invoke(plug, "PlaneStats".cstring, args)
+  API.freeMap(args)        
 
 proc PreMultiply*(vsmap:ptr VSMap, alpha:ptr VSNodeRef):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -873,7 +913,8 @@ proc PreMultiply*(vsmap:ptr VSMap, alpha:ptr VSNodeRef):ptr VSMap =
   args.append("clip", clip)
   args.append("alpha", alpha)
 
-  return API.invoke(plug, "PreMultiply".cstring, args)        
+  result = API.invoke(plug, "PreMultiply".cstring, args)
+  API.freeMap(args)        
 
 proc Prewitt*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -894,7 +935,8 @@ proc Prewitt*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSM
   if planes.isSome: args.set("planes", planes.get)
   if scale.isSome: args.append("scale", scale.get)
 
-  return API.invoke(plug, "Prewitt".cstring, args)        
+  result = API.invoke(plug, "Prewitt".cstring, args)
+  API.freeMap(args)        
 
 proc PropToClip*(vsmap:ptr VSMap; prop=none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -914,7 +956,8 @@ proc PropToClip*(vsmap:ptr VSMap; prop=none(string)):ptr VSMap =
   args.append("clip", clip)
   if prop.isSome: args.append("prop", prop.get)
 
-  return API.invoke(plug, "PropToClip".cstring, args)        
+  result = API.invoke(plug, "PropToClip".cstring, args)
+  API.freeMap(args)        
 
 proc Reverse*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -933,9 +976,10 @@ proc Reverse*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "Reverse".cstring, args)        
+  result = API.invoke(plug, "Reverse".cstring, args)
+  API.freeMap(args)        
 
-proc SelectEvery*(vsmap:ptr VSMap, cycle:int, offsets:seq[int]):ptr VSMap =
+proc SelectEvery*(vsmap:ptr VSMap, cycle:int, offsets:seq[int]; modify_duration=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   if plug == nil:
     raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
@@ -953,10 +997,12 @@ proc SelectEvery*(vsmap:ptr VSMap, cycle:int, offsets:seq[int]):ptr VSMap =
   args.append("clip", clip)
   args.append("cycle", cycle)
   args.set("offsets", offsets)
+  if modify_duration.isSome: args.append("modify_duration", modify_duration.get)
 
-  return API.invoke(plug, "SelectEvery".cstring, args)        
+  result = API.invoke(plug, "SelectEvery".cstring, args)
+  API.freeMap(args)        
 
-proc SeparateFields*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
+proc SeparateFields*(vsmap:ptr VSMap; tff=none(int); modify_duration=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   if plug == nil:
     raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
@@ -973,8 +1019,10 @@ proc SeparateFields*(vsmap:ptr VSMap; tff=none(int)):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
   if tff.isSome: args.append("tff", tff.get)
+  if modify_duration.isSome: args.append("modify_duration", modify_duration.get)
 
-  return API.invoke(plug, "SeparateFields".cstring, args)        
+  result = API.invoke(plug, "SeparateFields".cstring, args)
+  API.freeMap(args)        
 
 proc SetFieldBased*(vsmap:ptr VSMap, value:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -994,7 +1042,8 @@ proc SetFieldBased*(vsmap:ptr VSMap, value:int):ptr VSMap =
   args.append("clip", clip)
   args.append("value", value)
 
-  return API.invoke(plug, "SetFieldBased".cstring, args)        
+  result = API.invoke(plug, "SetFieldBased".cstring, args)
+  API.freeMap(args)        
 
 proc SetFrameProp*(vsmap:ptr VSMap, prop:string; delete=none(int); intval=none(seq[int]); floatval=none(seq[float]); data=none(seq[string])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1020,7 +1069,8 @@ proc SetFrameProp*(vsmap:ptr VSMap, prop:string; delete=none(int); intval=none(s
     for item in data.get:
       args.append("data", item)
 
-  return API.invoke(plug, "SetFrameProp".cstring, args)        
+  result = API.invoke(plug, "SetFrameProp".cstring, args)
+  API.freeMap(args)        
 
 proc SetMaxCPU*(cpu:string):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1031,7 +1081,8 @@ proc SetMaxCPU*(cpu:string):ptr VSMap =
   let args = createMap()
   args.append("cpu", cpu)
 
-  return API.invoke(plug, "SetMaxCPU".cstring, args)        
+  result = API.invoke(plug, "SetMaxCPU".cstring, args)
+  API.freeMap(args)        
 
 proc ShufflePlanes*(vsmap:ptr VSMap, planes:seq[int], colorfamily:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1053,7 +1104,8 @@ proc ShufflePlanes*(vsmap:ptr VSMap, planes:seq[int], colorfamily:int):ptr VSMap
   args.set("planes", planes)
   args.append("colorfamily", colorfamily)
 
-  return API.invoke(plug, "ShufflePlanes".cstring, args)        
+  result = API.invoke(plug, "ShufflePlanes".cstring, args)
+  API.freeMap(args)        
 
 proc Sobel*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1074,7 +1126,8 @@ proc Sobel*(vsmap:ptr VSMap; planes=none(seq[int]); scale=none(float)):ptr VSMap
   if planes.isSome: args.set("planes", planes.get)
   if scale.isSome: args.append("scale", scale.get)
 
-  return API.invoke(plug, "Sobel".cstring, args)        
+  result = API.invoke(plug, "Sobel".cstring, args)
+  API.freeMap(args)        
 
 proc Splice*(vsmap:ptr VSMap; mismatch=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1095,7 +1148,8 @@ proc Splice*(vsmap:ptr VSMap; mismatch=none(int)):ptr VSMap =
     args.append("clips", item)
   if mismatch.isSome: args.append("mismatch", mismatch.get)
 
-  return API.invoke(plug, "Splice".cstring, args)        
+  result = API.invoke(plug, "Splice".cstring, args)
+  API.freeMap(args)        
 
 proc StackHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1115,7 +1169,8 @@ proc StackHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   for item in clips:
     args.append("clips", item)
 
-  return API.invoke(plug, "StackHorizontal".cstring, args)        
+  result = API.invoke(plug, "StackHorizontal".cstring, args)
+  API.freeMap(args)        
 
 proc StackVertical*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1135,7 +1190,8 @@ proc StackVertical*(vsmap:ptr VSMap):ptr VSMap =
   for item in clips:
     args.append("clips", item)
 
-  return API.invoke(plug, "StackVertical".cstring, args)        
+  result = API.invoke(plug, "StackVertical".cstring, args)
+  API.freeMap(args)        
 
 proc Transpose*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1154,7 +1210,8 @@ proc Transpose*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "Transpose".cstring, args)        
+  result = API.invoke(plug, "Transpose".cstring, args)
+  API.freeMap(args)        
 
 proc Trim*(vsmap:ptr VSMap; first=none(int); last=none(int); length=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1176,7 +1233,8 @@ proc Trim*(vsmap:ptr VSMap; first=none(int); last=none(int); length=none(int)):p
   if last.isSome: args.append("last", last.get)
   if length.isSome: args.append("length", length.get)
 
-  return API.invoke(plug, "Trim".cstring, args)        
+  result = API.invoke(plug, "Trim".cstring, args)
+  API.freeMap(args)        
 
 proc Turn180*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
@@ -1195,5 +1253,6 @@ proc Turn180*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "Turn180".cstring, args)        
+  result = API.invoke(plug, "Turn180".cstring, args)
+  API.freeMap(args)        
 

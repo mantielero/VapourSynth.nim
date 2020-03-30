@@ -117,9 +117,11 @@ macro newFilter*(fname:untyped, body:untyped):untyped =
   assert (body[1].kind == nnkCall)
   if eqIdent( body[1][0], "validation"):
     let validationLines = body[1][1]
+    #let inClip = newIdentNode(  )
     funcBody.add quote do:
       # Validation lines from the "validation:" macro section
       `validationLines`
+      #freeFrame(inClip)
       
 #[
 

@@ -43,7 +43,7 @@ type
     fmUnordered = 300,          ##  for filters that modify their internal state every request
     fmSerial = 400
   VSFormat* {.bycopy.} = object
-    name*: array[32, char]
+    name*: array[32, cchar]
     id*: cint
     colorFamily*: cint         ##  see VSColorFamily
     sampleType*: cint          ##  see VSSampleType

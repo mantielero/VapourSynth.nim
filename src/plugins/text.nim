@@ -16,7 +16,8 @@ proc ClipInfo*(vsmap:ptr VSMap; alignment=none(int)):ptr VSMap =
   args.append("clip", clip)
   if alignment.isSome: args.append("alignment", alignment.get)
 
-  return API.invoke(plug, "ClipInfo".cstring, args)        
+  result = API.invoke(plug, "ClipInfo".cstring, args)
+  API.freeMap(args)        
 
 proc CoreInfo*(vsmap:ptr VSMap; alignment=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
@@ -36,7 +37,8 @@ proc CoreInfo*(vsmap:ptr VSMap; alignment=none(int)):ptr VSMap =
   if clip.isSome: args.append("clip", clip.get)
   if alignment.isSome: args.append("alignment", alignment.get)
 
-  return API.invoke(plug, "CoreInfo".cstring, args)        
+  result = API.invoke(plug, "CoreInfo".cstring, args)
+  API.freeMap(args)        
 
 proc FrameNum*(vsmap:ptr VSMap; alignment=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
@@ -56,7 +58,8 @@ proc FrameNum*(vsmap:ptr VSMap; alignment=none(int)):ptr VSMap =
   args.append("clip", clip)
   if alignment.isSome: args.append("alignment", alignment.get)
 
-  return API.invoke(plug, "FrameNum".cstring, args)        
+  result = API.invoke(plug, "FrameNum".cstring, args)
+  API.freeMap(args)        
 
 proc FrameProps*(vsmap:ptr VSMap; props=none(seq[string]); alignment=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
@@ -79,7 +82,8 @@ proc FrameProps*(vsmap:ptr VSMap; props=none(seq[string]); alignment=none(int)):
       args.append("props", item)
   if alignment.isSome: args.append("alignment", alignment.get)
 
-  return API.invoke(plug, "FrameProps".cstring, args)        
+  result = API.invoke(plug, "FrameProps".cstring, args)
+  API.freeMap(args)        
 
 proc Text*(vsmap:ptr VSMap, text:string; alignment=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
@@ -100,5 +104,6 @@ proc Text*(vsmap:ptr VSMap, text:string; alignment=none(int)):ptr VSMap =
   args.append("text", text)
   if alignment.isSome: args.append("alignment", alignment.get)
 
-  return API.invoke(plug, "Text".cstring, args)        
+  result = API.invoke(plug, "Text".cstring, args)
+  API.freeMap(args)        
 

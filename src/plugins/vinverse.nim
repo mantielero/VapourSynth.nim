@@ -18,5 +18,6 @@ proc Vinverse*(vsmap:ptr VSMap; sstr=none(float); amnt=none(int); scl=none(float
   if amnt.isSome: args.append("amnt", amnt.get)
   if scl.isSome: args.append("scl", scl.get)
 
-  return API.invoke(plug, "Vinverse".cstring, args)        
+  result = API.invoke(plug, "Vinverse".cstring, args)
+  API.freeMap(args)        
 

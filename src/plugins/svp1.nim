@@ -18,7 +18,8 @@ proc Analyse*(vsmap:ptr VSMap, sdata:int, src:ptr VSNodeRef, opt:string):ptr VSM
   args.append("src", src)
   args.append("opt", opt)
 
-  return API.invoke(plug, "Analyse".cstring, args)        
+  result = API.invoke(plug, "Analyse".cstring, args)
+  API.freeMap(args)        
 
 proc Super*(vsmap:ptr VSMap, opt:string):ptr VSMap =
   let plug = getPluginById("com.svp-team.flow1")
@@ -38,5 +39,6 @@ proc Super*(vsmap:ptr VSMap, opt:string):ptr VSMap =
   args.append("clip", clip)
   args.append("opt", opt)
 
-  return API.invoke(plug, "Super".cstring, args)        
+  result = API.invoke(plug, "Super".cstring, args)
+  API.freeMap(args)        
 

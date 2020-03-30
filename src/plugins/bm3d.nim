@@ -26,7 +26,8 @@ proc Basic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); si
   if hard_thr.isSome: args.append("hard_thr", hard_thr.get)
   if matrix.isSome: args.append("matrix", matrix.get)
 
-  return API.invoke(plug, "Basic".cstring, args)        
+  result = API.invoke(plug, "Basic".cstring, args)
+  API.freeMap(args)        
 
 proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -55,7 +56,8 @@ proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=no
   if th_mse.isSome: args.append("th_mse", th_mse.get)
   if matrix.isSome: args.append("matrix", matrix.get)
 
-  return API.invoke(plug, "Final".cstring, args)        
+  result = API.invoke(plug, "Final".cstring, args)
+  API.freeMap(args)        
 
 proc OPP2RGB*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -75,7 +77,8 @@ proc OPP2RGB*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   args.append("input", input)
   if sample.isSome: args.append("sample", sample.get)
 
-  return API.invoke(plug, "OPP2RGB".cstring, args)        
+  result = API.invoke(plug, "OPP2RGB".cstring, args)
+  API.freeMap(args)        
 
 proc RGB2OPP*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -95,7 +98,8 @@ proc RGB2OPP*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   args.append("input", input)
   if sample.isSome: args.append("sample", sample.get)
 
-  return API.invoke(plug, "RGB2OPP".cstring, args)        
+  result = API.invoke(plug, "RGB2OPP".cstring, args)
+  API.freeMap(args)        
 
 proc VAggregate*(vsmap:ptr VSMap; radius=none(int); sample=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -116,7 +120,8 @@ proc VAggregate*(vsmap:ptr VSMap; radius=none(int); sample=none(int)):ptr VSMap 
   if radius.isSome: args.append("radius", radius.get)
   if sample.isSome: args.append("sample", sample.get)
 
-  return API.invoke(plug, "VAggregate".cstring, args)        
+  result = API.invoke(plug, "VAggregate".cstring, args)
+  API.freeMap(args)        
 
 proc VBasic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -150,7 +155,8 @@ proc VBasic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); s
   if hard_thr.isSome: args.append("hard_thr", hard_thr.get)
   if matrix.isSome: args.append("matrix", matrix.get)
 
-  return API.invoke(plug, "VBasic".cstring, args)        
+  result = API.invoke(plug, "VBasic".cstring, args)
+  API.freeMap(args)        
 
 proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
@@ -183,5 +189,6 @@ proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=n
   if th_mse.isSome: args.append("th_mse", th_mse.get)
   if matrix.isSome: args.append("matrix", matrix.get)
 
-  return API.invoke(plug, "VFinal".cstring, args)        
+  result = API.invoke(plug, "VFinal".cstring, args)
+  API.freeMap(args)        
 

@@ -41,5 +41,6 @@ proc DFTTest*(vsmap:ptr VSMap; ftype=none(int); sigma=none(float); sigma2=none(f
   if planes.isSome: args.set("planes", planes.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "DFTTest".cstring, args)        
+  result = API.invoke(plug, "DFTTest".cstring, args)
+  API.freeMap(args)        
 

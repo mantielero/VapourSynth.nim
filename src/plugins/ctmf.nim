@@ -19,5 +19,6 @@ proc CTMF*(vsmap:ptr VSMap; radius=none(int); memsize=none(int); opt=none(int); 
   if opt.isSome: args.append("opt", opt.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "CTMF".cstring, args)        
+  result = API.invoke(plug, "CTMF".cstring, args)
+  API.freeMap(args)        
 

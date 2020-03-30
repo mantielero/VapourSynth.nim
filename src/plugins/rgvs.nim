@@ -16,7 +16,8 @@ proc BackwardClense*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   args.append("clip", clip)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "BackwardClense".cstring, args)        
+  result = API.invoke(plug, "BackwardClense".cstring, args)
+  API.freeMap(args)        
 
 proc Clense*(vsmap:ptr VSMap; previous=none(ptr VSNodeRef); next=none(ptr VSNodeRef); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
@@ -38,7 +39,8 @@ proc Clense*(vsmap:ptr VSMap; previous=none(ptr VSNodeRef); next=none(ptr VSNode
   if next.isSome: args.append("next", next.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Clense".cstring, args)        
+  result = API.invoke(plug, "Clense".cstring, args)
+  API.freeMap(args)        
 
 proc ForwardClense*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
@@ -58,7 +60,8 @@ proc ForwardClense*(vsmap:ptr VSMap; planes=none(seq[int])):ptr VSMap =
   args.append("clip", clip)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "ForwardClense".cstring, args)        
+  result = API.invoke(plug, "ForwardClense".cstring, args)
+  API.freeMap(args)        
 
 proc RemoveGrain*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
@@ -78,7 +81,8 @@ proc RemoveGrain*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   args.append("clip", clip)
   args.set("mode", mode)
 
-  return API.invoke(plug, "RemoveGrain".cstring, args)        
+  result = API.invoke(plug, "RemoveGrain".cstring, args)
+  API.freeMap(args)        
 
 proc Repair*(vsmap:ptr VSMap, repairclip:ptr VSNodeRef, mode:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
@@ -99,7 +103,8 @@ proc Repair*(vsmap:ptr VSMap, repairclip:ptr VSNodeRef, mode:seq[int]):ptr VSMap
   args.append("repairclip", repairclip)
   args.set("mode", mode)
 
-  return API.invoke(plug, "Repair".cstring, args)        
+  result = API.invoke(plug, "Repair".cstring, args)
+  API.freeMap(args)        
 
 proc VerticalCleaner*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
@@ -119,5 +124,6 @@ proc VerticalCleaner*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   args.append("clip", clip)
   args.set("mode", mode)
 
-  return API.invoke(plug, "VerticalCleaner".cstring, args)        
+  result = API.invoke(plug, "VerticalCleaner".cstring, args)
+  API.freeMap(args)        
 

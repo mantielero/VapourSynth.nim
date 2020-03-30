@@ -19,5 +19,6 @@ proc SangNom*(vsmap:ptr VSMap; order=none(int); dh=none(int); aa=none(seq[int]);
   if aa.isSome: args.set("aa", aa.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "SangNom".cstring, args)        
+  result = API.invoke(plug, "SangNom".cstring, args)
+  API.freeMap(args)        
 

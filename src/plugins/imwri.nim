@@ -12,7 +12,8 @@ proc Read*(filename:seq[string]; firstnum=none(int); mismatch=none(int); alpha=n
   if alpha.isSome: args.append("alpha", alpha.get)
   if float_output.isSome: args.append("float_output", float_output.get)
 
-  return API.invoke(plug, "Read".cstring, args)        
+  result = API.invoke(plug, "Read".cstring, args)
+  API.freeMap(args)        
 
 proc Write*(vsmap:ptr VSMap, imgformat:string, filename:string; firstnum=none(int); quality=none(int); dither=none(int); compression_type=none(string); overwrite=none(int); alpha=none(ptr VSNodeRef)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.imwri")
@@ -39,5 +40,6 @@ proc Write*(vsmap:ptr VSMap, imgformat:string, filename:string; firstnum=none(in
   if overwrite.isSome: args.append("overwrite", overwrite.get)
   if alpha.isSome: args.append("alpha", alpha.get)
 
-  return API.invoke(plug, "Write".cstring, args)        
+  result = API.invoke(plug, "Write".cstring, args)
+  API.freeMap(args)        
 

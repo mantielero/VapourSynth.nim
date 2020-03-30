@@ -18,7 +18,8 @@ proc SmoothST*(vsmap:ptr VSMap; temporal_threshold=none(int); spatial_threshold=
   if spatial_threshold.isSome: args.append("spatial_threshold", spatial_threshold.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "SmoothST".cstring, args)        
+  result = API.invoke(plug, "SmoothST".cstring, args)
+  API.freeMap(args)        
 
 proc SmoothT*(vsmap:ptr VSMap; temporal_threshold=none(int); planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.nodame.fluxsmooth")
@@ -39,5 +40,6 @@ proc SmoothT*(vsmap:ptr VSMap; temporal_threshold=none(int); planes=none(seq[int
   if temporal_threshold.isSome: args.append("temporal_threshold", temporal_threshold.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "SmoothT".cstring, args)        
+  result = API.invoke(plug, "SmoothT".cstring, args)
+  API.freeMap(args)        
 

@@ -20,5 +20,6 @@ proc Hqdn3d*(vsmap:ptr VSMap; lum_spac=none(float); chrom_spac=none(float); lum_
   if chrom_tmp.isSome: args.append("chrom_tmp", chrom_tmp.get)
   if restart_lap.isSome: args.append("restart_lap", restart_lap.get)
 
-  return API.invoke(plug, "Hqdn3d".cstring, args)        
+  result = API.invoke(plug, "Hqdn3d".cstring, args)
+  API.freeMap(args)        
 

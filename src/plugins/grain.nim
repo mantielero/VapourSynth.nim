@@ -21,5 +21,6 @@ proc Add*(vsmap:ptr VSMap; `var`=none(float); uvar=none(float); hcorr=none(float
   if seed.isSome: args.append("seed", seed.get)
   if constant.isSome: args.append("constant", constant.get)
 
-  return API.invoke(plug, "Add".cstring, args)        
+  result = API.invoke(plug, "Add".cstring, args)
+  API.freeMap(args)        
 

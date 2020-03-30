@@ -25,5 +25,6 @@ proc EEDI2*(vsmap:ptr VSMap, field:int; mthresh=none(int); lthresh=none(int); vt
   if nt.isSome: args.append("nt", nt.get)
   if pp.isSome: args.append("pp", pp.get)
 
-  return API.invoke(plug, "EEDI2".cstring, args)        
+  result = API.invoke(plug, "EEDI2".cstring, args)
+  API.freeMap(args)        
 

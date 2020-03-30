@@ -24,7 +24,8 @@ proc VDecimate*(vsmap:ptr VSMap; cycle=none(int); chroma=none(int); dupthresh=no
   if ovr.isSome: args.append("ovr", ovr.get)
   if dryrun.isSome: args.append("dryrun", dryrun.get)
 
-  return API.invoke(plug, "VDecimate".cstring, args)        
+  result = API.invoke(plug, "VDecimate".cstring, args)
+  API.freeMap(args)        
 
 proc VFM*(vsmap:ptr VSMap, order:int; field=none(int); mode=none(int); mchroma=none(int); cthresh=none(int); mi=none(int); chroma=none(int); blockx=none(int); blocky=none(int); y0=none(int); y1=none(int); scthresh=none(float); micmatch=none(int); micout=none(int); clip2=none(ptr VSNodeRef)):ptr VSMap =
   let plug = getPluginById("org.ivtc.v")
@@ -58,5 +59,6 @@ proc VFM*(vsmap:ptr VSMap, order:int; field=none(int); mode=none(int); mchroma=n
   if micout.isSome: args.append("micout", micout.get)
   if clip2.isSome: args.append("clip2", clip2.get)
 
-  return API.invoke(plug, "VFM".cstring, args)        
+  result = API.invoke(plug, "VFM".cstring, args)
+  API.freeMap(args)        
 

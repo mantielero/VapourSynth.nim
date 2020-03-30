@@ -20,5 +20,6 @@ proc Recognize*(vsmap:ptr VSMap; datapath=none(string); language=none(string); o
     for item in options.get:
       args.append("options", item)
 
-  return API.invoke(plug, "Recognize".cstring, args)        
+  result = API.invoke(plug, "Recognize".cstring, args)
+  API.freeMap(args)        
 

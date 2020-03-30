@@ -21,7 +21,8 @@ proc Bilateral*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); sigmaS=none(seq[floa
   if algorithm.isSome: args.set("algorithm", algorithm.get)
   if PBFICnum.isSome: args.set("PBFICnum", PBFICnum.get)
 
-  return API.invoke(plug, "Bilateral".cstring, args)        
+  result = API.invoke(plug, "Bilateral".cstring, args)
+  API.freeMap(args)        
 
 proc Gaussian*(vsmap:ptr VSMap; sigma=none(seq[float]); sigmaV=none(seq[float])):ptr VSMap =
   let plug = getPluginById("mawen1250.Bilateral")
@@ -42,5 +43,6 @@ proc Gaussian*(vsmap:ptr VSMap; sigma=none(seq[float]); sigmaV=none(seq[float]))
   if sigma.isSome: args.set("sigma", sigma.get)
   if sigmaV.isSome: args.set("sigmaV", sigmaV.get)
 
-  return API.invoke(plug, "Gaussian".cstring, args)        
+  result = API.invoke(plug, "Gaussian".cstring, args)
+  API.freeMap(args)        
 

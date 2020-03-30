@@ -46,5 +46,6 @@ proc FFT3DFilter*(vsmap:ptr VSMap; sigma=none(float); beta=none(float); planes=n
   if ht.isSome: args.append("ht", ht.get)
   if ncpu.isSome: args.append("ncpu", ncpu.get)
 
-  return API.invoke(plug, "FFT3DFilter".cstring, args)        
+  result = API.invoke(plug, "FFT3DFilter".cstring, args)
+  API.freeMap(args)        
 

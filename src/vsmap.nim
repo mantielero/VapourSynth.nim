@@ -110,6 +110,7 @@ proc propGetData*(vsmap:ptr VSMap, key:string, idx:int):string =
   result = $API.propGetData(vsmap, key.cstring, idx.cint, perr)
   checkError(err.VSGetPropErrors, key, idx)
 
+
 proc propGetDataSize*(vsmap:ptr VSMap, key:string, idx:int ):int = 
   ## Returns the size in bytes of a property of type ptData (see VSPropTypes), or 0 in case of error. The terminating NULL byte added by propSetData() is not counted.
   checkLimits(vsmap, key, idx)  
@@ -230,6 +231,7 @@ proc set*(vsmap:ptr VSMap, key:string, data:seq[int]) =
   ## sets an integer sequence to a key
   let p = cast[ptr cint](unsafeAddr(data[0]))
   let ret = API.propSetIntArray(vsmap, key.cstring, p, data.len.cint)
+  # proc (map: ptr VSMap; key: cstring; i: ptr cint; size: cint): cint
   if ret == 1:
     raise newException(ValueError, "trying to set an integer sequence to a property with the wrong type")
 
@@ -256,15 +258,6 @@ proc propSetData*(vsmap:ptr VSMap, key:string, data:string, append:VSPropAppendM
 ]#
 
 #[
-type 
-  Tints      = tuple[key:string,value:seq[int]]
-  Tfloats    = tuple[key:string,value:seq[float]] 
-  Tstrings   = tuple[key:string,value:seq[string]]
-  Tnodes     = tuple[key:string,value:seq[ptr VSNodeRef]]
-  Tframes    = tuple[key:string,value:seq[ptr VSFrameRef]]
-  Tfunctions = tuple[key:string,value:seq[ptr VSFuncRef]]
-  Tunset     = tuple[key:string]
-  
 
 proc get(vsmap:ptr VSMap, idx:int):Tints|Tfloats|Tstrings|Tnodes|Tframes|Tfunctions|Tunset =
   ## Retrieves the value given an index (this is very important to take the first one)
@@ -440,3 +433,9 @@ proc `[]`*(vsmap:ptr VSMap;hs:HSlice):ptr VSMap =  #;clip:Natural=0
 
 # SelectEvery
 # Splice
+
+proc getFirstNode*(vsmap:ptr VSMap):ptr VSNodeRef =
+  let key = propGetKey(vsmap,0)
+  assert( key == "clip", "expecting \"clip\" as first item in VSMap" )
+  
+  return vsmap.propGetNode("clip",0)

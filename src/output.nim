@@ -74,46 +74,52 @@ proc writeY4mFrames(strm:FileStream, node:ptr VSNodeRef) =
   # The U and V planes are one quarter (half the height and half the width) the resolution of the Y plane. So each byte is 4 pixels (2 wide 2 tall).
   # YUV 4:2:0 (I420/J420/YV12) It has the luma "luminance" plane Y first, then the U chroma plane and last the V chroma plane.
 
-  let vinfo = getVideoInfo(node)
-  #echo "output video: ", repr vinfo
-  #echo "Number of frames: ", vinfo.numFrames
+  let vinfo = API.getVideoInfo(node) # video info pointer
   for i in 0..<vinfo.numFrames:
     #echo "Writting frame: ", i
     strm.writeLine("FRAME")
     let frame = node.getFrame(i)
-    let format = frame.getFrameFormat.toFormat
+    let format = frame.getFrameFormat#.toFormat
     for i in 0..<format.numPlanes:
-      let plane = frame.getPlane(i)
-      let width = plane.width
-      let height = plane.height
-      let size = width * height
-
-      for row in 0..<plane.height:
-        let address = cast[pointer](cast[int](plane.ptrIniRead) + row*plane.stride)
-        strm.writeData(address, plane.width)
+      #let plane = frame.getPlane(i)
+      let width  = getFrameWidth( frame, i )
+      let height = getFrameHeight( frame, i )      
+      #let width = plane.width
+      #let height = plane.height
+      #let size = width * height
+      let init = cast[int]( getReadPtr(frame, i) )
+      let stride = getStride(frame, i)
+      for row in 0..<height:
+        let address = cast[pointer]( init + row * stride)
+        strm.writeData(address, width)
     
     freeFrame( frame )  # Once we have dealt with all the planes
   strm.flush()
 
 proc Pipey4m*(vsmap:ptr VSMap ) =
   ## Pipes the video to stdout. The video goes uncompressed in Y4M format
-  let d = vsmap.toSeq
-  let node = d[0].nodes[0]
+  let node = getFirstNode(vsmap)
+  #let d = vsmap.toSeq
+  #let node = d[0].nodes[0]
   let header = y4mheader( node )
   let strm = newFileStream(stdout)
   strm.write(header & "\n" )
   strm.writeY4mFrames( node ) 
+  
 
 proc Savey4m*(vsmap:ptr VSMap, filename:string) =
   ## Saves the video in `filename`
-  let d = vsmap.toSeq
-  let node = d[0].nodes[0]  
+  let node = getFirstNode(vsmap)
+  #let d = vsmap.toSeq
+  #let node = d[0].nodes[0]  
   let strm = newFileStream(filename, fmWrite)
   
   let header = y4mheader(node)
   strm.writeLine( header )
   strm.writeY4mFrames( node ) 
   strm.close()
+  API.freeMap(vsmap)
+  API.freeNode(node)
 
 #[
     let vinfo = getVideoInfo(node)

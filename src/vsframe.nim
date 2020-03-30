@@ -1,4 +1,3 @@
-from VapourSynthWrapper import VSFrameRef
 import streams, strformat
 
 type
@@ -35,6 +34,7 @@ type
     subSamplingW:int
     subSamplingH:int
     bytesPerSample:int
+    rows:seq[ptr UncheckedArray[uint8]]   ## Pointers to each row
 
 
 # TODO: it seems to fail in some ciscunstances
@@ -99,20 +99,20 @@ proc getFrameWidth*(frame:ptr VSFrameRef, plane:int):int =
   ## Returns the width of a plane of a given frame, in pixels. The width depends on the plane number because of the possible chroma subsampling.
   return API.getFrameWidth(frame, plane.cint).int
 
+
 proc getFrameHeight*(frame:ptr VSFrameRef, plane:int):int =
   ## Returns the height of a plane of a given frame, in pixels. The height depends on the plane number because of the possible chroma subsampling.
   return API.getFrameHeight(frame, plane.cint)
 
 proc getFrame*(node:ptr VSNodeRef, frame_number:int):ptr VSFrameRef =
   ## http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getframe
-  #let errorSize = 256
-  #var errorMsg = newString(errorSize)
-  #echo "Frame number: ", frame_number
-  #echo "vsframe>getFrame: ", "n=",frame_number, "  node=", repr node
-  result = API.getFrame(frame_number.cint, node, nil, 0 )  #errorMsg, errorSize.cint)
-  #echo "Frame Height: ", getFrameHeight(result,0)
+  let errorSize = 256
+  var errorMsg = newString(errorSize)
+  result = API.getFrame(frame_number.cint, node, unsafeAddr(errorMsg[0]), errorSize.cint) #nil, 0 )
+
   if result == nil:
-    raise newException( ValueError, "requested frame does not exists")
+    raise newException( ValueError, "failed: {errorMsg}")
+
   
 proc freeFrame*(frame:ptr VSFrameRef) =
   ## Deletes a frame reference, releasing the caller’s ownership of the frame.
@@ -132,49 +132,10 @@ proc getStride*( frame: ptr VSFrameRef, plane:int ):int =
   ## Returns the distance in bytes between two consecutive lines of a plane of a frame. The stride is always positive (`getStride <http://www.vapoursynth.com/doc/api/vapoursynth.h.html#getstride>`_).
   return API.getStride(frame, plane.cint)
 
-#[
-proc get*(plane:Plane, row:int, column:int):uint8 =
-  if row < 0:
-    raise newException(ValueError, "row <0")
-  elif row >= plane.height:
-    raise newException(ValueError, "row above height")
-  elif column < 0: 
-    raise newException(ValueError, "column <0") 
-  elif column >= plane.width:  
-    raise newException(ValueError, "column above width")  
-  
-  let address = cast[pointer](cast[int](plane.ptrIniRead) + column + row*plane.stride)
-  cast[uint8](address)
-  #plane.data[row+ column*plane.height]   # Datos por columnas
-  #plane.data[row*plane.width+ column]     # Datos por filas
-  
-  #let tmp = row*plane.stride + column
-  #let address = cast[uint](plane.`ptr`) + tmp.uint #*sizeof(uint8)
-  #let address = cast[pointer]( cast[int](plane.`ptr`) + tmp )
-  #cast[uint8](address)
-  #cast[uint8]( plane.`ptr`)[row*plane.stride + column ]
-]#
-#[
-https://stackoverflow.com/questions/22340279/extract-luminance-data-using-ffmpeg-libavfilter-specifically-pix-fmt-yuv420p-ty
-
-uint8_t pixval;
-for(int y = 0 ; y < height; ++y ) # Filas
-{
-    for(int x = 0 ; x < width; ++x )  # Columnas
-    {
-        pixval = data[0][x+(y*stride)];
-    }
-}
-]#
-
-
-proc getPlane*(frame:ptr VSFrameRef, plane:int):Plane =
+proc getPlane*(frame:ptr VSFrameRef, plane:Natural):Plane =
   if frame == nil:
     raise newException(ValueError, "called with nil pointer")
   let frameFormat = getFrameFormat(frame)
-  #echo "FRAME FORMAT------------> ", repr frameFormat
-  #echo frameFormat.bytesPerSample
-  #let format = frameFormat.toFormat
   if plane > frameFormat.numPlanes-1:
     raise newException(ValueError, "the plane requested is above the number of planes available")
 
@@ -185,7 +146,14 @@ proc getPlane*(frame:ptr VSFrameRef, plane:int):Plane =
   let planeptrW = getWritePtr(frame, plane)
   let ssW = if plane > 0: frameFormat.subSamplingW else: 0
   let ssH = if plane > 0: frameFormat.subSamplingH else: 0 
-  let bytesPerSample = frameFormat.bytesPerSample.int
+  let bytesPerSample = frameFormat.bytesPerSample #.int
+  # TODO: to deal with bigger bytes per sample
+  var rowPointers:seq[ptr UncheckedArray[uint8]] = @[]
+  newSeq(rowPointers, height)
+  let ini = cast[int](planeptrW)
+  for row in 0..<height:
+    rowPointers[row] = cast[ptr UncheckedArray[uint8]]( ini + row * stride )
+  let rowSize = width * bytesPerSample
   Plane( width:width, 
          height:height, 
          idx:plane,
@@ -193,34 +161,20 @@ proc getPlane*(frame:ptr VSFrameRef, plane:int):Plane =
          ptrCurRead:planeptr, 
          ptrIniWrite:planeptrW, 
          ptrCurWrite:planeptrW, 
-         rowSize: (width shr ssW ) * bytesPerSample,         
+         rowSize: rowSize,         
          stride:stride,
          subSamplingW:ssW,
          subSamplingH:ssH,
-         bytesPerSample: bytesPerSample )
+         bytesPerSample: bytesPerSample,
+         rows:rowPointers )
+
+proc `[]`*(frame:ptr VSFrameRef, plane:Natural):Plane =
+  getPlane(frame, plane)
 
 iterator planes*(frame:ptr VSFrameRef):Plane =
   let format = getFrameFormat(frame).toFormat
   for i in 0..<format.numPlanes:
-    let width  = getFrameWidth( frame, i )
-    let height = getFrameHeight( frame, i )
-    let stride = getStride(frame, i )
-    let planeptr = getReadPtr(frame, i)  # Plane pointer
-    let planeptrW = getWritePtr(frame, i)
-    let ssW = if i > 0: format.subSamplingW else: 0
-    let ssH = if i > 0: format.subSamplingH else: 0
-    yield Plane( width:width, 
-                 height:height, 
-                 idx:i, 
-                 ptrIniRead:planeptr, 
-                 ptrCurRead:planeptr, 
-                 ptrIniWrite:planeptrW,
-                 ptrCurWrite:planeptrW,
-                 rowSize: (width shr ssW ) * format.bytesPerSample,
-                 stride:stride,
-                 subSamplingW:ssW,
-                 subSamplingH:ssH,
-                 bytesPerSample: format.bytesPerSample)
+    yield getPlane(frame, i)
 
 proc goto*(plane:var Plane, row:Natural, col:Natural) = 
   let nrow = row shr plane.subSamplingH
@@ -248,6 +202,8 @@ proc newVideoFrame*(src:ptr VSFrameRef,width:Natural,height:Natural):ptr VSFrame
   let fi = API.getFrameFormat(src)
   API.newVideoFrame(fi, width.cint, height.cint, src, CORE)
 
+#------------------------------
+# HELPER FUNCTIONS
 
 # TODO: This should take into account the bytesPerSample
 proc get*(plane:var Plane, row:int, col:int):int = 
@@ -259,3 +215,36 @@ proc get*(plane:var Plane, row:int, col:int):int =
 proc set*(plane:var Plane, row:int, col:int, val:uint8) = 
   var tmp = cast[ptr UncheckedArray[uint8]](cast[int](plane.ptrIniWrite) + plane.stride * row )
   tmp[col * plane.bytesPerSample] = val
+
+
+proc `[]`*(plane:Plane, row:int, col:int):int =
+  # It provides a naive extrapolation
+  var r = row
+  var c = col
+  let w = plane.width-1
+  let h = plane.height-1  
+  if r < 0:
+    r = row
+  elif r > h:
+    r = h
+  if c < 0:
+    c = 0
+  elif c > w:
+    c = w
+
+  return plane.rows[r][c].int
+  #cast[int](plane.ptrIniWrite) + plane.stride * row
+
+proc `[]=`*(plane:Plane, row:int, col:int, val:uint8) =
+  var r = row
+  var c = col
+  let w = plane.width-1
+  let h = plane.height-1  
+  if r < 0 or r > h:
+    raise newException(ValueError, &"row should be between [0,{h}] but row={row}")
+  if c < 0 or c > w:
+    raise newException(ValueError, &"col should be between [0,{w}] but col={col}")
+  
+  plane.rows[r][c] = val.uint8
+#proc `[]`(p:Plane, row:Natural):rowPtr =
+#  cast[int](plane.ptrIniWrite) + plane.stride * row

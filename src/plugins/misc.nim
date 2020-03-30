@@ -20,7 +20,8 @@ proc AverageFrames*(vsmap:ptr VSMap, weights:seq[float]; scale=none(float); scen
   if scenechange.isSome: args.append("scenechange", scenechange.get)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "AverageFrames".cstring, args)        
+  result = API.invoke(plug, "AverageFrames".cstring, args)
+  API.freeMap(args)        
 
 proc Hysteresis*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.misc")
@@ -41,7 +42,8 @@ proc Hysteresis*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes=none(seq[int])):pt
   args.append("clipb", clipb)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "Hysteresis".cstring, args)        
+  result = API.invoke(plug, "Hysteresis".cstring, args)
+  API.freeMap(args)        
 
 proc SCDetect*(vsmap:ptr VSMap; threshold=none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.misc")
@@ -61,5 +63,6 @@ proc SCDetect*(vsmap:ptr VSMap; threshold=none(float)):ptr VSMap =
   args.append("clip", clip)
   if threshold.isSome: args.append("threshold", threshold.get)
 
-  return API.invoke(plug, "SCDetect".cstring, args)        
+  result = API.invoke(plug, "SCDetect".cstring, args)
+  API.freeMap(args)        
 

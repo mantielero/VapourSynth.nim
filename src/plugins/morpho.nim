@@ -17,7 +17,8 @@ proc BottomHat*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "BottomHat".cstring, args)        
+  result = API.invoke(plug, "BottomHat".cstring, args)
+  API.freeMap(args)        
 
 proc Close*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
@@ -38,7 +39,8 @@ proc Close*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "Close".cstring, args)        
+  result = API.invoke(plug, "Close".cstring, args)
+  API.freeMap(args)        
 
 proc Dilate*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
@@ -59,7 +61,8 @@ proc Dilate*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "Dilate".cstring, args)        
+  result = API.invoke(plug, "Dilate".cstring, args)
+  API.freeMap(args)        
 
 proc Erode*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
@@ -80,7 +83,8 @@ proc Erode*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "Erode".cstring, args)        
+  result = API.invoke(plug, "Erode".cstring, args)
+  API.freeMap(args)        
 
 proc Open*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
@@ -101,7 +105,8 @@ proc Open*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "Open".cstring, args)        
+  result = API.invoke(plug, "Open".cstring, args)
+  API.freeMap(args)        
 
 proc TopHat*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   let plug = getPluginById("biz.srsfckn.morpho")
@@ -122,5 +127,6 @@ proc TopHat*(vsmap:ptr VSMap; size=none(int); shape=none(int)):ptr VSMap =
   if size.isSome: args.append("size", size.get)
   if shape.isSome: args.append("shape", shape.get)
 
-  return API.invoke(plug, "TopHat".cstring, args)        
+  result = API.invoke(plug, "TopHat".cstring, args)
+  API.freeMap(args)        
 

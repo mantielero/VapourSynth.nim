@@ -44,7 +44,8 @@ proc Analyse*(vsmap:ptr VSMap; blksize=none(int); blksizev=none(int); levels=non
   if search_coarse.isSome: args.append("search_coarse", search_coarse.get)
   if dct.isSome: args.append("dct", dct.get)
 
-  return API.invoke(plug, "Analyse".cstring, args)        
+  result = API.invoke(plug, "Analyse".cstring, args)
+  API.freeMap(args)        
 
 proc BlockFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mode=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -74,7 +75,8 @@ proc BlockFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "BlockFPS".cstring, args)        
+  result = API.invoke(plug, "BlockFPS".cstring, args)
+  API.freeMap(args)        
 
 proc Compensate*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; scbehavior=none(int); thsad=none(int); fields=none(int); time=none(float); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -103,7 +105,8 @@ proc Compensate*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; sc
   if opt.isSome: args.append("opt", opt.get)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "Compensate".cstring, args)        
+  result = API.invoke(plug, "Compensate".cstring, args)
+  API.freeMap(args)        
 
 proc Degrain1*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -133,7 +136,8 @@ proc Degrain1*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Degrain1".cstring, args)        
+  result = API.invoke(plug, "Degrain1".cstring, args)
+  API.freeMap(args)        
 
 proc Degrain2*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -165,7 +169,8 @@ proc Degrain2*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Degrain2".cstring, args)        
+  result = API.invoke(plug, "Degrain2".cstring, args)
+  API.freeMap(args)        
 
 proc Degrain3*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef, mvbw2:ptr VSNodeRef, mvfw2:ptr VSNodeRef, mvbw3:ptr VSNodeRef, mvfw3:ptr VSNodeRef; thsad=none(int); thsadc=none(int); plane=none(int); limit=none(int); limitc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -199,7 +204,8 @@ proc Degrain3*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Degrain3".cstring, args)        
+  result = API.invoke(plug, "Degrain3".cstring, args)
+  API.freeMap(args)        
 
 proc DepanAnalyse*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; mask=none(ptr VSNodeRef); zoom=none(int); rot=none(int); pixaspect=none(float); error=none(float); info=none(int); wrong=none(float); zerow=none(float); thscd1=none(int); thscd2=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -231,7 +237,8 @@ proc DepanAnalyse*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; mask=none(ptr VSNodeR
   if fields.isSome: args.append("fields", fields.get)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "DepanAnalyse".cstring, args)        
+  result = API.invoke(plug, "DepanAnalyse".cstring, args)
+  API.freeMap(args)        
 
 proc DepanCompensate*(vsmap:ptr VSMap, data:ptr VSNodeRef; offset=none(float); subpixel=none(int); pixaspect=none(float); matchfields=none(int); mirror=none(int); blur=none(int); info=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -260,7 +267,8 @@ proc DepanCompensate*(vsmap:ptr VSMap, data:ptr VSNodeRef; offset=none(float); s
   if fields.isSome: args.append("fields", fields.get)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "DepanCompensate".cstring, args)        
+  result = API.invoke(plug, "DepanCompensate".cstring, args)
+  API.freeMap(args)        
 
 proc DepanEstimate*(vsmap:ptr VSMap; trust=none(float); winx=none(int); winy=none(int); wleft=none(int); wtop=none(int); dxmax=none(int); dymax=none(int); zoommax=none(float); stab=none(float); pixaspect=none(float); info=none(int); show=none(int); fields=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -293,7 +301,8 @@ proc DepanEstimate*(vsmap:ptr VSMap; trust=none(float); winx=none(int); winy=non
   if fields.isSome: args.append("fields", fields.get)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "DepanEstimate".cstring, args)        
+  result = API.invoke(plug, "DepanEstimate".cstring, args)
+  API.freeMap(args)        
 
 proc DepanStabilise*(vsmap:ptr VSMap, data:ptr VSNodeRef; cutoff=none(float); damping=none(float); initzoom=none(float); addzoom=none(int); prev=none(int); next=none(int); mirror=none(int); blur=none(int); dxmax=none(float); dymax=none(float); zoommax=none(float); rotmax=none(float); subpixel=none(int); pixaspect=none(float); fitlast=none(int); tzoom=none(float); info=none(int); `method`=none(int); fields=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -332,7 +341,8 @@ proc DepanStabilise*(vsmap:ptr VSMap, data:ptr VSNodeRef; cutoff=none(float); da
   if `method`.isSome: args.append("method", `method`.get)
   if fields.isSome: args.append("fields", fields.get)
 
-  return API.invoke(plug, "DepanStabilise".cstring, args)        
+  result = API.invoke(plug, "DepanStabilise".cstring, args)
+  API.freeMap(args)        
 
 proc Finest*(vsmap:ptr VSMap; opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -352,7 +362,8 @@ proc Finest*(vsmap:ptr VSMap; opt=none(int)):ptr VSMap =
   args.append("super", super)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Finest".cstring, args)        
+  result = API.invoke(plug, "Finest".cstring, args)
+  API.freeMap(args)        
 
 proc Flow*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=none(float); mode=none(int); fields=none(int); thscd1=none(int); thscd2=none(int); opt=none(int); tff=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -380,7 +391,8 @@ proc Flow*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time=non
   if opt.isSome: args.append("opt", opt.get)
   if tff.isSome: args.append("tff", tff.get)
 
-  return API.invoke(plug, "Flow".cstring, args)        
+  result = API.invoke(plug, "Flow".cstring, args)
+  API.freeMap(args)        
 
 proc FlowBlur*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; blur=none(float); prec=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -407,7 +419,8 @@ proc FlowBlur*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "FlowBlur".cstring, args)        
+  result = API.invoke(plug, "FlowBlur".cstring, args)
+  API.freeMap(args)        
 
 proc FlowFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; num=none(int); den=none(int); mask=none(int); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -437,7 +450,8 @@ proc FlowFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "FlowFPS".cstring, args)        
+  result = API.invoke(plug, "FlowFPS".cstring, args)
+  API.freeMap(args)        
 
 proc FlowInter*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr VSNodeRef; time=none(float); ml=none(float); blend=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -465,7 +479,8 @@ proc FlowInter*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:p
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "FlowInter".cstring, args)        
+  result = API.invoke(plug, "FlowInter".cstring, args)
+  API.freeMap(args)        
 
 proc Mask*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; ml=none(float); gamma=none(float); kind=none(int); time=none(float); ysc=none(int); thscd1=none(int); thscd2=none(int); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -493,7 +508,8 @@ proc Mask*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; ml=none(float); gamma=none(fl
   if thscd2.isSome: args.append("thscd2", thscd2.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Mask".cstring, args)        
+  result = API.invoke(plug, "Mask".cstring, args)
+  API.freeMap(args)        
 
 proc Recalculate*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thsad=none(int); smooth=none(int); blksize=none(int); blksizev=none(int); search=none(int); searchparam=none(int); lambda=none(int); chroma=none(int); truemotion=none(int); pnew=none(int); overlap=none(int); overlapv=none(int); divide=none(int); opt=none(int); meander=none(int); fields=none(int); tff=none(int); dct=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -531,7 +547,8 @@ proc Recalculate*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thsad=none(int); smoot
   if tff.isSome: args.append("tff", tff.get)
   if dct.isSome: args.append("dct", dct.get)
 
-  return API.invoke(plug, "Recalculate".cstring, args)        
+  result = API.invoke(plug, "Recalculate".cstring, args)
+  API.freeMap(args)        
 
 proc SCDetection*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thscd1=none(int); thscd2=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -553,7 +570,8 @@ proc SCDetection*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thscd1=none(int); thsc
   if thscd1.isSome: args.append("thscd1", thscd1.get)
   if thscd2.isSome: args.append("thscd2", thscd2.get)
 
-  return API.invoke(plug, "SCDetection".cstring, args)        
+  result = API.invoke(plug, "SCDetection".cstring, args)
+  API.freeMap(args)        
 
 proc Super*(vsmap:ptr VSMap; hpad=none(int); vpad=none(int); pel=none(int); levels=none(int); chroma=none(int); sharp=none(int); rfilter=none(int); pelclip=none(ptr VSNodeRef); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
@@ -581,5 +599,6 @@ proc Super*(vsmap:ptr VSMap; hpad=none(int); vpad=none(int); pel=none(int); leve
   if pelclip.isSome: args.append("pelclip", pelclip.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "Super".cstring, args)        
+  result = API.invoke(plug, "Super".cstring, args)
+  API.freeMap(args)        
 

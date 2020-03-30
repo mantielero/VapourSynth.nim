@@ -17,8 +17,8 @@ TODO: something like
 
 TODO: documentation and integrate it with Github pages
 
+https://nim-lang.org/docs/manual.html#types-mixing-gc-ed-memory-with-ptr
 ]##
-#include "VapourSynthWrapper"
 include "VapourSynth_wrapper.nim"
 
 let API* = getVapourSynthAPI(3)
@@ -44,6 +44,8 @@ when isMainModule:
   let vsmap = createMap()
   vsmap.propSetInt("hola", 1, paAppend)
   echo vsmap.propGetData("hola", -1)
+  API.freeMap(vsmap)
+  API.freeCore(CORE)
   #echo vsmap.propGetData("hola", 1)
   #echo vsmap.get(1)
   #echo vsmap.toSeq

@@ -19,7 +19,8 @@ proc ABlur*(vsmap:ptr VSMap; blur=none(int); `type`=none(int); planes=none(seq[i
   if planes.isSome: args.set("planes", planes.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "ABlur".cstring, args)        
+  result = API.invoke(plug, "ABlur".cstring, args)
+  API.freeMap(args)        
 
 proc ASobel*(vsmap:ptr VSMap; thresh=none(int); planes=none(seq[int]); opt=none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.awarpsharp2")
@@ -41,7 +42,8 @@ proc ASobel*(vsmap:ptr VSMap; thresh=none(int); planes=none(seq[int]); opt=none(
   if planes.isSome: args.set("planes", planes.get)
   if opt.isSome: args.append("opt", opt.get)
 
-  return API.invoke(plug, "ASobel".cstring, args)        
+  result = API.invoke(plug, "ASobel".cstring, args)
+  API.freeMap(args)        
 
 proc AWarp*(vsmap:ptr VSMap, mask:ptr VSNodeRef; depth=none(seq[int]); chroma=none(int); planes=none(seq[int]); opt=none(int); cplace=none(string)):ptr VSMap =
   let plug = getPluginById("com.nodame.awarpsharp2")
@@ -66,7 +68,8 @@ proc AWarp*(vsmap:ptr VSMap, mask:ptr VSNodeRef; depth=none(seq[int]); chroma=no
   if opt.isSome: args.append("opt", opt.get)
   if cplace.isSome: args.append("cplace", cplace.get)
 
-  return API.invoke(plug, "AWarp".cstring, args)        
+  result = API.invoke(plug, "AWarp".cstring, args)
+  API.freeMap(args)        
 
 proc AWarpSharp2*(vsmap:ptr VSMap; thresh=none(int); blur=none(int); `type`=none(int); depth=none(seq[int]); chroma=none(int); planes=none(seq[int]); opt=none(int); cplace=none(string)):ptr VSMap =
   let plug = getPluginById("com.nodame.awarpsharp2")
@@ -93,5 +96,6 @@ proc AWarpSharp2*(vsmap:ptr VSMap; thresh=none(int); blur=none(int); `type`=none
   if opt.isSome: args.append("opt", opt.get)
   if cplace.isSome: args.append("cplace", cplace.get)
 
-  return API.invoke(plug, "AWarpSharp2".cstring, args)        
+  result = API.invoke(plug, "AWarpSharp2".cstring, args)
+  API.freeMap(args)        
 

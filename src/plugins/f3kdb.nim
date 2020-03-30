@@ -34,5 +34,6 @@ proc Deband*(vsmap:ptr VSMap; range=none(int); y=none(int); cb=none(int); cr=non
   if random_param_grain.isSome: args.append("random_param_grain", random_param_grain.get)
   if preset.isSome: args.append("preset", preset.get)
 
-  return API.invoke(plug, "Deband".cstring, args)        
+  result = API.invoke(plug, "Deband".cstring, args)
+  API.freeMap(args)        
 

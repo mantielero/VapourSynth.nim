@@ -29,5 +29,6 @@ proc nnedi3*(vsmap:ptr VSMap, field:int; dh=none(int); planes=none(seq[int]); ns
   if show_mask.isSome: args.append("show_mask", show_mask.get)
   if combed_only.isSome: args.append("combed_only", combed_only.get)
 
-  return API.invoke(plug, "nnedi3".cstring, args)        
+  result = API.invoke(plug, "nnedi3".cstring, args)
+  API.freeMap(args)        
 

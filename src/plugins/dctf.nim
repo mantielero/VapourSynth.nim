@@ -17,5 +17,6 @@ proc DCTFilter*(vsmap:ptr VSMap, factors:seq[float]; planes=none(seq[int])):ptr 
   args.set("factors", factors)
   if planes.isSome: args.set("planes", planes.get)
 
-  return API.invoke(plug, "DCTFilter".cstring, args)        
+  result = API.invoke(plug, "DCTFilter".cstring, args)
+  API.freeMap(args)        
 

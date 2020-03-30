@@ -28,7 +28,8 @@ proc bitdepth*(vsmap:ptr VSMap; csp=none(int); bits=none(int); flt=none(int); pl
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
   if patsize.isSome: args.append("patsize", patsize.get)
 
-  return API.invoke(plug, "bitdepth".cstring, args)        
+  result = API.invoke(plug, "bitdepth".cstring, args)
+  API.freeMap(args)        
 
 proc histluma*(vsmap:ptr VSMap; full=none(int); amp=none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -49,7 +50,8 @@ proc histluma*(vsmap:ptr VSMap; full=none(int); amp=none(int)):ptr VSMap =
   if full.isSome: args.append("full", full.get)
   if amp.isSome: args.append("amp", amp.get)
 
-  return API.invoke(plug, "histluma".cstring, args)        
+  result = API.invoke(plug, "histluma".cstring, args)
+  API.freeMap(args)        
 
 proc matrix*(vsmap:ptr VSMap; mat=none(string); mats=none(string); matd=none(string); fulls=none(int); fulld=none(int); coef=none(seq[float]); csp=none(int); col_fam=none(int); bits=none(int); singleout=none(int); cpuopt=none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -79,7 +81,8 @@ proc matrix*(vsmap:ptr VSMap; mat=none(string); mats=none(string); matd=none(str
   if singleout.isSome: args.append("singleout", singleout.get)
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
-  return API.invoke(plug, "matrix".cstring, args)        
+  result = API.invoke(plug, "matrix".cstring, args)
+  API.freeMap(args)        
 
 proc matrix2020cl*(vsmap:ptr VSMap; full=none(int); csp=none(int); bits=none(int); cpuopt=none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -102,7 +105,8 @@ proc matrix2020cl*(vsmap:ptr VSMap; full=none(int); csp=none(int); bits=none(int
   if bits.isSome: args.append("bits", bits.get)
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
-  return API.invoke(plug, "matrix2020cl".cstring, args)        
+  result = API.invoke(plug, "matrix2020cl".cstring, args)
+  API.freeMap(args)        
 
 proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -121,7 +125,8 @@ proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "nativetostack16".cstring, args)        
+  result = API.invoke(plug, "nativetostack16".cstring, args)
+  API.freeMap(args)        
 
 proc primaries*(vsmap:ptr VSMap; rs=none(seq[float]); gs=none(seq[float]); bs=none(seq[float]); ws=none(seq[float]); rd=none(seq[float]); gd=none(seq[float]); bd=none(seq[float]); wd=none(seq[float]); prims=none(string); primd=none(string); cpuopt=none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -151,7 +156,8 @@ proc primaries*(vsmap:ptr VSMap; rs=none(seq[float]); gs=none(seq[float]); bs=no
   if primd.isSome: args.append("primd", primd.get)
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
-  return API.invoke(plug, "primaries".cstring, args)        
+  result = API.invoke(plug, "primaries".cstring, args)
+  API.freeMap(args)        
 
 proc resample*(vsmap:ptr VSMap; w=none(int); h=none(int); sx=none(seq[float]); sy=none(seq[float]); sw=none(seq[float]); sh=none(seq[float]); scale=none(float); scaleh=none(float); scalev=none(float); kernel=none(seq[string]); kernelh=none(seq[string]); kernelv=none(seq[string]); impulse=none(seq[float]); impulseh=none(seq[float]); impulsev=none(seq[float]); taps=none(seq[int]); tapsh=none(seq[int]); tapsv=none(seq[int]); a1=none(seq[float]); a2=none(seq[float]); a3=none(seq[float]); kovrspl=none(seq[int]); fh=none(seq[float]); fv=none(seq[float]); cnorm=none(seq[int]); totalh=none(seq[float]); totalv=none(seq[float]); invks=none(seq[int]); invksh=none(seq[int]); invksv=none(seq[int]); invkstaps=none(seq[int]); invkstapsh=none(seq[int]); invkstapsv=none(seq[int]); csp=none(int); css=none(string); planes=none(seq[float]); fulls=none(int); fulld=none(int); center=none(seq[int]); cplace=none(string); cplaces=none(string); cplaced=none(string); interlaced=none(int); interlacedd=none(int); tff=none(int); tffd=none(int); flt=none(int); cpuopt=none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -224,7 +230,8 @@ proc resample*(vsmap:ptr VSMap; w=none(int); h=none(int); sx=none(seq[float]); s
   if flt.isSome: args.append("flt", flt.get)
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
-  return API.invoke(plug, "resample".cstring, args)        
+  result = API.invoke(plug, "resample".cstring, args)
+  API.freeMap(args)        
 
 proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -243,7 +250,8 @@ proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
   let args = createMap()
   args.append("clip", clip)
 
-  return API.invoke(plug, "stack16tonative".cstring, args)        
+  result = API.invoke(plug, "stack16tonative".cstring, args)
+  API.freeMap(args)        
 
 proc transfer*(vsmap:ptr VSMap; transs=none(seq[string]); transd=none(seq[string]); cont=none(float); gcor=none(float); bits=none(int); flt=none(int); fulls=none(int); fulld=none(int); cpuopt=none(int); blacklvl=none(float)):ptr VSMap =
   let plug = getPluginById("fmtconv")
@@ -276,5 +284,6 @@ proc transfer*(vsmap:ptr VSMap; transs=none(seq[string]); transd=none(seq[string
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
   if blacklvl.isSome: args.append("blacklvl", blacklvl.get)
 
-  return API.invoke(plug, "transfer".cstring, args)        
+  result = API.invoke(plug, "transfer".cstring, args)
+  API.freeMap(args)        
 
