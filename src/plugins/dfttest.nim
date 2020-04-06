@@ -1,14 +1,10 @@
-proc DFTTest*(vsmap:ptr VSMap; ftype=none(int); sigma=none(float); sigma2=none(float); pmin=none(float); pmax=none(float); sbsize=none(int); smode=none(int); sosize=none(int); tbsize=none(int); tmode=none(int); tosize=none(int); swin=none(int); twin=none(int); sbeta=none(float); tbeta=none(float); zmean=none(int); f0beta=none(float); nlocation=none(seq[int]); alpha=none(float); slocation=none(seq[float]); ssx=none(seq[float]); ssy=none(seq[float]); sst=none(seq[float]); ssystem=none(int); planes=none(seq[int]); opt=none(int)):ptr VSMap =
-  let plug = getPluginById("com.holywu.dfttest")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"dfttest\" not installed properly in your computer")
+proc DFTTest*(vsmap:ptr VSMap; ftype= none(int); sigma= none(float); sigma2= none(float); pmin= none(float); pmax= none(float); sbsize= none(int); smode= none(int); sosize= none(int); tbsize= none(int); tmode= none(int); tosize= none(int); swin= none(int); twin= none(int); sbeta= none(float); tbeta= none(float); zmean= none(int); f0beta= none(float); nlocation= none(seq[int]); alpha= none(float); slocation= none(seq[float]); ssx= none(seq[float]); ssy= none(seq[float]); sst= none(seq[float]); ssystem= none(int); planes= none(seq[int]); opt= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.holywu.dfttest")
+  assert( plug != nil, "plugin \"com.holywu.dfttest\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -42,5 +38,6 @@ proc DFTTest*(vsmap:ptr VSMap; ftype=none(int); sigma=none(float); sigma2=none(f
   if opt.isSome: args.append("opt", opt.get)
 
   result = API.invoke(plug, "DFTTest".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

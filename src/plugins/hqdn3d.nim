@@ -1,14 +1,10 @@
-proc Hqdn3d*(vsmap:ptr VSMap; lum_spac=none(float); chrom_spac=none(float); lum_tmp=none(float); chrom_tmp=none(float); restart_lap=none(int)):ptr VSMap =
-  let plug = getPluginById("com.vapoursynth.hqdn3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"hqdn3d\" not installed properly in your computer")
+proc Hqdn3d*(vsmap:ptr VSMap; lum_spac= none(float); chrom_spac= none(float); lum_tmp= none(float); chrom_tmp= none(float); restart_lap= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.vapoursynth.hqdn3d")
+  assert( plug != nil, "plugin \"com.vapoursynth.hqdn3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -21,5 +17,6 @@ proc Hqdn3d*(vsmap:ptr VSMap; lum_spac=none(float); chrom_spac=none(float); lum_
   if restart_lap.isSome: args.append("restart_lap", restart_lap.get)
 
   result = API.invoke(plug, "Hqdn3d".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

@@ -1,5 +1,6 @@
 import VapourSynth_wrapper, strformat, strutils
-
+## TODO: I use "ptr VSMap" in order to be able to chain functions.
+## but it would be better to know the result of invoke, rather than using ptr VSMap as an output always.
 let API = getVapourSynthAPI(3)
 let CORE = API.createCore(0)
 
@@ -15,19 +16,71 @@ let KEYWORDS = @["addr", "and", "as", "asm", "bind", "block", "break", "case", "
 "raise", "ref", "return", "shl", "shr", "static", "template", "try", 
 "tuple", "type", "using", "var", "when", "while", "xor", "yield" ]
 
+type
+  Plugin = tuple[id:string, namespace:string, description:string]
+  Argument = tuple[name:string, `type`:string, optional:bool]
+  Function = tuple[name:string, arguments:seq[Argument]]
+
+iterator getPlugins():Plugin =
+  ## Iterate over all the plugins available in the system
+  let plugins:ptr VSMap = API.getPlugins( CORE )
+  for item in plugins.items:
+    for i in 0..<plugins.len(item): # Each item within a key
+      let data = plugins.propGetData(item.key,i)
+      let data_items = data.split(';')
+      var tmp:Plugin
+      tmp.namespace = data_items[0]
+      tmp.id = data_items[1]
+      tmp.description = data_items[2]
+      yield tmp
+
+iterator getFunctions(item:Plugin):Function =
+  ## Iterate over all the functions available in the plugin
+  let plugin = getPluginById(item.id)
+  # Read all functions in the plugin
+  let functions:ptr VSMap = getFunctions(plugin)
+  for func_item in functions.items:
+    for i in 0..<functions.len(func_item):        
+      var function:Function
+      let func_data = functions.propGetData(func_item.key,i)
+      let func_data_items = func_data.split(';')
+      let fname = func_data_items[0]
+      if func_data_items.len > 1:
+        for j in 1..<func_data_items.len:
+          let args = func_data_items[j].split(':')
+          var argument:Argument
+          if args.len >= 2:
+            argument.name = args[0]
+            argument.`type` = args[1]
+            argument.optional = if args.len == 3: true else: false
+            function.arguments &= argument
+
+          #echo args
+
+      function.name = fname
+      yield function
+
+
+func `$`(plugin:Plugin):string =
+  result = &"""
+Plugin:
+  id         : {plugin.id}
+  namespace  : {plugin.namespace}
+  description: {plugin.description}
+"""
+      
+func `$`(function:Function):string =
+  result = &"Function: {function.name}\n"
+  for argument in function.arguments:
+    let optional = if argument.optional: "OPTIONAL" else: ""
+    result &= &"  {argument.name}:{argument.`type`}  {optional}\n"
 
 proc showPlugins() =
-  let plugins = getPlugins()
-  for plugin in plugins:
-    echo ""
-    echo fmt"Plugin: {plugin.id} ({plugin.namespace})"
-    echo fmt"  Description: {plugin.description}"
-    echo fmt"  Functions:"
-    for f in plugin.functions:
-      echo fmt"    Name     : {f.name}"
-      echo fmt"    Arguments: "
-      for arg in f.args:
-        echo "       ", arg
+  for plugin in getPlugins():
+    echo plugin
+    for function in getFunctions(plugin):
+      echo function
+
 
 proc convertType(`type`:string):string =
   result = case `type`:
@@ -55,192 +108,191 @@ proc convertType(`type`:string):string =
              `type`
     
 
-proc gen_functions():seq[ tuple[key:string,source:string] ] =
-  let plugins = getPlugins()
-  var plugins_list:seq[tuple[key:string,source:string]]
+proc gen_body_for_first_argument(function:Function):string =
+  # For the cases where the first argument is clip, we transform it
+  # into a VSMap, to allow chaining calls
+  if function.arguments.len == 0:
+    return ""  
+
+  # Get first argument
+  result = ""
+  let arg = function.arguments[0]
+  var argName = arg.name
+  if argName in KEYWORDS: 
+    argName = &"`{argName}`"
+  let newtype = convertType( arg.`type` )
+
   
-  for plugin in plugins:
-    var source = ""
-    for f in plugin.functions:
-      var flag = false
-      var args = ""
-      var map = ""
-      var firstArg = ""
-      
-      var isFirstArg = true
+  if arg.`type` in ["clip", "clip[]"]:
+    #firstArg &= "\n  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence\n"
+    var ident = ""
+    var vsmap = "vsmap"
+    if arg.optional:
+      #if arg.isSome:
+        result &= "  if vsmap.isSome:\n"
+        ident = "  "
+        vsmap = "vsmap.get"
+    
+    result &= &"  {ident}assert( {vsmap}.len != 0, \"the vsmap should contain at least one item\")\n"                 
 
-      # Lets create the function arguments.
-      for arg in f.args:
-        # This is to add a "," or a ";" between each function argument
-        if flag:  # This flag is in order to avoid adding "," or ";" for the first argument
-          if arg.len == 2:
-            args &= ", "
-          elif arg.len == 3:
-            args &= "; "        
-        flag = true
 
-        # Get the appropriate Nim type from the VapourSynth type
-        let newtype = convertType(arg[1])
+    # Just one clip
+    var clip = "clip"
+    if newtype == "ptr VSNodeRef":
+      result &= &"  {ident}assert( {vsmap}.len(\"{clip}\") != 1, \"the vsmap should contain one node\")\n"
+      if not arg.optional:  # Mandatory
+        result &= &"  var {argName} = getFirstNode(vsmap)\n\n" 
+      else:
+        #result &= &"  if {argName}.isSome: args.{funcName}(\"{arg.name}\", {argName}.get)\n"
+        result &= &"  var {argName}:ptr VSNodeRef\n"
+        result &= "  if vsmap.isSome:\n"
+        result &= &"    {argName} = getFirstNode(vsmap.get)\n\n"
+    
+    # For a sequence of clips in the first argument
+    # TODO: to extract all nodes in the list and add it to the new map
+    elif newtype == "seq[ptr VSNodeRef]":
+      clip = "clips"           
+      result &= &"  {ident}assert( {vsmap}.len(\"{clip}\") >= 1, \"the vsmap should contain a seq with nodes\")\n"
+
+      if not arg.optional:
+        result &= &"  var {argName} = getFirstNodes(vsmap)\n\n"            
+      else:
+        result &= &"  var {argName}:seq[ptr VSNodeRef]\n"
+        result &= &"  if vsmap.isSome:\n"        
+        result &= &"    {argName} = getFirstNodes(vsmap.get)\n\n"
         
-        # If the argument is a Nim keyword, then enclused between "`" symbol.
-        var argName = arg[0]
-        if argName in KEYWORDS:
-          argName = &"`{argName}`"
+proc gen_body_for_other_arguments(function:Function; ini=1):string =
+  if function.arguments.len <= 1:
+    return ""   
 
-        # Create the arguments for the Nim function
-        if arg.len == 2:    # For the mandatory argument: name:type
-          args &= &"{argName}:{newtype}"
-        elif arg.len == 3:  # For the optional argument: name:type:opc 
-          args &= &"{argName}=none({newtype})"
+  # Get other arguments
+  result = ""
+  let args = function.arguments
+  if args.len > 1:
+    for arg in args[ini..high(args)]:
+      #let arg = function.arguments[0]
+      var argName = arg.name
+      if argName in KEYWORDS: 
+        argName = &"`{argName}`"
+      let newtype = convertType( arg.`type` )
+      let funcName = case newtype:
+                    of "seq[int]", "seq[float]":
+                      "set"
+                    else:
+                      "append"
+      # If the argument is a sequence
+      if newtype[0..2] == "seq" and funcName != "set":
+        if not arg.optional:
+          result &= &"  for item in {argName}:\n"
+          result &= &"    args.{funcName}(\"{arg.name}\", item)\n"     
+        else:
+          result &= &"  if {argName}.isSome:\n"
+          result &= &"    for item in {argName}.get:\n"
+          result &= &"      args.{funcName}(\"{arg.name}\", item)\n"  
+    
+      else: 
+        if not arg.optional:
+          result &= &"  args.{funcName}(\"{arg.name}\", {argName})\n"     
+        else:
+          result &= &"  if {argName}.isSome: args.{funcName}(\"{arg.name}\", {argName}.get)\n"  
 
-        # For the cases where the first argument is clip, we transform it
-        # into a VSMap, to allow chaining calls
-        var isClip = false
-        if newtype in ["ptr VSNodeRef", "seq[ptr VSNodeRef]"] and isFirstArg:
-          args="vsmap:ptr VSMap"
-          isClip = true
-        
-        if isClip:
-          firstArg &= "\n  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence\n"
-          firstArg &= "  if tmpSeq.len == 0:\n"            
-          firstArg &= "    raise newException(ValueError, \"the vsmap should contain at least one item\")\n"          
 
-          # Just one clip
-          if newtype == "ptr VSNodeRef":
-            firstArg &= "  if tmpSeq[0].nodes.len != 1:\n"
-            firstArg &= "    raise newException(ValueError, \"the vsmap should contain one node\")\n"
-            if arg.len == 2:
-              firstArg &= &"  var {argName} = tmpSeq[0].nodes[0]\n\n" 
-            elif arg.len == 3:
-              firstArg &= &"  var {argName} = some(tmpSeq[0].nodes[0])\n\n"
-          
-          # For a sequence of clips in the first argument
-          elif newtype == "seq[ptr VSNodeRef]":           
-            firstArg &= "  if tmpSeq[0].nodes.len >= 1:\n"
-            firstArg &= "    raise newException(ValueError, \"the vsmap should contain a seq with nodes\")\n"
-            if arg.len == 2:
-              firstArg &= &"  var {argName} = tmpSeq[0].nodes\n\n"            
-            elif arg.len == 3:
-              firstArg &= &"  var {argName} = some(tmpSeq[0].nodes)\n\n"              
-        
-        # We create the map
-        #[
-        let funcName = case newtype:
-                       of "int", "string", "float", "ptr VSNodeRef", "ptr VSFrameRef","ptr VSFuncRef", "seq[string]", "seq[ptr VSNodeRef]", "seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]":
-                        "append"
-                       of "seq[int]", "seq[float]":
-                         "set"
-                       else:
-                         ""
-        ]#
-        let funcName = case newtype:
-                       of "seq[int]", "seq[float]":
-                         "set"
-                       else:
-                         "append"
-        if newtype[0..2] == "seq" and funcName != "set":
-          if arg.len == 2:
-            map &= &"  for item in {argName}:\n"
-            map &= &"    args.{funcName}(\"{arg[0]}\", item)\n"     
-          elif arg.len == 3:
-            map &= &"  if {argName}.isSome:\n"
-            map &= &"    for item in {argName}.get:\n"
-            map &= &"      args.{funcName}(\"{arg[0]}\", item)\n"  
-        else: 
-          if arg.len == 2:
-            map &= &"  args.{funcName}(\"{arg[0]}\", {argName})\n"     
-          elif arg.len == 3:
-            map &= &"  if {argName}.isSome: args.{funcName}(\"{arg[0]}\", {argName}.get)\n"             
-        #[        
-        if newtype in @["seq[string]", "seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 2:
-          map &= &"  for item in {argName}:\n"
-          map &= &"    {funcName}(args, \"{arg[0]}\", item)\n"     
-        elif newtype in @["seq[ptr VSNodeRef]","seq[ptr VSFrameRef]", "seq[ptr VSFuncRef]"] and arg.len == 3:
-          map &= &"  if {argName}.isSome:\n"
-          map &= &"    for item in {argName}.get:\n"
-          map &= &"      {funcName}(args, \"{arg[0]}\", item, paAppend)\n"  
-        ]#
-        #elif newtype in @["seq[string]"]:
-        #  map &= &"  if {argName}.isSome:\n"
-        #  map &= &"    for item in {argName}.get:\n"
-        #  map &= &"      append(args, \"{arg[0]}\", item)\n"           
-        #[
-        else:  # int, float, string, ... # Not sequence cases
-          if funcName in @["propSetIntArray", "propSetFloatArray"]:
-            if arg.len == 2:
-              map &= &"  {funcName}(args, \"{arg[0]}\", {argName})\n"
-            elif arg.len == 3:
-              map &= &"  if {argName}.isSome:\n"   # if track.isSome:
-              map &= &"    {funcName}(args, \"{arg[0]}\", {argName}.get)\n"        
-          elif funcName in @["append"]:
-            if arg.len == 2:
-              map &= &"  args.append(\"{arg[0]}\", {argName})\n"
-            elif arg.len == 3:
-              map &= &"  if {argName}.isSome: args.append(\"{arg[0]}\", {argName}.get)\n"             
-          else:
-            if arg.len == 2:
-              map &= &"  {funcName}(args, \"{arg[0]}\", {argName}, paAppend)\n"
-            elif arg.len == 3:
-              map &= &"  if {argName}.isSome:\n"   # if track.isSome:
-              map &= &"    {funcName}(args, \"{arg[0]}\", {argName}.get, paAppend)\n"
-        ]#
-        isFirstArg = false # deactivate the flag
+proc gen_signature(function:Function):string =
+  result = &"proc {function.name}*("
+  
+  var flagFirstArgument = true
+  for arg in function.arguments:
+    var argName = arg.name
+    # If the argument is a Nim keyword, then enclused between "`" symbol.
+    if argName in KEYWORDS: 
+      argName = &"`{argName}`"
 
-      source &= fmt"""
-proc {f.name}*({args}):ptr VSMap =
-  let plug = getPluginById("{plugin.namespace}")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"{plugin.id}\" not installed properly in your computer")
-{firstArg}
+
+    # Get the appropriate Nim type from the VapourSynth type
+    var newtype = convertType( arg.`type` )
+    if not flagFirstArgument:  # If not first argument the symbol is added
+      if arg.optional: 
+        result &= "; "
+      else:
+        result &= ", "        
+
+    # If the first argument is "clip" or "clip[]"
+    if arg.`type` in ["clip", "clip[]"] and flagFirstArgument:
+      argName = "vsmap"
+      newtype = "ptr VSMap"
+    if not arg.optional: # Mandatory
+      result &= &"{argName}:{newtype}"
+    else:  # Optional
+      result &= &"{argName}= none({newtype})"
+    flagFirstArgument = false
+
+  result &= "):ptr VSMap =\n"
+
+proc add_first_argument(function:Function):string =
+  if function.arguments.len == 0:
+    return ""
+  if not (function.arguments[0].`type` in ["clip", "clip[]"]):
+    return ""
+  let arg = function.arguments[0]
+  var argName = arg.name
+  if argName in KEYWORDS: 
+    argName = &"`{argName}`"
+  var ident = ""
+
+  # If the first argument is optional
+  if arg.optional:
+    result = "  if vsmap.isSome:\n"
+    ident = "  "
+
+  if function.arguments[0].`type` == "clip":
+    result &= &"  {ident}args.append(\"{arg.name}\", {argName})"
+  else:
+    result &= &"  {ident}for item in {argName}:\n"
+    result &= &"    {ident}args.append(\"{arg.name}\", item)\n"
+    #retun tmp #&"  args.append(\"{arg.name}\", {argName})"
+
+
+proc gen_function(plugin:Plugin, function:Function):string =     
+  ## Creates a function from a plugin.       
+
+  # Get the arguments
+  let func_signature = gen_signature(function)
+  let body_first_argument = gen_body_for_first_argument(function)
+  let add_first_argument = add_first_argument(function)
+  var ini = 1
+  if add_first_argument == "":
+    ini = 0
+  let body_other_arguments = gen_body_for_other_arguments(function, ini)    
+  result &= &"""
+{func_signature}
+  let plug = getPluginById("{plugin.id}")
+  assert( plug != nil, "plugin \"{plugin.id}\" not installed properly in your computer") 
+{body_first_argument}
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-{map}
-  result = API.invoke(plug, "{f.name}".cstring, args)
-  API.freeMap(args)        
-
+{add_first_argument}
+{body_other_arguments}
+  result = API.invoke(plug, "{function.name}".cstring, args)
+  API.freeMap(args)
 """
-    plugins_list &= (plugin.id, source)
-  return plugins_list
-
-
-#[
-macro gen_function(plugin, functionName:untyped):untyped =
-  #let functionName = arg[0]
-  #let plugin = arg[1]
-  #let pluginNameSpace = strVal(plugin)
-  let source = quote do:
-    proc `functionName`():ptr VSMap =
-      let plug = getPluginById("`plugin`")
-      let args = createMap()
-      return API.invoke(plug, "`functionName`".cstring, args)
-  
-  return source
-]#
-
-
-type
-  Param = object
-    name:string
-    kind:string
-    opt:bool
-
 
 when isMainModule: 
   import os
 
   os.createDir("./plugins")
   
-
-  let sources = gen_functions()
-
   var includes = "import options\n\n"
-  for s in  sources:
-    includes &= &"include \"{s.key}.nim\"\n"
-    let name = &"./plugins/{s.key}.nim"
-    writeFile(name, s.source)
-    echo "Written file: ",name
+  for plugin in getPlugins():
+    var source = ""
+    for function in getFunctions(plugin):
+      source &= gen_function(plugin, function)
+      source &= "\n\n"
+    let name = &"./plugins/{plugin.namespace}.nim"
+    writeFile(name, source)
+    echo "[INFO] Written file: ", name
+    includes &= &"include \"{plugin.namespace}.nim\"\n"
 
   writeFile("./plugins/all_plugins.nim", includes)
-  echo "Written file: ", "./plugins/all_plugins.nim" 
+  echo "Written file: ", "./plugins/all_plugins.nim"  
 
   #showPlugins()

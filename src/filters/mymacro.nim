@@ -2,12 +2,7 @@ import macros
 import ../vapoursynth
 import options
 
-proc checkContainsJustOneNode*(inClip:ptr VSMap) =
-  let tmpSeq = inClip.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
+
 
 
 template passTrough*() =
@@ -276,7 +271,7 @@ macro newFilter*(fname:untyped, body:untyped):untyped =
             #let borrame = vsapi.getFrameFilter(50, data.node, frameCtx)
             let `srcSymbol`:ptr VSFrameRef = vsapi.getFrameFilter(`n`, data.node, frameCtx)
             let `fi` = vsapi.getFrameFormat(src)  # Format Information
-            let `srcNumPlanes` =  `fi`.numPlanes
+            #let `srcNumPlanes` =  `fi`.numPlanes
             #echo `srcNumPlanes`
             #let srcNumPlanes = fi.numPlanes
             # Message: if you use this in a filter (I will kill you)

@@ -1,14 +1,10 @@
-proc FFT3DFilter*(vsmap:ptr VSMap; sigma=none(float); beta=none(float); planes=none(seq[int]); bw=none(int); bh=none(int); bt=none(int); ow=none(int); oh=none(int); kratio=none(float); sharpen=none(float); scutoff=none(float); svr=none(float); smin=none(float); smax=none(float); measure=none(int); interlaced=none(int); wintype=none(int); pframe=none(int); px=none(int); py=none(int); pshow=none(int); pcutoff=none(float); pfactor=none(float); sigma2=none(float); sigma3=none(float); sigma4=none(float); degrid=none(float); dehalo=none(float); hr=none(float); ht=none(float); ncpu=none(int)):ptr VSMap =
-  let plug = getPluginById("systems.innocent.fft3dfilter")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fft3dfilter\" not installed properly in your computer")
+proc FFT3DFilter*(vsmap:ptr VSMap; sigma= none(float); beta= none(float); planes= none(seq[int]); bw= none(int); bh= none(int); bt= none(int); ow= none(int); oh= none(int); kratio= none(float); sharpen= none(float); scutoff= none(float); svr= none(float); smin= none(float); smax= none(float); measure= none(int); interlaced= none(int); wintype= none(int); pframe= none(int); px= none(int); py= none(int); pshow= none(int); pcutoff= none(float); pfactor= none(float); sigma2= none(float); sigma3= none(float); sigma4= none(float); degrid= none(float); dehalo= none(float); hr= none(float); ht= none(float); ncpu= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("systems.innocent.fft3dfilter")
+  assert( plug != nil, "plugin \"systems.innocent.fft3dfilter\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -47,5 +43,6 @@ proc FFT3DFilter*(vsmap:ptr VSMap; sigma=none(float); beta=none(float); planes=n
   if ncpu.isSome: args.append("ncpu", ncpu.get)
 
   result = API.invoke(plug, "FFT3DFilter".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

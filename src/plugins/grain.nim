@@ -1,14 +1,10 @@
-proc Add*(vsmap:ptr VSMap; `var`=none(float); uvar=none(float); hcorr=none(float); vcorr=none(float); seed=none(int); constant=none(int)):ptr VSMap =
-  let plug = getPluginById("com.holywu.addgrain")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"grain\" not installed properly in your computer")
+proc Add*(vsmap:ptr VSMap; `var`= none(float); uvar= none(float); hcorr= none(float); vcorr= none(float); seed= none(int); constant= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.holywu.addgrain")
+  assert( plug != nil, "plugin \"com.holywu.addgrain\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -22,5 +18,6 @@ proc Add*(vsmap:ptr VSMap; `var`=none(float); uvar=none(float); hcorr=none(float
   if constant.isSome: args.append("constant", constant.get)
 
   result = API.invoke(plug, "Add".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

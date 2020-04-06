@@ -1,14 +1,10 @@
-proc KNLMeansCL*(vsmap:ptr VSMap; d=none(int); a=none(int); s=none(int); h=none(float); channels=none(string); wmode=none(int); wref=none(float); rclip=none(ptr VSNodeRef); device_type=none(string); device_id=none(int); ocl_x=none(int); ocl_y=none(int); ocl_r=none(int); info=none(int)):ptr VSMap =
-  let plug = getPluginById("com.Khanattila.KNLMeansCL")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"knlm\" not installed properly in your computer")
+proc KNLMeansCL*(vsmap:ptr VSMap; d= none(int); a= none(int); s= none(int); h= none(float); channels= none(string); wmode= none(int); wref= none(float); rclip= none(ptr VSNodeRef); device_type= none(string); device_id= none(int); ocl_x= none(int); ocl_y= none(int); ocl_r= none(int); info= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.Khanattila.KNLMeansCL")
+  assert( plug != nil, "plugin \"com.Khanattila.KNLMeansCL\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -30,5 +26,6 @@ proc KNLMeansCL*(vsmap:ptr VSMap; d=none(int); a=none(int); s=none(int); h=none(
   if info.isSome: args.append("info", info.get)
 
   result = API.invoke(plug, "KNLMeansCL".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

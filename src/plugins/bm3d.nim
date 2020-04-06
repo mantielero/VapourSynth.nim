@@ -1,14 +1,10 @@
-proc Basic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
-  let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
+proc Basic*(vsmap:ptr VSMap; `ref`= none(ptr VSNodeRef); profile= none(string); sigma= none(seq[float]); block_size= none(int); block_step= none(int); group_size= none(int); bm_range= none(int); bm_step= none(int); th_mse= none(float); hard_thr= none(float); matrix= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.vapoursynth.bm3d")
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -27,19 +23,16 @@ proc Basic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); si
   if matrix.isSome: args.append("matrix", matrix.get)
 
   result = API.invoke(plug, "Basic".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
+
+proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile= none(string); sigma= none(seq[float]); block_size= none(int); block_step= none(int); group_size= none(int); bm_range= none(int); bm_step= none(int); th_mse= none(float); matrix= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -57,19 +50,16 @@ proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=no
   if matrix.isSome: args.append("matrix", matrix.get)
 
   result = API.invoke(plug, "Final".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc OPP2RGB*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
+
+proc OPP2RGB*(vsmap:ptr VSMap; sample= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -78,19 +68,16 @@ proc OPP2RGB*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   if sample.isSome: args.append("sample", sample.get)
 
   result = API.invoke(plug, "OPP2RGB".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc RGB2OPP*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
+
+proc RGB2OPP*(vsmap:ptr VSMap; sample= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -99,19 +86,16 @@ proc RGB2OPP*(vsmap:ptr VSMap; sample=none(int)):ptr VSMap =
   if sample.isSome: args.append("sample", sample.get)
 
   result = API.invoke(plug, "RGB2OPP".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc VAggregate*(vsmap:ptr VSMap; radius=none(int); sample=none(int)):ptr VSMap =
+
+proc VAggregate*(vsmap:ptr VSMap; radius= none(int); sample= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -121,19 +105,16 @@ proc VAggregate*(vsmap:ptr VSMap; radius=none(int); sample=none(int)):ptr VSMap 
   if sample.isSome: args.append("sample", sample.get)
 
   result = API.invoke(plug, "VAggregate".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc VBasic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); hard_thr=none(float); matrix=none(int)):ptr VSMap =
+
+proc VBasic*(vsmap:ptr VSMap; `ref`= none(ptr VSNodeRef); profile= none(string); sigma= none(seq[float]); radius= none(int); block_size= none(int); block_step= none(int); group_size= none(int); bm_range= none(int); bm_step= none(int); ps_num= none(int); ps_range= none(int); ps_step= none(int); th_mse= none(float); hard_thr= none(float); matrix= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -156,19 +137,16 @@ proc VBasic*(vsmap:ptr VSMap; `ref`=none(ptr VSNodeRef); profile=none(string); s
   if matrix.isSome: args.append("matrix", matrix.get)
 
   result = API.invoke(plug, "VBasic".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=none(seq[float]); radius=none(int); block_size=none(int); block_step=none(int); group_size=none(int); bm_range=none(int); bm_step=none(int); ps_num=none(int); ps_range=none(int); ps_step=none(int); th_mse=none(float); matrix=none(int)):ptr VSMap =
+
+proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile= none(string); sigma= none(seq[float]); radius= none(int); block_size= none(int); block_step= none(int); group_size= none(int); bm_range= none(int); bm_step= none(int); ps_num= none(int); ps_range= none(int); ps_step= none(int); th_mse= none(float); matrix= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.bm3d")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"bm3d\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var input = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var input = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -190,5 +168,6 @@ proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile=none(string); sigma=n
   if matrix.isSome: args.append("matrix", matrix.get)
 
   result = API.invoke(plug, "VFinal".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

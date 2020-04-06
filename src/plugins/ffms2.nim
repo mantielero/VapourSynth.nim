@@ -1,21 +1,24 @@
 proc GetLogLevel*():ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.ffms2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+  assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
 
   result = API.invoke(plug, "GetLogLevel".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc Index*(source:string; cachefile=none(string); indextracks=none(seq[int]); dumptracks=none(seq[int]); audiofile=none(string); errorhandling=none(int); overwrite=none(int); demuxer=none(string)):ptr VSMap =
+
+proc Index*(source:string; cachefile= none(string); indextracks= none(seq[int]); dumptracks= none(seq[int]); audiofile= none(string); errorhandling= none(int); overwrite= none(int); demuxer= none(string)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.ffms2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+  assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("source", source)
   if cachefile.isSome: args.append("cachefile", cachefile.get)
   if indextracks.isSome: args.set("indextracks", indextracks.get)
@@ -26,27 +29,30 @@ proc Index*(source:string; cachefile=none(string); indextracks=none(seq[int]); d
   if demuxer.isSome: args.append("demuxer", demuxer.get)
 
   result = API.invoke(plug, "Index".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 
 proc SetLogLevel*(level:int):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.ffms2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+  assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  args.append("level", level)
+
 
   result = API.invoke(plug, "SetLogLevel".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc Source*(source:string; track=none(int); cache=none(int); cachefile=none(string); fpsnum=none(int); fpsden=none(int); threads=none(int); timecodes=none(string); seekmode=none(int); width=none(int); height=none(int); resizer=none(string); format=none(int); alpha=none(int)):ptr VSMap =
+
+proc Source*(source:string; track= none(int); cache= none(int); cachefile= none(string); fpsnum= none(int); fpsden= none(int); threads= none(int); timecodes= none(string); seekmode= none(int); width= none(int); height= none(int); resizer= none(string); format= none(int); alpha= none(int)):ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.ffms2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+  assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("source", source)
   if track.isSome: args.append("track", track.get)
   if cache.isSome: args.append("cache", cache.get)
@@ -63,16 +69,19 @@ proc Source*(source:string; track=none(int); cache=none(int); cachefile=none(str
   if alpha.isSome: args.append("alpha", alpha.get)
 
   result = API.invoke(plug, "Source".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 
 proc Version*():ptr VSMap =
+
   let plug = getPluginById("com.vapoursynth.ffms2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"ffms2\" not installed properly in your computer")
+  assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
 
+
   result = API.invoke(plug, "Version".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

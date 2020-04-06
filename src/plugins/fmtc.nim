@@ -1,14 +1,10 @@
-proc bitdepth*(vsmap:ptr VSMap; csp=none(int); bits=none(int); flt=none(int); planes=none(seq[int]); fulls=none(int); fulld=none(int); dmode=none(int); ampo=none(float); ampn=none(float); dyn=none(int); staticnoise=none(int); cpuopt=none(int); patsize=none(int)):ptr VSMap =
-  let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
+proc bitdepth*(vsmap:ptr VSMap; csp= none(int); bits= none(int); flt= none(int); planes= none(seq[int]); fulls= none(int); fulld= none(int); dmode= none(int); ampo= none(float); ampn= none(float); dyn= none(int); staticnoise= none(int); cpuopt= none(int); patsize= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("fmtconv")
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -29,19 +25,16 @@ proc bitdepth*(vsmap:ptr VSMap; csp=none(int); bits=none(int); flt=none(int); pl
   if patsize.isSome: args.append("patsize", patsize.get)
 
   result = API.invoke(plug, "bitdepth".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc histluma*(vsmap:ptr VSMap; full=none(int); amp=none(int)):ptr VSMap =
+
+proc histluma*(vsmap:ptr VSMap; full= none(int); amp= none(int)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -51,19 +44,16 @@ proc histluma*(vsmap:ptr VSMap; full=none(int); amp=none(int)):ptr VSMap =
   if amp.isSome: args.append("amp", amp.get)
 
   result = API.invoke(plug, "histluma".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc matrix*(vsmap:ptr VSMap; mat=none(string); mats=none(string); matd=none(string); fulls=none(int); fulld=none(int); coef=none(seq[float]); csp=none(int); col_fam=none(int); bits=none(int); singleout=none(int); cpuopt=none(int)):ptr VSMap =
+
+proc matrix*(vsmap:ptr VSMap; mat= none(string); mats= none(string); matd= none(string); fulls= none(int); fulld= none(int); coef= none(seq[float]); csp= none(int); col_fam= none(int); bits= none(int); singleout= none(int); cpuopt= none(int)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -82,19 +72,16 @@ proc matrix*(vsmap:ptr VSMap; mat=none(string); mats=none(string); matd=none(str
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   result = API.invoke(plug, "matrix".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc matrix2020cl*(vsmap:ptr VSMap; full=none(int); csp=none(int); bits=none(int); cpuopt=none(int)):ptr VSMap =
+
+proc matrix2020cl*(vsmap:ptr VSMap; full= none(int); csp= none(int); bits= none(int); cpuopt= none(int)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -106,19 +93,16 @@ proc matrix2020cl*(vsmap:ptr VSMap; full=none(int); csp=none(int); bits=none(int
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   result = API.invoke(plug, "matrix2020cl".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 
 proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
-  let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("fmtconv")
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -126,19 +110,16 @@ proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
   args.append("clip", clip)
 
   result = API.invoke(plug, "nativetostack16".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc primaries*(vsmap:ptr VSMap; rs=none(seq[float]); gs=none(seq[float]); bs=none(seq[float]); ws=none(seq[float]); rd=none(seq[float]); gd=none(seq[float]); bd=none(seq[float]); wd=none(seq[float]); prims=none(string); primd=none(string); cpuopt=none(int)):ptr VSMap =
+
+proc primaries*(vsmap:ptr VSMap; rs= none(seq[float]); gs= none(seq[float]); bs= none(seq[float]); ws= none(seq[float]); rd= none(seq[float]); gd= none(seq[float]); bd= none(seq[float]); wd= none(seq[float]); prims= none(string); primd= none(string); cpuopt= none(int)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -157,19 +138,16 @@ proc primaries*(vsmap:ptr VSMap; rs=none(seq[float]); gs=none(seq[float]); bs=no
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   result = API.invoke(plug, "primaries".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc resample*(vsmap:ptr VSMap; w=none(int); h=none(int); sx=none(seq[float]); sy=none(seq[float]); sw=none(seq[float]); sh=none(seq[float]); scale=none(float); scaleh=none(float); scalev=none(float); kernel=none(seq[string]); kernelh=none(seq[string]); kernelv=none(seq[string]); impulse=none(seq[float]); impulseh=none(seq[float]); impulsev=none(seq[float]); taps=none(seq[int]); tapsh=none(seq[int]); tapsv=none(seq[int]); a1=none(seq[float]); a2=none(seq[float]); a3=none(seq[float]); kovrspl=none(seq[int]); fh=none(seq[float]); fv=none(seq[float]); cnorm=none(seq[int]); totalh=none(seq[float]); totalv=none(seq[float]); invks=none(seq[int]); invksh=none(seq[int]); invksv=none(seq[int]); invkstaps=none(seq[int]); invkstapsh=none(seq[int]); invkstapsv=none(seq[int]); csp=none(int); css=none(string); planes=none(seq[float]); fulls=none(int); fulld=none(int); center=none(seq[int]); cplace=none(string); cplaces=none(string); cplaced=none(string); interlaced=none(int); interlacedd=none(int); tff=none(int); tffd=none(int); flt=none(int); cpuopt=none(int)):ptr VSMap =
+
+proc resample*(vsmap:ptr VSMap; w= none(int); h= none(int); sx= none(seq[float]); sy= none(seq[float]); sw= none(seq[float]); sh= none(seq[float]); scale= none(float); scaleh= none(float); scalev= none(float); kernel= none(seq[string]); kernelh= none(seq[string]); kernelv= none(seq[string]); impulse= none(seq[float]); impulseh= none(seq[float]); impulsev= none(seq[float]); taps= none(seq[int]); tapsh= none(seq[int]); tapsv= none(seq[int]); a1= none(seq[float]); a2= none(seq[float]); a3= none(seq[float]); kovrspl= none(seq[int]); fh= none(seq[float]); fv= none(seq[float]); cnorm= none(seq[int]); totalh= none(seq[float]); totalv= none(seq[float]); invks= none(seq[int]); invksh= none(seq[int]); invksv= none(seq[int]); invkstaps= none(seq[int]); invkstapsh= none(seq[int]); invkstapsv= none(seq[int]); csp= none(int); css= none(string); planes= none(seq[float]); fulls= none(int); fulld= none(int); center= none(seq[int]); cplace= none(string); cplaces= none(string); cplaced= none(string); interlaced= none(int); interlacedd= none(int); tff= none(int); tffd= none(int); flt= none(int); cpuopt= none(int)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -231,19 +209,16 @@ proc resample*(vsmap:ptr VSMap; w=none(int); h=none(int); sx=none(seq[float]); s
   if cpuopt.isSome: args.append("cpuopt", cpuopt.get)
 
   result = API.invoke(plug, "resample".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 
 proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
-  let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("fmtconv")
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -251,19 +226,16 @@ proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
   args.append("clip", clip)
 
   result = API.invoke(plug, "stack16tonative".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc transfer*(vsmap:ptr VSMap; transs=none(seq[string]); transd=none(seq[string]); cont=none(float); gcor=none(float); bits=none(int); flt=none(int); fulls=none(int); fulld=none(int); cpuopt=none(int); blacklvl=none(float)):ptr VSMap =
+
+proc transfer*(vsmap:ptr VSMap; transs= none(seq[string]); transd= none(seq[string]); cont= none(float); gcor= none(float); bits= none(int); flt= none(int); fulls= none(int); fulld= none(int); cpuopt= none(int); blacklvl= none(float)):ptr VSMap =
+
   let plug = getPluginById("fmtconv")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"fmtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -285,5 +257,6 @@ proc transfer*(vsmap:ptr VSMap; transs=none(seq[string]); transd=none(seq[string
   if blacklvl.isSome: args.append("blacklvl", blacklvl.get)
 
   result = API.invoke(plug, "transfer".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

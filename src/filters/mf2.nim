@@ -5,12 +5,7 @@
 #import nimprof
 import ../vapoursynth
 import options
-import times
-import DrawFrame
-
-let time = epochTime()
-
-
+#import DrawFrame
 #import OnCopy
 #import Mancer
 
@@ -73,86 +68,63 @@ BlankClip( format=pfGrayS.int.some,
 ]#
 
 
-#[
-proc TestClip*():ptr VSMap =
+proc BlankClip2*( width=none(int); 
+                 height=none(int); 
+                 format=none(int); 
+                 length=none(int); 
+                 fpsnum=none(int); 
+                 fpsden=none(int); 
+                 color=none(seq[float]); 
+                 keep=none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
+  if plug == nil:
+    raise newException(ValueError, "plugin \"std\" not installed properly in your computer")
+
+  #let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
+  #if tmpSeq.len == 0:
+  #  raise newException(ValueError, "the vsmap should contain at least one item")
+  #if tmpSeq[0].nodes.len != 1:
+  #  raise newException(ValueError, "the vsmap should contain one node")
+  #var clip = some(tmpSeq[0].nodes[0])
+
+
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  args.append("width", 640)
-  args.append("height", 480)
-  args.append("format", pfGrayS.int)
-  args.append("length", 100000)
-  args.append("fpsnum", 24000)
-  args.append("fpsden", 1001)
-  args.append("keep", 1)  
+  #if clip.isSome: args.append("clip", clip.get)
+  if width.isSome: args.append("width", width.get)
+  if height.isSome: args.append("height", height.get)
+  if format.isSome: args.append("format", format.get)
+  if length.isSome: args.append("length", length.get)
+  if fpsnum.isSome: args.append("fpsnum", fpsnum.get)
+  if fpsden.isSome: args.append("fpsden", fpsden.get)
+  if color.isSome: args.set("color", color.get)
+  if keep.isSome: args.append("keep", keep.get)
+
   result = API.invoke(plug, "BlankClip".cstring, args)
   API.freeMap(args)
 
-
-
-proc MyConvolution*(vsmap:ptr VSMap, matrix:seq[float]):ptr VSMap =
-  let plug = getPluginById("com.vapoursynth.std")
-  var clip = getFirstNode(vsmap)
-
-
-  # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
-  let args = createMap()
-  args.append("clip", clip)
-  #let m = [1,2,1,2,4,2,1,2,1]
-  for i in matrix:
-    args.append("matrix", i)
-
-  result = API.invoke(plug, "Convolution".cstring, args)
-  API.freeMap(args)
-]#
-#[
-let nframes = BlankClip( format=pfGrayS.int.some, 
-                         width=640.some,
-                         height=480.some,
-                         length=100000.some,
-                         fpsnum=24000.some, 
-                         fpsden=1001.some, 
-                         keep=1.some).Convolution(@[1.0,2.0,1.0,2.0,4.0,2.0,1.0,2.0,1.0]).Null
-]#
-#[
-$ ./modifyframe
-Time       : 37.95381712913513
-Num. frames: 100000
-FPS        : 2634.781098822213
-]#
-#TestClip().MyConvolution(@[1.0,2.0,1.0,2.0,4.0,2.0,1.0,2.0,1.0]).Null
+BlankClip2( format=pfGrayS.int.some, 
+           width=640.some,
+           height=480.some,
+           length=1000.some,
+           fpsnum=24000.some, 
+           fpsden=1001.some, keep=1.some).Convolution(@[1.0,2.0,1.0,2.0,4.0,2.0,1.0,2.0,1.0]).Null
 
 # $ nim c -f --gc:none -d:release -d:danger modifyframe
 # 100000frames/38s = 2631.6fps (feisty2: 2425.51fps)
 # https://github.com/darealshinji/vapoursynth-plugins/blob/master/plugins/convo2d/src/convo2d.c
 # gc:on : 32.9s
 #
-
-let nframes = BlankClip( format=pfGrayS.int.some, 
-                         width=640.some,
-                         height=480.some,
-                         length=100000.some,#100000.some, 
-                         fpsnum=24000.some, 
-                         fpsden=1001.some, 
-                         keep=1.some).DrawFrame.Null 
+#[
+BlankClip( format=pfGrayS.int.some, 
+           width=640.some,
+           height=480.some,
+           length=100000.some,#100000.some, 
+           fpsnum=24000.some, 
+           fpsden=1001.some, keep=1.some).DrawFrame.Null 
 
 # 100000/5min24s = 308fps  # seq[seq[int32]] -> array[9,int32]
 # 100000/3m49s = 436fps    # Changing if's into max-min
 # 100000/3m46s = 442fps
-# 100000/2m43.9s = 610fps
-#let nframes = Source("../../test/2sec.mkv").DrawFrame.Savey4m("original.y4m")
-
-
-#echo cpuTime()
-let dif = epochTime() - time
-echo "Time       : ", dif
-echo "Num. frames: ", nframes
-echo "FPS        : ", (nframes.float / dif.float)
-#[
-Time       : 127.1067352294922
-Num. frames: 100000
-FPS        : 786.7403707557214
 ]#
-
-# Feisty2: convolution 2425.5fps   vs c++ 1822.6fps: 75%
-# Mío: 2634fps vs 631fps: 24%
+#Source("../../test/2sec.mkv").DrawFrame.Savey4m("original.y4m")

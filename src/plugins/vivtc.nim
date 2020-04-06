@@ -1,14 +1,10 @@
-proc VDecimate*(vsmap:ptr VSMap; cycle=none(int); chroma=none(int); dupthresh=none(float); scthresh=none(float); blockx=none(int); blocky=none(int); clip2=none(ptr VSNodeRef); ovr=none(string); dryrun=none(int)):ptr VSMap =
-  let plug = getPluginById("org.ivtc.v")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"vivtc\" not installed properly in your computer")
+proc VDecimate*(vsmap:ptr VSMap; cycle= none(int); chroma= none(int); dupthresh= none(float); scthresh= none(float); blockx= none(int); blocky= none(int); clip2= none(ptr VSNodeRef); ovr= none(string); dryrun= none(int)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("org.ivtc.v")
+  assert( plug != nil, "plugin \"org.ivtc.v\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -25,19 +21,16 @@ proc VDecimate*(vsmap:ptr VSMap; cycle=none(int); chroma=none(int); dupthresh=no
   if dryrun.isSome: args.append("dryrun", dryrun.get)
 
   result = API.invoke(plug, "VDecimate".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc VFM*(vsmap:ptr VSMap, order:int; field=none(int); mode=none(int); mchroma=none(int); cthresh=none(int); mi=none(int); chroma=none(int); blockx=none(int); blocky=none(int); y0=none(int); y1=none(int); scthresh=none(float); micmatch=none(int); micout=none(int); clip2=none(ptr VSNodeRef)):ptr VSMap =
+
+proc VFM*(vsmap:ptr VSMap, order:int; field= none(int); mode= none(int); mchroma= none(int); cthresh= none(int); mi= none(int); chroma= none(int); blockx= none(int); blocky= none(int); y0= none(int); y1= none(int); scthresh= none(float); micmatch= none(int); micout= none(int); clip2= none(ptr VSNodeRef)):ptr VSMap =
+
   let plug = getPluginById("org.ivtc.v")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"vivtc\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"org.ivtc.v\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -60,5 +53,6 @@ proc VFM*(vsmap:ptr VSMap, order:int; field=none(int); mode=none(int); mchroma=n
   if clip2.isSome: args.append("clip2", clip2.get)
 
   result = API.invoke(plug, "VFM".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

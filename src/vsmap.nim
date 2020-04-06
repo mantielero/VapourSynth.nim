@@ -25,9 +25,10 @@ A map’s contents can be erased with clearMap().
 import strformat
 import options
 
+#[
 type
   Map* = object
-    key*: string
+    key*: cstring
     `type`*:VSPropTypes
     data*:seq[string]
     integers*:seq[int]
@@ -35,23 +36,26 @@ type
     nodes*:seq[ptr VSNodeRef]
     frames*:seq[ptr VSFrameRef]
     functions*:seq[ptr VSFuncRef]
-
+]#
 # TODO: a user shouldn't have to deal with this functions
 proc createMap*():ptr VSMap = 
   ## Creates a new property map. It must be deallocated later with freeMap().  
-  return API.createMap()
+  API.createMap()
 
-proc freeMap*(vsmap:ptr VSMap) = API.freeMap(vsmap)   # TODO: hide me!!
+proc freeMap*(vsmap:ptr VSMap) =
   ## Frees a map and all the objects it contains.
+  API.freeMap(vsmap)
 
-proc clearMap*(vsmap:ptr VSMap) = API.clearMap(vsmap) ## \
+proc clearMap*(vsmap:ptr VSMap) = 
   ## Deletes all the keys and their associated values from the map, leaving it empty.
+  API.clearMap(vsmap)
 
 
-proc setError*(vsmap:ptr VSMap, errorMessage:cstring) = API.setError(vsmap,errorMessage)
+proc setError*(vsmap:ptr VSMap, errorMessage:cstring) = 
   ## Adds an error message to a map. The map is cleared first. The error message is copied. In this state the map may only be freed, cleared or queried for the error message.
   ##
   ## For errors encountered in a filter’s "getframe" function, use setFilterError.
+  API.setError(vsmap,errorMessage)
 
 proc getError*(vsmap:ptr VSMap):string = 
   ## Returns a pointer to the error message contained in the map, or NULL if there is no error message. The pointer is valid as long as the map lives.
@@ -67,48 +71,51 @@ proc len*(vsmap:ptr VSMap):int =
   API.propNumKeys(vsmap).int
 
 proc checkLimits(vsmap:ptr VSMap, key:string, idx: int) =
-  if idx < 0:
-    raise newException(ValueError, "`idx` shall be >= 0")
-  elif idx >= vsmap.len:
-    raise newException(ValueError, &"for key=\"{key}\", `idx` shall be <= {vsmap.len}")
+  doAssert( idx >= 0, "`idx` shall be >= 0")
+  doAssert( idx < vsmap.len, "`idx` shall be <=" & $vsmap.len)
+
 
 proc checkError(error:VSGetPropErrors, key:string, idx:int) =
-  #echo "ERROR"
-  case error  
+  #echo "ERROR"                                                                  
+  case error
   of peIndex:
-    raise newException(ValueError, &"the index \"{idx}\" is out of range")
+    raise newException(ValueError, "the index " & $idx & " is out of range")
   of peType:
-    raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
+    raise newException(ValueError, "the VSMap's key=" & key & " does not contain strings")
   else: # peUnset:
     discard  
 
-proc propGetKey*(vsmap:ptr VSMap, idx:int):string = 
+proc key*(vsmap:ptr VSMap, idx:int):cstring = 
   ## Returns a key from a property map.
-  if idx < 0:
-    raise newException(ValueError, "`idx` shall be >= 0")
-  elif idx >= vsmap.len:
-    raise newException(ValueError, &"`idx` shall be <= {vsmap.len}")
-  var key = $API.propGetKey(vsmap, idx.cint)
+  assert(idx >= 0, "`idx` shall be >= 0")
+  assert(idx < vsmap.len, "`idx` shall be <= " & $vsmap.len)
+  #if idx < 0:
+  #  raise newException(ValueError, )
+  #elif idx >= vsmap.len:
+  #  raise newException(ValueError, &"`idx` shall be <= {vsmap.len}")
+  #var key = $API.propGetKey(vsmap, idx.cint)
   #var x = newString(key.len)
   #copyMem(addr(x[0]), addr(key), key.len)
-  return key
+  #return key
+  return API.propGetKey(vsmap, idx.cint)
 
-proc propGetType*(vsmap:ptr VSMap, key:string):VSPropTypes = 
+proc `type`*(vsmap:ptr VSMap, key:cstring):VSPropTypes = 
   ## Returns the type of the elements associated with the given key in a property map.
   ## The returned value is one of VSPropTypes. If there is no such key in the map, the returned value is ptUnset.
-  API.propGetType(vsmap, key.cstring).VSPropTypes
+  API.propGetType(vsmap, key).VSPropTypes
 
-proc propNumElements*(vsmap:ptr VSMap, key:string):int = 
+proc len*(vsmap:ptr VSMap, key:cstring):int = 
   ## Returns the number of elements associated with a key in a property map. Returns -1 if there is no such key in the map.
-  API.propNumElements(vsmap, key.cstring).int
+  API.propNumElements(vsmap, key).int
 
-proc propGetData*(vsmap:ptr VSMap, key:string, idx:int):string = 
+proc propGetData*(vsmap:ptr VSMap, key:cstring, idx:int):string = 
   ## Given a `key` retrieves the string stored at position `idx` from a map.
-  checkLimits(vsmap, key, idx)
+  #checkLimits(vsmap, key.string, idx)
+
   var err = peUnset.cint
   var perr = cast[ptr cint](unsafeAddr(err))  
-  result = $API.propGetData(vsmap, key.cstring, idx.cint, perr)
-  checkError(err.VSGetPropErrors, key, idx)
+  result = $API.propGetData(vsmap, key, idx.cint, perr)
+  #checkError(err.VSGetPropErrors, key.string, idx)
 
 
 proc propGetDataSize*(vsmap:ptr VSMap, key:string, idx:int ):int = 
@@ -140,7 +147,7 @@ proc propGetIntArray*(vsmap:ptr VSMap, key:string):seq[int] =
   var err = peUnset.cint
   var perr = cast[ptr cint](unsafeAddr(err))
   let address = API.propGetIntArray(vsmap, key.cstring, perr)
-  let size = vsmap.propNumElements(key)
+  let size = vsmap.len(key)
   if err.VSGetPropErrors == peType:
     raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
 
@@ -154,7 +161,7 @@ proc propGetFloatArray*(vsmap:ptr VSMap, key:string):seq[float] =
   var err = peUnset.cint
   var perr = cast[ptr cint](unsafeAddr(err)) 
   let address = API.propGetFloatArray(vsmap, key.cstring, perr)
-  let size = vsmap.propNumElements(key)
+  let size = vsmap.len(key)
   if err.VSGetPropErrors == peType:
     raise newException(ValueError, &"the VSMap's key=\"{key}\" does not contain strings")
 
@@ -188,7 +195,7 @@ proc propGetFunc*( vsmap:ptr VSMap, key:string, idx:int ):ptr VSFuncRef =
   checkError(err.VSGetPropErrors, key, idx)
 
 
-
+#------------------------------------------------
 
 # Setting data
 proc append*(vsmap:ptr VSMap, key:string, data:string) =
@@ -257,74 +264,45 @@ proc propSetData*(vsmap:ptr VSMap, key:string, data:string, append:VSPropAppendM
 # ===================================
 ]#
 
-#[
+type
+  Item = tuple[key:cstring, `type`:VSPropTypes]
+  #Item = string | int | float | ptr VSNodeRef | ptr VSFrameRef | VSFuncRef
 
-proc get(vsmap:ptr VSMap, idx:int):Tints|Tfloats|Tstrings|Tnodes|Tframes|Tfunctions|Tunset =
-  ## Retrieves the value given an index (this is very important to take the first one)
-  # Check range
-  let n = vsmap.len
-  if idx < 0:
-    raise newException(ValueError, "VSMap index <0")  
-  elif idx > n-1:
-    raise newException(ValueError, "VSMap index > than the number of keys available") 
+iterator keys*(vsmap:ptr VSMap):cstring =
+  for idx in 0..<vsmap.len:
+    yield vsmap.key(idx)
 
-  # Retrieve key, type and number of elements for that key
-  let key:string = propGetKey(vsmap, idx)
-  let `type` = propGetType(vsmap, key)
-  let nElems = vsmap.propNumElements(key)
-    
-  case `type`:
-  of ptData:
-    var elems:seq[string]
-    var error:VSGetPropErrors = peUnset
-    for i in 0..<nElems:
-      elems &= vsmap.propGetData(key,i,nil)
-    let tmp:Tstrings =   (key:key,value:elems)
-    return tmp
+iterator items*(vsmap:ptr VSMap):Item =
+  for idx in 0..<vsmap.len:
+    let key = vsmap.key(idx)
+    let t = vsmap.`type`(key)
+    var tmp:Item #= (key: key, `type`: t)
+    tmp.key = key
+    tmp.`type` = t
+    yield tmp
 
-  of ptInt:
-    var elems:seq[int]
-    for i in 0..<nElems:
-      elems &= vsmap.propGetInt(key,i,nil)  
-    let tmp:Tints =   (key:key,value:elems)
-    return tmp
-
-  of ptFloat:
-    var elems:seq[float]
-    for i in 0..<nElems:
-      elems &= vsmap.propGetFloat(key,i,nil)  
-    return (key,elems)
-
-  of ptNode:
-    var elems:seq[ptr VSNodeRef]
-    for i in 0..<nElems:
-      elems &= vsmap.propGetNode(key,i,nil)  
-    return (key,elems)
-
-  of ptFrame:
-    var elems:seq[ptr VSFrameRef]
-    for i in 0..<nElems:
-      elems &= vsmap.propGetFrame(key,i,nil)  
-    return (key,elems)
-
-  of ptFunction:
-    var elems:seq[ptr VSFuncRef]
-    for i in 0..<nElems:
-      elems &= vsmap.propGetFunc(key,i,nil)  
-    return (key,elems)
+proc len*(vsmap:ptr VSMap, item:Item):int =
+  vsmap.len(item.key)
   
-  else: # ptUnset
-    return (key, nil)
-]# 
-#proc `[]`*(vsmap:ptr VSMap, idx:int):Map =
+#proc `[]`*(vsmap:ptr VSMap, item:Item):int  =
+#  vsmap.len(item.key)
+
+#proc `[]`*(vsmap:ptr VSMap, key:string):Item  =
+#  let t = vsmap.propGetType(key)
+#  return (key:key, `type`:t)
+
+  
+
+
+#[
 proc get*(vsmap:ptr VSMap, idx:int):Map =  
   # This enables getting item at position `idx` from an vsmap
-  let key = propGetKey(vsmap, idx)
-  let t = propGetType(vsmap, key)
+  let key = vsmap.key(idx)
+  let t = vsmap.`type`( key)
   var val:Map
   val.key = key
   val.`type` = t
-  let nElems = vsmap.propNumElements(key)
+  let nElems = vsmap.len(key)
     
   if t == ptData:
     var elems:seq[string]
@@ -366,23 +344,26 @@ proc get*(vsmap:ptr VSMap, idx:int):Map =
   #  continue
 
   return val
-
+]#
+#[
 proc toSeq*(vsmap:ptr VSMap):seq[ Map ] =
   ## Reads from VSMap into a sequence.
   for idx in 0..<vsmap.len:
     result &= vsmap.get(idx)
+]#
+
 
 #[
 proc `[]`*(vsmap:ptr VSMap, idx:int;clip:int=0):vsmap =
   ## Returns something
   # Check the that the first item in the vsmap is a Node type
-  let key = propGetKey(vsmap, 0)
+  let key = key(vsmap, 0)
   let t = propGetType(vsmap, key)
   if t != ptNode:
     raise newException(ValueError, "slicing on vsmap only works for node")  
 
   # Get all nodes
-  let nNodes = vsmap.propNumElements(key)
+  let nNodes = vsmap.len(key)
 
   if clip > nNodes -1:
      raise newException(ValueError, &"referring to clip number={clip} when there are only {nNodes}")
@@ -400,32 +381,32 @@ proc `[]`*(vsmap:ptr VSMap, idx:int;clip:int=0):vsmap =
 #  while i <= last:
 #    yield a[i]
 #    inc(i)
-
+#[
 proc getClip(vsmap:ptr VSMap, clip:Natural):ptr VSMap =
   ## Retrieves one specific clip when there are many available
-  let key = propGetKey(vsmap, 0)
-  let t   = propGetType(vsmap, key)
+  let key = key(vsmap, 0)
+  let t   = vsmap.`type`(key)
   assert t == ptNode
   #if t != ptNode:
   #  raise newException(ValueError, "slicing on vsmap only works for node") 
   # How many nodes?
-  let nNodes = vsmap.propNumElements(key)
+  let nNodes = vsmap.len(key)
   assert clip < nNodes - 1
 
   var new = createMap()
   let node = vsmap.propGetNode(key,0) 
   new.append("clip", node)
   return new
-
+]#
 proc `[]`*(vsmap:ptr VSMap;hs:HSlice):ptr VSMap =  #;clip:Natural=0
   ## vsmap[1..3] (returns a clip -vsmap- including only those frames)
   ## Only works on one clip
-  let key = propGetKey(vsmap, 0)
-  let t   = propGetType(vsmap, key)
+  let key = key(vsmap, 0)
+  let t   = vsmap.`type`(key)
   assert t == ptNode
 
   # How many nodes?
-  let nNodes = vsmap.propNumElements(key)
+  let nNodes = vsmap.len(key)
   assert nNodes == 1
 
   result = vsmap.Trim(some(hs.a),some(hs.b))
@@ -435,7 +416,30 @@ proc `[]`*(vsmap:ptr VSMap;hs:HSlice):ptr VSMap =  #;clip:Natural=0
 # Splice
 
 proc getFirstNode*(vsmap:ptr VSMap):ptr VSNodeRef =
-  let key = propGetKey(vsmap,0)
+  ## Retrieves a node from a map.
+  ## Returns a pointer to the node on success, or NULL in case of error.
+  ## This function increases the node’s reference count, so freeNode() must be used when the node is no longer needed.
+  ## If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.  
+  let key = key(vsmap,0)
   assert( key == "clip", "expecting \"clip\" as first item in VSMap" )
   
   return vsmap.propGetNode("clip",0)
+
+
+proc getFirstNodes*(vsmap:ptr VSMap):seq[ptr VSNodeRef] =
+  ## Retrieves a node from a map.
+  ## Returns a pointer to the node on success, or NULL in case of error.
+  ## This function increases the node’s reference count, so freeNode() must be used when the node is no longer needed.
+  ## If the map has an error set (i.e. if getError() returns non-NULL), VapourSynth will die with a fatal error.  
+  let key = key(vsmap,0)
+  assert( key == "clips", "expecting \"clip\" as first item in VSMap" )
+  
+  var tmp:seq[ptr VSNodeRef]
+  for i in 0..<vsmap.len("clips"):
+    tmp &= vsmap.propGetNode("clips",i)
+  return tmp
+
+proc checkContainsJustOneNode*(inClip:ptr VSMap) =
+  #let tmpSeq = inClip.toSeq    # Convert the VSMap into a sequence
+  assert( inClip.len > 0, "the vsmap should contain at least one item")
+  assert( inClip.len("clip") > 0, "the vsmap should contain one node" )

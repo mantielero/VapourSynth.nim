@@ -1,14 +1,10 @@
-proc SmoothFps*(vsmap:ptr VSMap, super:ptr VSNodeRef, sdata:int, vectors:ptr VSNodeRef, vdata:int, opt:string; src=none(ptr VSNodeRef); fps=none(float)):ptr VSMap =
-  let plug = getPluginById("com.svp-team.flow2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"svp2\" not installed properly in your computer")
+proc SmoothFps*(vsmap:ptr VSMap, super:ptr VSNodeRef, sdata:int, vectors:ptr VSNodeRef, vdata:int, opt:string; src= none(ptr VSNodeRef); fps= none(float)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("com.svp-team.flow2")
+  assert( plug != nil, "plugin \"com.svp-team.flow2\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -23,19 +19,16 @@ proc SmoothFps*(vsmap:ptr VSMap, super:ptr VSNodeRef, sdata:int, vectors:ptr VSN
   if fps.isSome: args.append("fps", fps.get)
 
   result = API.invoke(plug, "SmoothFps".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src=none(ptr VSNodeRef); src=none(ptr VSNodeRef); fps=none(float)):ptr VSMap =
+
+proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src= none(ptr VSNodeRef); src= none(ptr VSNodeRef); fps= none(float)):ptr VSMap =
+
   let plug = getPluginById("com.svp-team.flow2")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"svp2\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"com.svp-team.flow2\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -47,5 +40,6 @@ proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src=none(ptr VSNodeRef); 
   if fps.isSome: args.append("fps", fps.get)
 
   result = API.invoke(plug, "SmoothFps_NVOF".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 

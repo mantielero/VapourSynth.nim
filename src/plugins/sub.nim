@@ -1,14 +1,10 @@
-proc ImageFile*(vsmap:ptr VSMap, file:string; id=none(int); palette=none(seq[int]); gray=none(int); info=none(int); flatten=none(int); blend=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string)):ptr VSMap =
-  let plug = getPluginById("biz.srsfckn.subtext")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
+proc ImageFile*(vsmap:ptr VSMap, file:string; id= none(int); palette= none(seq[int]); gray= none(int); info= none(int); flatten= none(int); blend= none(int); matrix= none(int); matrix_s= none(string); transfer= none(int); transfer_s= none(string); primaries= none(int); primaries_s= none(string)):ptr VSMap =
 
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  let plug = getPluginById("biz.srsfckn.subtext")
+  assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -29,19 +25,16 @@ proc ImageFile*(vsmap:ptr VSMap, file:string; id=none(int); palette=none(seq[int
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   result = API.invoke(plug, "ImageFile".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc Subtitle*(vsmap:ptr VSMap, text:string; start=none(int); `end`=none(int); debuglevel=none(int); fontdir=none(string); linespacing=none(float); margins=none(seq[int]); sar=none(float); style=none(string); blend=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string)):ptr VSMap =
+
+proc Subtitle*(vsmap:ptr VSMap, text:string; start= none(int); `end`= none(int); debuglevel= none(int); fontdir= none(string); linespacing= none(float); margins= none(seq[int]); sar= none(float); style= none(string); blend= none(int); matrix= none(int); matrix_s= none(string); transfer= none(int); transfer_s= none(string); primaries= none(int); primaries_s= none(string)):ptr VSMap =
+
   let plug = getPluginById("biz.srsfckn.subtext")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -65,19 +58,16 @@ proc Subtitle*(vsmap:ptr VSMap, text:string; start=none(int); `end`=none(int); d
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   result = API.invoke(plug, "Subtitle".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
 
-proc TextFile*(vsmap:ptr VSMap, file:string; charset=none(string); scale=none(float); debuglevel=none(int); fontdir=none(string); linespacing=none(float); margins=none(seq[int]); sar=none(float); style=none(string); blend=none(int); matrix=none(int); matrix_s=none(string); transfer=none(int); transfer_s=none(string); primaries=none(int); primaries_s=none(string)):ptr VSMap =
+
+proc TextFile*(vsmap:ptr VSMap, file:string; charset= none(string); scale= none(float); debuglevel= none(int); fontdir= none(string); linespacing= none(float); margins= none(seq[int]); sar= none(float); style= none(string); blend= none(int); matrix= none(int); matrix_s= none(string); transfer= none(int); transfer_s= none(string); primaries= none(int); primaries_s= none(string)):ptr VSMap =
+
   let plug = getPluginById("biz.srsfckn.subtext")
-  if plug == nil:
-    raise newException(ValueError, "plugin \"sub\" not installed properly in your computer")
-
-  let tmpSeq = vsmap.toSeq    # Convert the VSMap into a sequence
-  if tmpSeq.len == 0:
-    raise newException(ValueError, "the vsmap should contain at least one item")
-  if tmpSeq[0].nodes.len != 1:
-    raise newException(ValueError, "the vsmap should contain one node")
-  var clip = tmpSeq[0].nodes[0]
+  assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
+  assert( vsmap.len != 0, "the vsmap should contain at least one item")
+  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
@@ -101,5 +91,6 @@ proc TextFile*(vsmap:ptr VSMap, file:string; charset=none(string); scale=none(fl
   if primaries_s.isSome: args.append("primaries_s", primaries_s.get)
 
   result = API.invoke(plug, "TextFile".cstring, args)
-  API.freeMap(args)        
+  API.freeMap(args)
+
 
