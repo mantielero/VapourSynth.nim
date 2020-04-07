@@ -37,6 +37,7 @@ proc getUsedFramebufferSize():int = API.getCoreInfo( CORE ).usedFramebufferSize.
 
 include "vsframe"
 include "output"
+include "filter"  # This is the macro
 
 when isMainModule:
   #let vsmap = Source("../test/2sec.mkv")#.ClipInfo()

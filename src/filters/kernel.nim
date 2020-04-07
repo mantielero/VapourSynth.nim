@@ -9,12 +9,33 @@ iterator `...`[T](ini:T,`end`:T):tuple[a:uint,b:uint,c:uint] =
   for i in ini+1..`end`-1:
     yield (a:i-1,b:i,c:i+1)
   yield (a:`end`-1,b:`end`,c:`end`)
-  
+#[
+type
+  Plane = object
+    plane:uint
+    width:uint
+    height:uint
+    data:seq[int32]
+
+proc getPlane(src:ptr VSFrameRef, pn:cint):Plane =
+  let height = src.height( pn )   
+  let width  = src.width( pn )    
+  var tmp = newSeq[int32](width*height)
+  for row in 0..<height:
+      let r = src[pn, row]
+      for col in 0..<width:
+          tmp[row*width + col] = r[col].int32
+  return Plane(plane:pn.uint, width:width.uint, height:height.uint, data:tmp)
+
+template `[]`*(p:Plane,r:uint, c:uint):untyped =
+    p.data[r*p.width + c]
+]#
 
 proc apply_kernel*(src:ptr VSFrameRef, dst:ptr VSFrameRef, kernel:array[9, int32], mul:int, den:int) =
   #let n = (( math.sqrt(kernel.len.float).int - 1 ) / 2).int 
   for pn in 0..<src.numPlanes:  # pn= Plane Number
       # These cost 60fps (if I take them outside of this loop)
+      #let p = src.getPlane(pn)
       let height = src.height( pn )   
       let width  = src.width( pn )
       let h = (height-1)
@@ -29,7 +50,11 @@ proc apply_kernel*(src:ptr VSFrameRef, dst:ptr VSFrameRef, kernel:array[9, int32
             let value:int32  = r0[col0].int32     + r0[col1].int32 * 2 + r0[col2].int32 +
                                r1[col0].int32 * 2 + r1[col1].int32 * 4 + r1[col2].int32 * 2 +
                                r2[col0].int32     + r2[col1].int32 * 2 + r2[col2].int32
+            #let value:int32  = p[row0, col0]     + p[row0, col1] * 2 + p[row0, col2] +
+            #                   p[row1, col0] * 2 + p[row1, col1] * 4 + p[row1, col2] * 2 +
+            #                   p[row2, col0] + p[row2, col1] * 2 + p[row2, col2]
             w1[col1] = (value  / den).uint8
+
 
 #[
 auto srcp = reinterpret_cast<const float*>(vsapi->getReadPtr(frame, plane));

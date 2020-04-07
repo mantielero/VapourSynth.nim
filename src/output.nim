@@ -148,6 +148,27 @@ proc Null*(vsmap:ptr VSMap):int =
   return nframes
 
 
+proc callback( userData: pointer, 
+               f: ptr VSFrameRef, 
+               n: cint, 
+               a4: ptr VSNodeRef, 
+               errorMsg: cstring) {.cdecl.} = 
+  API.freeFrame( f )
+  #freemem(userData)
+
+
+proc NullAsync*(vsmap:ptr VSMap):int =
+  let node = getFirstNode(vsmap)
+  #API.freeMap(vsmap)  
+  let vinfo = API.getVideoInfo(node) # video info pointer
+  let nframes = vinfo.numFrames 
+  for i in 0..<nframes:  
+    API.getFrameAsync( i, node, callback, nil)
+    
+
+  API.freeMap(vsmap)
+  API.freeNode(node)
+  return nframes
   
 #[
     let vinfo = getVideoInfo(node)
