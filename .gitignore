@@ -1,6 +1,12 @@
 src/plugin_generator
 test/*
 docs/*
+src/libs/*
+src/filters/callgrind*
+src/filters/salida.txt
+src/filters/convolution
+src/filters/modifyframe
+src/filters/simple
 !test/*.nim
 *.mkv
 !/test/2sec.mkv

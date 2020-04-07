@@ -3,8 +3,6 @@ import macros
 import options
 
 
-
-
 template passTrough*() =
   outClip.append("clip", data.node)
   API.freeNode( data.node )
@@ -15,7 +13,7 @@ macro newFilter*(fname:untyped, body:untyped):untyped =
   result = nnkStmtList.newTree()
 
   result.add quote do:
-    import ../vapoursynth
+    import vapoursynth
 
   assert(body.kind == nnkStmtList) 
 
