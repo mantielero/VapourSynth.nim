@@ -153,6 +153,14 @@ Time       : 127.1067352294922
 Num. frames: 100000
 FPS        : 786.7403707557214
 ]#
+#[
+Usando Float32:
+Time       : 298.3208355903625
+Num. frames: 100000
+FPS        : 335.2095732840947
+
+
+]#
 
 # Feisty2: convolution 2425.5fps   vs c++ 1822.6fps: 75%
 # Mío: 2634fps vs 631fps: 24%

@@ -2,41 +2,33 @@
 import ../vapoursynth
 import math
 
-template clamp(val:cint, max_val:cint):untyped =
-  min( max(val, 0), max_val).uint
+iterator `...`[T](ini:T,`end`:T):tuple[a:uint,b:uint,c:uint] =
+  let ini = ini.uint
+  let `end` = `end`.uint
+  yield (a:ini,b:ini,c:ini+1)
+  for i in ini+1..`end`-1:
+    yield (a:i-1,b:i,c:i+1)
+  yield (a:`end`-1,b:`end`,c:`end`)
+  
 
 proc apply_kernel*(src:ptr VSFrameRef, dst:ptr VSFrameRef, kernel:array[9, int32], mul:int, den:int) =
   #let n = (( math.sqrt(kernel.len.float).int - 1 ) / 2).int 
   for pn in 0..<src.numPlanes:  # pn= Plane Number
-      # These cost 60fps
+      # These cost 60fps (if I take them outside of this loop)
       let height = src.height( pn )   
       let width  = src.width( pn )
-      #let sp:Plane = src[pn]  # Source plane
-      #let dp:Plane = dst[pn]  # Destination plane
-      #echo pn
-      #let srcplane = src[pn]
       let h = (height-1)
       let w = (width-1)
-      for row1 in 0..<height:
-          let row0 = clamp(row1-1, h)
-          let row2 = clamp(row1+1, h)
+
+      for (row0, row1, row2) in 0...h:
           let r0 = src[pn, row0]
           let r1 = src[pn, row1]
           let r2 = src[pn, row2]
-          let w1 = dst[pn, row1]
-          #let r0 = sp[row0]
-          #let r1 = sp[row1]
-          #let r2 = sp[row2]
-          #let w1 = dp[row1]          
-          for col1 in 0..<width:
-            let col0 = clamp(col1-1, w)
-            let col2 = clamp(col1+1, w)
+          let w1 = dst[pn, row1]        
+          for (col0, col1, col2) in 0...w:          
             let value:int32  = r0[col0].int32     + r0[col1].int32 * 2 + r0[col2].int32 +
                                r1[col0].int32 * 2 + r1[col1].int32 * 4 + r1[col2].int32 * 2 +
                                r2[col0].int32     + r2[col1].int32 * 2 + r2[col2].int32
-            #let value:uint16  = r0[col0].uint16+ r0[col2].uint16+ r2[col0].uint16 + r2[col2].uint16 +
-            #                   (r0[col1].uint16 + r1[col0].uint16 + r1[col2].uint16 + r2[col1].uint16) * 2.uint16 +
-            #                   r1[col1].uint16 * 4.uint16 
             w1[col1] = (value  / den).uint8
 
 #[
