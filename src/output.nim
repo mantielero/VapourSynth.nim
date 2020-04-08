@@ -77,42 +77,50 @@ proc frameDoneCallback( reqsData: pointer,
   setupForeignThreadGc()
 
   # Do something with the frame
-  reqs.frames[n.int] = frame  # Store the new frame in the buffer
-  echo "Frame: ", n
-  # Write to file everything you can
-  #if reqs.current == nil:
-  var k = reqs.current + 1 
-  while reqs.frames.hasKey( k ):
-    let f = reqs.frames[k]
-    reqs.strm.writeLine("FRAME")
-    let format = f.getFrameFormat#.toFormat
-    for i in 0..<format.numPlanes:
-      #let plane = frame.getPlane(i)
-      let width  = f.width( i )
-      let height = f.height( i )      
-      #let width = plane.width
-      #let height = plane.height
-      #let size = width * height
-      let init = cast[uint]( getReadPtr(f, i) )
-      let stride = f.getStride(i)
-      for row in 0..<height:
-        let address = cast[pointer]( init + row.uint * stride)
-        reqs.strm.writeData(address, width.int)
-    reqs.frames.del(k)
-    API.freeFrame( frame )
-    reqs.current += 1
-    k = reqs.current
+  if frame != nil:
+    reqs.frames[n.int] = frame  # Store the new frame in the buffer
+    #echo "Completed: ", n
+    # Write to file everything you can
+    #if reqs.current == nil:
+    var k = reqs.current + 1 
+    while reqs.frames.hasKey( k ):
+      #echo "Writing: ", k
+      #echo repr reqs.frames
+      let f = reqs.frames[k]
+      #echo f.width(0)
+      #echo repr f
+      let format = API.getFrameFormat(f) #f.getFrameFormat#.toFormat    
+      reqs.strm.writeLine("FRAME")
 
-  reqs.completedFrames += 1
+      for i in 0..<format.numPlanes:
+        #let plane = frame.getPlane(i)
+        let width  = f.width( i )
+        let height = f.height( i )      
+        #let width = plane.width
+        #let height = plane.height
+        #let size = width * height
+        let init = cast[uint]( getReadPtr(f, i) )
+        let stride = f.getStride(i)
+        for row in 0..<height:
+          let address = cast[pointer]( init + row.uint * stride)
+          reqs.strm.writeData(address, width.int)
+      reqs.frames.del(k)
+      API.freeFrame( f )
+      reqs.current += 1
+      k = reqs.current
 
-  # Once a frame is completed, we request another frame while there are available
-  if reqs.requestedFrames < reqs.numFrames:
-    API.getFrameAsync( reqs.requestedFrames.cint, node, frameDoneCallback, nil)
-    #echo "Frame: ", reqs.requestedFrames
-    reqs.requestedFrames += 1   
+    reqs.completedFrames += 1
 
-  if (reqs.completedFrames == reqs.numFrames):
-    cond.signal()
+    # Once a frame is completed, we request another frame while there are available
+    if reqs.requestedFrames < reqs.numFrames:
+      API.getFrameAsync( reqs.requestedFrames.cint, node, frameDoneCallback, nil)
+      #echo "Requested: ", reqs.requestedFrames
+      reqs.requestedFrames += 1   
+
+    if (reqs.completedFrames == reqs.numFrames):
+      cond.signal()
+  else:
+    raise newException(ValueError, "Failed to get frame")
 
 proc writeY4mFramesAsync(strm:FileStream, node:ptr VSNodeRef):int =
   # Y-Cb-Cr plane order
@@ -132,7 +140,7 @@ proc writeY4mFramesAsync(strm:FileStream, node:ptr VSNodeRef):int =
   initLock(lock)
   for i in 0..<initialRequest: 
     API.getFrameAsync( i.cint, node, frameDoneCallback, nil) #dataInHeap)
-#    echo "Requested: ", i
+    #echo "Requested: ", i
     reqs.requestedFrames += 1
   cond.wait(lock)
   #API.freeMap(vsmap)

@@ -1,7 +1,5 @@
 import vapoursynth
-#import mymacro
 import options
-#import strformat
 
 iterator `...`[T](ini:T,`end`:T):tuple[a:uint,b:uint,c:uint] =
   let ini = ini.uint
