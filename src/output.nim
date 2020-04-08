@@ -182,7 +182,7 @@ proc callback( reqsData: pointer,
   ]#
   #echo "ok0"
   setupForeignThreadGc()
-  echo "ok1"
+  #echo "ok1"
   #var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
   #echo "ok2"
   # Do something with the frame
@@ -192,7 +192,7 @@ proc callback( reqsData: pointer,
   # Once a frame is completed, we request another frame while there are available
   if reqs.requestedFrames < reqs.numFrames:
     API.getFrameAsync( reqs.requestedFrames.cint, node, callback, reqsData)
-    echo "Frame: ", reqs.requestedFrames
+    #echo "Frame: ", reqs.requestedFrames
     reqs.requestedFrames += 1   
 
   if (reqs.completedFrames == reqs.numFrames):
