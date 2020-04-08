@@ -174,9 +174,11 @@ proc callback( reqsData: pointer,
 
   getFrameAsync() may be called from this function to request more frames.    
   ]#
+  echo "ok0"
   setupForeignThreadGc()
+  echo "ok1"
   var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
-  
+  echo "ok2"
   # Do something with the frame
   API.freeFrame( frame )
   reqs.completedFrames += 1
@@ -191,10 +193,8 @@ proc callback( reqsData: pointer,
 proc NullAsync*(vsmap:ptr VSMap):int =
   var reqs:FrameRequest
   reqs.nthreads = getNumThreads()  # Get the number of threads
-
-
+  echo "Number of threads: ", reqs.nthreads
   let node = getFirstNode(vsmap)
-  #API.freeMap(vsmap)  
   let vinfo = API.getVideoInfo(node) # video info pointer
   let nframes = vinfo.numFrames 
   reqs.nframes = vinfo.numFrames
