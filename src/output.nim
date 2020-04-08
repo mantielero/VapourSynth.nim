@@ -205,7 +205,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
   dataInHeap[] = reqs
   for i in 0..<initialRequest:  # 
-    API.getFrameAsync( i, node, callback, dataInHeap)
+    API.getFrameAsync( i.cint, node, callback, dataInHeap)
     dataInHeap.requestedFrames += 1
     
   #let frame = node.getFrame(0)
