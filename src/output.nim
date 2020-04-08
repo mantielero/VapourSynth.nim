@@ -184,6 +184,7 @@ proc callback( reqsData: pointer,
   # Once a frame is completed, we request another frame while there are available
   if reqs.requestedFrames < reqs.nframes:
     API.getFrameAsync( reqs.requestedFrames.cint, node, callback, reqsData)
+    echo "Frame: ", reqs.requestedFrames
     reqs.requestedFrames += 1    
 
 
@@ -207,6 +208,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   for i in 0..<initialRequest:  # 
     API.getFrameAsync( i.cint, node, callback, dataInHeap)
     dataInHeap.requestedFrames += 1
+    echo "Frame: ", i
   
   API.freeMap(vsmap)
   API.freeNode(node)
