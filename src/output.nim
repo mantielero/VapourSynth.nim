@@ -159,6 +159,7 @@ type
     completedFrames*: int # Number of frames already processed
     requestedFrames*: int # Number of frames already requested 
 
+var reqs:FrameRequest
 
 proc callback( reqsData: pointer, 
                frame: ptr VSFrameRef, 
@@ -189,31 +190,33 @@ proc callback( reqsData: pointer,
     echo "Frame: ", reqs.requestedFrames
     reqs.requestedFrames += 1    
 
+import locks
 
 proc NullAsync*(vsmap:ptr VSMap):int =
-  var reqs:FrameRequest
+  #var reqs:FrameRequest
   reqs.nthreads = getNumThreads()  # Get the number of threads
   echo "Number of threads: ", reqs.nthreads
   let node = getFirstNode(vsmap)
   let vinfo = API.getVideoInfo(node) # video info pointer
-  let nframes = vinfo.numFrames 
+  #let nframes = vinfo.numFrames 
   reqs.nframes = vinfo.numFrames
   reqs.completedFrames = 0
   reqs.requestedFrames = 0
 
   let initialRequest = min(reqs.nthreads, reqs.nframes)
 
-  var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
-  dataInHeap[] = reqs
+  #var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
+  #dataInHeap[] = reqs
   for i in 0..<initialRequest:  # 
-    API.getFrameAsync( i.cint, node, callback, dataInHeap)
-    dataInHeap.requestedFrames += 1
+    API.getFrameAsync( i.cint, node, callback, nil) #dataInHeap)
+    reqs.requestedFrames += 1
     echo "Frame: ", i
-  while reqs.completedFrames < reqs.numFrames:
-    discard
+  #while reqs.completedFrames < reqs.numFrames:
+  wait(reqs.completedFrames == reqs.numFrames)
+  #  discard
   API.freeMap(vsmap)
   API.freeNode(node)
-  return nframes
+  return reqs.nframes
   
 #[
     let vinfo = getVideoInfo(node)
