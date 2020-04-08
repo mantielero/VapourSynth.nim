@@ -6,6 +6,7 @@ Enables piping a video or storing it in a file. The format emplyed is `YUV4MPEG2
 
 ]##
 import strutils,strformat
+import locks
 
 proc y4mheader(node:ptr VSNodeRef):string =
   ## y4m stream header generator
@@ -152,7 +153,7 @@ proc Null*(vsmap:ptr VSMap):int =
 #------------------
 # ASYNC calls
 #------------------
-import locks
+
 
 type
   FrameRequest {.bycopy.} = object
@@ -189,6 +190,7 @@ proc callback( reqsData: pointer,
   # Once a frame is completed, we request another frame while there are available
   if reqs.requestedFrames < reqs.numFrames:
     API.getFrameAsync( reqs.requestedFrames.cint, node, callback, reqsData)
+    echo "Frame: ", reqs.requestedFrames
     reqs.requestedFrames += 1   
 
   if (reqs.completedFrames == reqs.numFrames):
@@ -205,8 +207,9 @@ proc NullAsync*(vsmap:ptr VSMap):int =
 
   let initialRequest = min(reqs.nthreads, reqs.numFrames)
   initLock(lock)
-  for i in 0..<initialRequest:  # 
+  for i in 0..<initialRequest:  #
     API.getFrameAsync( i.cint, node, callback, nil) #dataInHeap)
+    echo "Frame: ", i
     reqs.requestedFrames += 1
 
   cond.wait(lock)
