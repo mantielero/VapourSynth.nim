@@ -177,7 +177,7 @@ proc callback( reqsData: pointer,
   var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
   
   # Do something with the frame
-  API.freeFrame( f )
+  API.freeFrame( frame )
   reqs.completedFrame += 1
 
   # Once a frame is completed, we request another frame while there are available
