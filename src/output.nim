@@ -178,10 +178,10 @@ proc callback( reqsData: pointer,
   
   # Do something with the frame
   API.freeFrame( frame )
-  reqs.completedFrame += 1
+  reqs.completedFrames += 1
 
   # Once a frame is completed, we request another frame while there are available
-  if reqs.completedFrame < reqs.nframes:
+  if reqs.completedFrames < reqs.nframes:
     API.getFrameAsync( i, node, callback, reqsData)
 
 
