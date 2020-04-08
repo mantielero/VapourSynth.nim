@@ -152,6 +152,8 @@ proc Null*(vsmap:ptr VSMap):int =
 #------------------
 # ASYNC calls
 #------------------
+import locks
+
 type
   FrameRequest {.bycopy.} = object
     numFrames*: int       # Total number of frames
@@ -159,7 +161,10 @@ type
     completedFrames*: int # Number of frames already processed
     requestedFrames*: int # Number of frames already requested 
 
-var reqs:FrameRequest
+var 
+  reqs:FrameRequest
+  lock: Lock
+  cond : Cond  
 
 proc callback( reqsData: pointer, 
                frame: ptr VSFrameRef, 
@@ -175,11 +180,11 @@ proc callback( reqsData: pointer,
 
   getFrameAsync() may be called from this function to request more frames.    
   ]#
-  echo "ok0"
+  #echo "ok0"
   setupForeignThreadGc()
   echo "ok1"
-  var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
-  echo "ok2"
+  #var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
+  #echo "ok2"
   # Do something with the frame
   API.freeFrame( frame )
   reqs.completedFrames += 1
@@ -188,9 +193,12 @@ proc callback( reqsData: pointer,
   if reqs.requestedFrames < reqs.numFrames:
     API.getFrameAsync( reqs.requestedFrames.cint, node, callback, reqsData)
     echo "Frame: ", reqs.requestedFrames
-    reqs.requestedFrames += 1    
+    reqs.requestedFrames += 1   
 
-import locks
+  if (reqs.completedFrames == reqs.numFrames):
+    cond.signal()
+
+
 
 proc NullAsync*(vsmap:ptr VSMap):int =
   #var reqs:FrameRequest
@@ -204,7 +212,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   reqs.requestedFrames = 0
 
   let initialRequest = min(reqs.nthreads, reqs.numFrames)
-
+  initLock(lock)
   #var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
   #dataInHeap[] = reqs
   for i in 0..<initialRequest:  # 
@@ -212,7 +220,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
     reqs.requestedFrames += 1
     echo "Frame: ", i
   #while reqs.completedFrames < reqs.numFrames:
-  wait(reqs.completedFrames == reqs.numFrames)
+  cond.wait(lock)
   #  discard
   API.freeMap(vsmap)
   API.freeNode(node)
