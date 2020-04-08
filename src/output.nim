@@ -154,7 +154,7 @@ proc Null*(vsmap:ptr VSMap):int =
 #------------------
 type
   FrameRequest {.bycopy.} = object
-    nframes*: int       # Total number of frames
+    numFrames*: int       # Total number of frames
     nthreads*: int      # Number of threads available
     completedFrames*: int # Number of frames already processed
     requestedFrames*: int # Number of frames already requested 
