@@ -207,9 +207,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   for i in 0..<initialRequest:  # 
     API.getFrameAsync( i.cint, node, callback, dataInHeap)
     dataInHeap.requestedFrames += 1
-    
-  #let frame = node.getFrame(0)
-  API.freeFrame(frame)
+  
   API.freeMap(vsmap)
   API.freeNode(node)
   return nframes
