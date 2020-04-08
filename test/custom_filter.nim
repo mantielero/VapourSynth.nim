@@ -20,3 +20,7 @@ let dif = epochTime() - time
 echo "Time       : ", dif
 echo "Num. frames: ", nframes
 echo "FPS        : ", (nframes.float / dif.float)
+
+
+# Int32: 10000fps
+# float32: 6074fps

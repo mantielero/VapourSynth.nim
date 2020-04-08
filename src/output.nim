@@ -196,7 +196,7 @@ proc callback( reqsData: pointer,
 
 proc NullAsync*(vsmap:ptr VSMap):int =
   reqs.nthreads = getNumThreads()  # Get the number of threads
-  echo "Number of threads: ", reqs.nthreads
+  #echo "Number of threads: ", reqs.nthreads
   let node = getFirstNode(vsmap)
   let vinfo = API.getVideoInfo(node) # video info pointer
   reqs.numFrames = vinfo.numFrames

@@ -45,4 +45,8 @@ newFilter("DrawFrame"):
               let value:int32  = r0[col0].int32     + r0[col1].int32 * 2 + r0[col2].int32 +
                                  r1[col0].int32 * 2 + r1[col1].int32 * 4 + r1[col2].int32 * 2 +
                                  r2[col0].int32     + r2[col1].int32 * 2 + r2[col2].int32
+              #let value:float32  = r0[col0].float32     + r0[col1].float32 * 2 + r0[col2].float32 +
+              #                   r1[col0].float32 * 2 + r1[col1].float32 * 4 + r1[col2].float32 * 2 +
+              #                   r2[col0].float32     + r2[col1].float32 * 2 + r2[col2].float32
+
               w1[col1] = (value  / den).uint8
