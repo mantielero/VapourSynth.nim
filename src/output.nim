@@ -209,7 +209,8 @@ proc NullAsync*(vsmap:ptr VSMap):int =
     API.getFrameAsync( i.cint, node, callback, dataInHeap)
     dataInHeap.requestedFrames += 1
     echo "Frame: ", i
-  
+  while reqs.completedFrames < reqs.numFrames:
+    discard
   API.freeMap(vsmap)
   API.freeNode(node)
   return nframes
