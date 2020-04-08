@@ -156,7 +156,8 @@ type
   FrameRequest {.bycopy.} = object
     nframes*: int       # Total number of frames
     nthreads*: int      # Number of threads available
-    completedFrames*: int 
+    completedFrames*: int # Number of frames already processed
+    requestedFrames*: int # Number of frames already requested 
 
 
 proc callback( reqsData: pointer, 
@@ -181,8 +182,9 @@ proc callback( reqsData: pointer,
   reqs.completedFrames += 1
 
   # Once a frame is completed, we request another frame while there are available
-  if reqs.completedFrames < reqs.nframes:
+  if reqs.reuqestedFrames < reqs.nframes:
     API.getFrameAsync( i, node, callback, reqsData)
+    reqs.requestedFrames += 1
 
 
 proc NullAsync*(vsmap:ptr VSMap):int =
@@ -196,6 +198,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   let nframes = vinfo.numFrames 
   reqs.nframes = vinfo.numFrames
   reqs.completedFrames = 0
+  reqs.requestedFrames = 0
 
   let initialRequest = min(nthreads, nframes)
 
@@ -203,6 +206,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   dataInHeap[] = data
   for i in 0..<initialRequest:  # 
     API.getFrameAsync( i, node, callback, dataInHeap)
+    dataInHeap.requestedFrames += 1
     
   #let frame = node.getFrame(0)
   API.freeFrame(frame)
