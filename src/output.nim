@@ -202,7 +202,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
 
   let initialRequest = min(reqs.nthreads, reqs.nframes)
 
-  var dataInHeap = cast[ptr DrawFrameData](alloc0(sizeof(reqs)))
+  var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
   dataInHeap[] = data
   for i in 0..<initialRequest:  # 
     API.getFrameAsync( i, node, callback, dataInHeap)
