@@ -1,7 +1,6 @@
 import macros
 import options
 
-
 template passTrough*() =
   outClip.append("clip", data.node)
   API.freeNode( data.node )
