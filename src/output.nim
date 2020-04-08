@@ -185,7 +185,7 @@ proc callback( reqsData: pointer,
   reqs.completedFrames += 1
 
   # Once a frame is completed, we request another frame while there are available
-  if reqs.requestedFrames < reqs.nframes:
+  if reqs.requestedFrames < reqs.numFrames:
     API.getFrameAsync( reqs.requestedFrames.cint, node, callback, reqsData)
     echo "Frame: ", reqs.requestedFrames
     reqs.requestedFrames += 1    
@@ -199,11 +199,11 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   let node = getFirstNode(vsmap)
   let vinfo = API.getVideoInfo(node) # video info pointer
   #let nframes = vinfo.numFrames 
-  reqs.nframes = vinfo.numFrames
+  reqs.numFrames = vinfo.numFrames
   reqs.completedFrames = 0
   reqs.requestedFrames = 0
 
-  let initialRequest = min(reqs.nthreads, reqs.nframes)
+  let initialRequest = min(reqs.nthreads, reqs.numFrames)
 
   #var dataInHeap = cast[ptr FrameRequest](alloc0(sizeof(reqs)))
   #dataInHeap[] = reqs
@@ -216,7 +216,7 @@ proc NullAsync*(vsmap:ptr VSMap):int =
   #  discard
   API.freeMap(vsmap)
   API.freeNode(node)
-  return reqs.nframes
+  return reqs.numFrames
   
 #[
     let vinfo = getVideoInfo(node)
