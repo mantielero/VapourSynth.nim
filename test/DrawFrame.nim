@@ -1,8 +1,7 @@
 import vapoursynth
 #import mymacro
 import options
-import strformat
-
+#import strformat
 
 iterator `...`[T](ini:T,`end`:T):tuple[a:uint,b:uint,c:uint] =
   let ini = ini.uint
@@ -29,7 +28,6 @@ newFilter("DrawFrame"):
 
     let den:int32 = 16 # Denominator
     let mul:int32 = 1  # Multiplier
-    #echo "Frame: ", n
     for pn in 0..<src.numPlanes:  # pn= Plane Number
         let height = src.height( pn )   
         let width  = src.width( pn )

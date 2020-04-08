@@ -14,7 +14,7 @@ let nframes = BlankClip( format=pfGrayS.int.some,
                          length=100000.some,
                          fpsnum=24000.some, 
                          fpsden=1001.some, 
-                         keep=1.some).DrawFrame.NullAsync
+                         keep=1.some).DrawFrame.Null
 
 let dif = epochTime() - time
 echo "Time       : ", dif
@@ -22,5 +22,5 @@ echo "Num. frames: ", nframes
 echo "FPS        : ", (nframes.float / dif.float)
 
 
-# Int32: 10000fps
+# Int32: 10700fps
 # float32: 6074fps
