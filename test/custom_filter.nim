@@ -1,5 +1,5 @@
 # Compile like: 
-# nim c -f --threads:on --gc:none -d:release -d:danger modifyframe
+# nim c -f --threads:on -d:release -d:danger modifyframe
 
 import vapoursynth
 import options
@@ -11,11 +11,10 @@ let time = epochTime()
 let nframes = BlankClip( format=pfGrayS.int.some, 
                          width=640.some,
                          height=480.some,
-                         length=100000.some,#100000.some, 
+                         length=100000.some,
                          fpsnum=24000.some, 
                          fpsden=1001.some, 
-                         keep=1.some).DrawFrame.Null 
-
+                         keep=1.some).DrawFrame.NullAsync
 
 let dif = epochTime() - time
 echo "Time       : ", dif

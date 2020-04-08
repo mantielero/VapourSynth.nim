@@ -1,5 +1,4 @@
 import macros
-#import ../vapoursynth
 import options
 
 

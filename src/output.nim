@@ -148,24 +148,64 @@ proc Null*(vsmap:ptr VSMap):int =
   return nframes
 
 
-proc callback( userData: pointer, 
-               f: ptr VSFrameRef, 
+
+#------------------
+# ASYNC calls
+#------------------
+type
+  FrameRequest {.bycopy.} = object
+    nframes*: int       # Total number of frames
+    nthreads*: int      # Number of threads available
+    completedFrames*: int 
+
+
+proc callback( reqsData: pointer, 
+               frame: ptr VSFrameRef, 
                n: cint, 
-               a4: ptr VSNodeRef, 
+               node: ptr VSNodeRef, 
                errorMsg: cstring) {.cdecl.} = 
+  #[
+  Function of the client application called by the core when a requested frame is ready, after a call to getFrameAsync().
+
+  If multiple frames were requested, they can be returned in any order. Client applications must take care of reordering them.
+
+  This function is only ever called from one thread at a time.
+
+  getFrameAsync() may be called from this function to request more frames.    
+  ]#
+  setupForeignThreadGc()
+  var reqs = cast[ptr FrameRequest](reqsData) # Recover the data from the heap
+  
+  # Do something with the frame
   API.freeFrame( f )
-  #freemem(userData)
+  reqs.completedFrame += 1
+
+  # Once a frame is completed, we request another frame while there are available
+  if reqs.completedFrame < reqs.nframes:
+    API.getFrameAsync( i, node, callback, reqsData)
 
 
 proc NullAsync*(vsmap:ptr VSMap):int =
+  var reqs:FrameRequest
+  reqs.nthreads = getNumThreads()  # Get the number of threads
+
+
   let node = getFirstNode(vsmap)
   #API.freeMap(vsmap)  
   let vinfo = API.getVideoInfo(node) # video info pointer
   let nframes = vinfo.numFrames 
-  for i in 0..<nframes:  
-    API.getFrameAsync( i, node, callback, nil)
-    
+  reqs.nframes = vinfo.numFrames
+  reqs.completedFrames = 0
 
+  let initialRequest = min(nthreads, nframes)
+
+  var dataInHeap = cast[ptr DrawFrameData](alloc0(sizeof(data)))
+  dataInHeap[] = data
+  for i in 0..<initialRequest:  # 
+    API.getFrameAsync( i, node, callback, dataInHeap)
+    
+  #let frame = node.getFrame(0)
+  API.freeFrame(frame)
   API.freeMap(vsmap)
   API.freeNode(node)
   return nframes
@@ -207,4 +247,56 @@ proc NullAsync*(vsmap:ptr VSMap):int =
         vs_internal_vsapi.setError(out, e.what());
     }
 }
+]#
+
+#[
+requests = info.numThreads;  # Miramos el número de hilos
+
+int requestStart = completedFrames;
+
+# Petición inicial. El mínimo de: número de hilos, la diferencia entre el número total de frames y el número de frames ya completados
+int intitalRequestSize = std::min(requests, totalFrames - requestStart);
+
+# Frames solicitados. Los completados + la petición inicial.
+requestedFrames = requestStart + intitalRequestSize;
+
+# Pedimos frames desde el comienzo (requestStart) hasta ese valor más el initialrequest
+for (int n = requestStart; n < requestStart + intitalRequestSize; n++) {
+    vsapi->getFrameAsync(n, node, frameDoneCallback, nullptr);
+    if (alphaNode)
+        vsapi->getFrameAsync(n, alphaNode, frameDoneCallback, nullptr);
+}
+
+
+
+# Una vez en framDOneCallBack, es autosostenido
+
+]#
+
+#[
+type
+  DrawFrameData {.bycopy.} = object
+    node*: ptr VSNodeRef
+    vi*: ptr VSVideoInfo
+    width*: Natural
+    height*: Natural
+
+
+proc DrawFrame*(inClip: ptr VSMap): ptr VSMap =
+  checkContainsJustOneNode(inClip)
+  var data: DrawFrameData
+  data.node = inClip.propGetNode("clip", 0)
+  data.vi = API.getVideoInfo(data.node)
+  let divHorizontal = 1 shl data.vi.format.subSamplingW
+  let divVertical = 1 shl data.vi.format.subSamplingH
+  var outClip: ptr VSMap = createMap()
+  data.width = data.vi.width.Natural
+  data.height = data.vi.height.Natural
+  var dataInHeap = cast[ptr DrawFrameData](alloc0(sizeof(data)))
+  dataInHeap[] = data
+  API.createFilter(inClip, outClip, "Thisisafilter".cstring, DrawFrameInit,
+                   DrawFrameGetFrame, DrawFrameFree, fmParallel.cint, 0.cint,
+                   cast[pointer](dataInHeap), CORE)
+  return outClip
+
 ]#

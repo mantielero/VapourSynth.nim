@@ -1,6 +1,6 @@
 # Compile like: 
 # nim c -d:release -d:danger convolution
-import ../vapoursynth
+import vapoursynth
 import options
 import times
 
