@@ -1,7 +1,7 @@
 # Compile like: 
 # nim c -f --threads:on -d:release -d:danger modifyframe
 
-import vapoursynth
+import ../src/vapoursynth
 import options
 import times
 import DrawFrame

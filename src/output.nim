@@ -78,6 +78,7 @@ proc frameDoneCallback( reqsData: pointer,
 
   # Do something with the frame
   reqs.frames[n.int] = frame  # Store the new frame in the buffer
+  echo "Frame: ", n
   # Write to file everything you can
   #if reqs.current == nil:
   var k = reqs.current + 1 
@@ -125,14 +126,14 @@ proc writeY4mFramesAsync(strm:FileStream, node:ptr VSNodeRef):int =
   reqs.requestedFrames = 0
   reqs.current = -1
   reqs.strm = strm
-
+  #echo "ok"
   let initialRequest = min(reqs.nthreads, reqs.numFrames)
   reqs.frames = initTable[int,ptr VSFrameRef]()  # Buffer
   initLock(lock)
-  for i in 0..<initialRequest:  #
+  for i in 0..<initialRequest: 
     API.getFrameAsync( i.cint, node, frameDoneCallback, nil) #dataInHeap)
+#    echo "Requested: ", i
     reqs.requestedFrames += 1
-
   cond.wait(lock)
   #API.freeMap(vsmap)
   #API.freeNode(node)

@@ -1,13 +1,13 @@
 # Compile like: 
 # nim c -f --threads:on -d:release -d:danger modifyframe
-import ../src/vapoursynth
+import vapoursynth
 import options
 import times
 import DrawFrame
 
 let time = epochTime()
 
-#let nframes = Source("../../test/2sec.mkv").DrawFrame.Savey4m("original.y4m")
+let nframes = Source("2sec.mkv").DrawFrame.Savey4m("original.y4m")
 
 let dif = epochTime() - time
 echo "Time       : ", dif
