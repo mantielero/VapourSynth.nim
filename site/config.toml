@@ -3,3 +3,39 @@ languageCode = "en-us"
 title = "VapourSynth in Nim"
 theme = "docsy"
 publishDir = "../docs"
+
+
+#------------------------------------------
+# Taken from: https://github.com/google/docsy-example/blob/master/config.toml
+
+# Language settings
+contentDir = "content/en"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+# Useful when translating.
+enableMissingTranslationPlaceholders = true
+
+# Highlighting config
+pygmentsCodeFences = true
+pygmentsUseClasses = false
+# Use the new Chroma Go highlighter in Hugo.
+pygmentsUseClassic = false
+#pygmentsOptions = "linenos=table"
+# See https://help.farbox.com/pygments.html
+pygmentsStyle = "tango"
+
+## Configuration for BlackFriday markdown parser: https://github.com/russross/blackfriday
+[blackfriday]
+plainIDAnchors = true
+hrefTargetBlank = true
+angledQuotes = false
+latexDashes = true
+
+
+[languages]
+[languages.en]
+title = "VapourSynth.nim"
+description = "VapourSynth in Nim language"
+languageName ="English"
+# Weight used for sorting.
+weight = 1
