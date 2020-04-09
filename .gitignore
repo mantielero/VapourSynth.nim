@@ -11,6 +11,14 @@ src/filters/simple
 !/test/2sec.mkv
 src/vapoursynth
 src/htmldocs/*
+site/themes/*
+site/static/*
+site/resources/*
+site/package-lock.json
+site/node_modules/*
+site/layouts/*
+site/data/*
+site/archetypes/*
 *.y4m
 *.bmp
 *.png
