@@ -1,6 +1,5 @@
 src/plugin_generator
 test/*
-docs/*
 src/libs/*
 src/filters/callgrind*
 src/filters/salida.txt
