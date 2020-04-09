@@ -204,7 +204,9 @@ proc Pipey4m*(vsmap:ptr VSMap ) =
 
 proc Savey4m*(vsmap:ptr VSMap, filename:string):int =
   ## Saves the video in `filename`
+  #echo "ok0"
   let node = getFirstNode(vsmap)
+  #echo "ok1"  
   #let d = vsmap.toSeq
   #let node = d[0].nodes[0]  
   let strm = newFileStream(filename, fmWrite)

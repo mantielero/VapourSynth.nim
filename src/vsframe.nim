@@ -370,7 +370,7 @@ proc `[]`*(plane:Plane, row:cint):Row = #ptr UncheckedArray[uint8] =
 #  cast[ptr UncheckedArray[uint8]]( plane.ini + row.uint * plane.stride )
 
 proc `[]`*(row:Row, r:cint):int32 =
-  echo "hola"
+  #echo "hola"
   row[r].int32
 
 

@@ -13,7 +13,7 @@ let nframes = BlankClip(
       length=100000.some,
       fpsnum=24000.some, 
       fpsden=1001.some, 
-      keep=1.some).Convolution(@[1.0,2.0,1.0,2.0,4.0,2.0,1.0,2.0,1.0]).NullAsync
+      keep=1.some).Convolution(@[1.0,2.0,1.0,2.0,4.0,2.0,1.0,2.0,1.0]).Null
 
 let dif = epochTime() - time
 echo "Time       : ", dif

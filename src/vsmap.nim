@@ -71,8 +71,8 @@ proc len*(vsmap:ptr VSMap):int =
   API.propNumKeys(vsmap).int
 
 proc checkLimits(vsmap:ptr VSMap, key:string, idx: int) =
-  doAssert( idx >= 0, "`idx` shall be >= 0")
-  doAssert( idx < vsmap.len, "`idx` shall be <=" & $vsmap.len)
+  assert( idx >= 0, "`idx` shall be >= 0")
+  assert( idx < vsmap.len, "`idx` shall be <" & $vsmap.len & " but got: " & $idx)
 
 
 proc checkError(error:VSGetPropErrors, key:string, idx:int) =
@@ -266,7 +266,7 @@ proc propSetData*(vsmap:ptr VSMap, key:string, data:string, append:VSPropAppendM
 
 type
   Item = tuple[key:cstring, `type`:VSPropTypes]
-  #Item = string | int | float | ptr VSNodeRef | ptr VSFrameRef | VSFuncRef
+  VSType = string | int | float | ptr VSNodeRef | ptr VSFrameRef | VSFuncRef
 
 iterator keys*(vsmap:ptr VSMap):cstring =
   for idx in 0..<vsmap.len:
@@ -283,7 +283,53 @@ iterator items*(vsmap:ptr VSMap):Item =
 
 proc len*(vsmap:ptr VSMap, item:Item):int =
   vsmap.len(item.key)
-  
+
+#[
+iterator items*(vsmap:ptr VSMap, item:Item):VSType = 
+  # Iterate on the available items
+  #result = newSeq[VSType]()
+  for idx in 0..<vsmap.len(item):
+    if item.`type` == ptData:
+      yield vsmap.propGetData($item.key,idx)  
+
+    elif item.`type` == ptInt:
+      yield vsmap.propGetInt($item.key,idx)  
+
+    elif item.`type` == ptFloat:
+      yield vsmap.propGetFloat($item.key,idx)   
+
+    elif item.`type` == ptNode:
+      yield vsmap.propGetNode($item.key,idx)   
+
+    elif item.`type` == ptFrame:
+      yield vsmap.propGetFrame($item.key,idx)   
+
+    elif item.`type` == ptFunction:
+      yield vsmap.propGetFunc($item.key,idx)  
+]#
+
+
+proc `$`*(prop:VSPropTypes):string = 
+  case prop
+  of ptData:     "ptData"
+  of ptInt:      "ptInt"
+  of ptFloat:    "ptFloat"
+  of ptNode:     "ptNode"
+  of ptFrame:    "ptFrame"
+  of ptFunction: "ptFunction"
+  of ptUnset:    "ptUnset"
+
+proc `$`*(vsmap:ptr VSMap):string =
+  result = &"VSMap \n" #& $vsmap  ({vsmap})
+  var counter = 0
+  for item in vsmap.items:
+    result &= &"  Item #{counter}:\n"
+    result &= &"    key: {$item.key}\n"
+    result &= &"    type: {$item.`type`}\n"
+    if item.`type` == ptNode:
+      result &= &"    n: {vsmap.len(item)}"
+    #for i in 0..<vsmap.len(item):
+      
 #proc `[]`*(vsmap:ptr VSMap, item:Item):int  =
 #  vsmap.len(item.key)
 
@@ -398,22 +444,7 @@ proc getClip(vsmap:ptr VSMap, clip:Natural):ptr VSMap =
   new.append("clip", node)
   return new
 ]#
-proc `[]`*(vsmap:ptr VSMap;hs:HSlice):ptr VSMap =  #;clip:Natural=0
-  ## vsmap[1..3] (returns a clip -vsmap- including only those frames)
-  ## Only works on one clip
-  let key = key(vsmap, 0)
-  let t   = vsmap.`type`(key)
-  assert t == ptNode
 
-  # How many nodes?
-  let nNodes = vsmap.len(key)
-  assert nNodes == 1
-
-  result = vsmap.Trim(some(hs.a),some(hs.b))
-    
-
-# SelectEvery
-# Splice
 
 proc getFirstNode*(vsmap:ptr VSMap):ptr VSNodeRef =
   ## Retrieves a node from a map.

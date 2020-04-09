@@ -191,13 +191,12 @@ Depending on activationReason, calls: `requestFrameFilter` otherwise: `getFrameF
 
 ## TODO
 
-- [PARTIAL] Helper functions for +, [], ...
+- [DONE] Helper functions for +, [], ...
 
-  - [DONE] The whole clip: clip[1:]
-  - Reversed: clip[end:-1:1]
-  - Odd: clip[1:2:end]
-  - Even: clip[2:2:end]
-  - Some functions no write filters
+  - [DONE] Indexing clips: clip[0..last], clip[last..0], clip[last-10..10],clip[0..50] + clip[50..0], ... all this is possible.
+  - Odd: clip[1..last, 2]
+  - Even: clip[0..last, 2]
+  - [DONE] Some functions no write filters
 
 - [ ] Better documentation
 - [WON'T WORK] Does it work with nimscript? Given Nimscript limitation: "Nim's FFI (foreign function interface) is not available in NimScript. This means that any stdlib module which relies on importc can not be used in the VM."
