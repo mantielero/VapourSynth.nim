@@ -1,5 +1,5 @@
-baseURL = "https://mantielero.github.io/VapourSynth.nim/)"
+baseURL = "https://mantielero.github.io/VapourSynth.nim/"
 languageCode = "en-us"
-title = "VapourSynth.Nim"
+title = "VapourSynth in Nim"
 theme = "docsy"
 publishDir = "../docs"

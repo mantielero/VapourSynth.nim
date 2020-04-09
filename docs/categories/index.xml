@@ -1,12 +1,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>VapourSynth.Nim – Categories</title>
-    <link>https://mantielero.github.io/VapourSynth.nim/)/categories/</link>
-    <description>Recent content in Categories on VapourSynth.Nim</description>
+    <title>VapourSynth in Nim – Categories</title>
+    <link>https://mantielero.github.io/VapourSynth.nim/categories/</link>
+    <description>Recent content in Categories on VapourSynth in Nim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/)/categories/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
       
