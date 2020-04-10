@@ -16,16 +16,6 @@
   </url>
   
   <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/beds/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/configuring-ponycopters/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/</loc>
     <lastmod>2019-04-24T14:36:33+01:00</lastmod>
   </url>
@@ -40,22 +30,7 @@
   </url>
   
   <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/launching-ponycopters/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://mantielero.github.io/VapourSynth.nim/docs/filters/vapoursynth-filter/</loc>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/multi-bear/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/porridge/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
   </url>
   
   <url>
@@ -64,18 +39,7 @@
   </url>
   
   <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/task/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/tutorial2/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
+    <loc>https://mantielero.github.io/VapourSynth.nim/docs/todo/</loc>
   </url>
   
   <url>
@@ -89,8 +53,7 @@
   </url>
   
   <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/contribution-guidelines/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
+    <loc>https://mantielero.github.io/VapourSynth.nim/docs/filters/benchmarking/</loc>
   </url>
   
   <url>
@@ -125,11 +88,6 @@
   
   <url>
     <loc>https://mantielero.github.io/VapourSynth.nim/docs/reference/parameter-reference/</loc>
-    <lastmod>2019-04-15T16:07:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/</loc>
     <lastmod>2019-04-15T16:07:08+01:00</lastmod>
   </url>
   

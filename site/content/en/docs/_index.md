@@ -8,10 +8,6 @@ menu:
     weight: 20
 ---
 
-{{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
-{{% /pageinfo %}}
-
 
 ## About VapourSynth
 VapourSynth provides lots of plugins with filters. They allow applying advance pipelines to your video footage. This enables performing advanced tasks such as [video restoration](https://youtu.be/OulrI4yaz64).

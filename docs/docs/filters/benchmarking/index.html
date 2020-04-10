@@ -20,23 +20,23 @@
 <link rel="icon" type="image/png" href="/VapourSynth.nim/favicons/android-144x144.png" sizes="144x144">
 <link rel="icon" type="image/png" href="/VapourSynth.nim/favicons/android-192x192.png" sizes="192x192">
 
-<title>VapourSynth functions | VapourSynth.nim</title><meta property="og:title" content="VapourSynth functions" />
-<meta property="og:description" content="Here you will found out about how to use VapourSynth functions
+<title>Benchmarking | VapourSynth.nim</title><meta property="og:title" content="Benchmarking" />
+<meta property="og:description" content="Comparing filters performance in Nim and C&#43;&#43;
 " />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/" />
+<meta property="og:url" content="https://mantielero.github.io/VapourSynth.nim/docs/filters/benchmarking/" />
 <meta property="og:site_name" content="VapourSynth.nim" />
-<meta itemprop="name" content="VapourSynth functions">
-<meta itemprop="description" content="Here you will found out about how to use VapourSynth functions
+<meta itemprop="name" content="Benchmarking">
+<meta itemprop="description" content="Comparing filters performance in Nim and C&#43;&#43;
 ">
 
-<meta itemprop="wordCount" content="302">
+<meta itemprop="wordCount" content="247">
 
 
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="VapourSynth functions"/>
-<meta name="twitter:description" content="Here you will found out about how to use VapourSynth functions
+<meta name="twitter:title" content="Benchmarking"/>
+<meta name="twitter:description" content="Comparing filters performance in Nim and C&#43;&#43;
 "/>
 
 
@@ -187,10 +187,10 @@
 
 <ul class="td-sidebar-nav__section pr-md-3">
   <li class="td-sidebar-nav__section-title">
-    <a  href="/VapourSynth.nim/docs/getting-started/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Getting Started</a>
+    <a  href="/VapourSynth.nim/docs/getting-started/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Getting Started</a>
   </li>
   <ul>
-    <li class="collapse show" id="vapoursynthnimdocsgetting-started">
+    <li class="collapse " id="vapoursynthnimdocsgetting-started">
       
       
       
@@ -215,7 +215,7 @@
       
       
       
-      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-vapoursynthnimdocsgetting-startedfunctions" href="/VapourSynth.nim/docs/getting-started/functions/">Functions</a>
+      <a class="td-sidebar-link td-sidebar-link__page " id="m-vapoursynthnimdocsgetting-startedfunctions" href="/VapourSynth.nim/docs/getting-started/functions/">Functions</a>
       
       
     </li>
@@ -234,10 +234,10 @@
 
 <ul class="td-sidebar-nav__section pr-md-3">
   <li class="td-sidebar-nav__section-title">
-    <a  href="/VapourSynth.nim/docs/filters/" class="align-left pl-0 pr-2 collapsed td-sidebar-link td-sidebar-link__section">Filters</a>
+    <a  href="/VapourSynth.nim/docs/filters/" class="align-left pl-0 pr-2 active td-sidebar-link td-sidebar-link__section">Filters</a>
   </li>
   <ul>
-    <li class="collapse " id="vapoursynthnimdocsfilters">
+    <li class="collapse show" id="vapoursynthnimdocsfilters">
       
       
       
@@ -250,7 +250,7 @@
       
       
       
-      <a class="td-sidebar-link td-sidebar-link__page " id="m-vapoursynthnimdocsfiltersbenchmarking" href="/VapourSynth.nim/docs/filters/benchmarking/">Benchmarking</a>
+      <a class="td-sidebar-link td-sidebar-link__page  active" id="m-vapoursynthnimdocsfiltersbenchmarking" href="/VapourSynth.nim/docs/filters/benchmarking/">Benchmarking</a>
       
       
     </li>
@@ -382,8 +382,8 @@
 
 
 
-<a href="https://github.com/google/docsy-example/edit/master/content/en/docs/Getting%20started/functions.md" target="_blank"><i class="fa fa-edit fa-fw"></i> Edit this page</a>
-<a href="https://github.com/google/docsy-example/issues/new?title=VapourSynth%20functions" target="_blank"><i class="fab fa-github fa-fw"></i> Create documentation issue</a>
+<a href="https://github.com/google/docsy-example/edit/master/content/en/docs/Filters/benchmarking.md" target="_blank"><i class="fa fa-edit fa-fw"></i> Edit this page</a>
+<a href="https://github.com/google/docsy-example/issues/new?title=Benchmarking" target="_blank"><i class="fab fa-github fa-fw"></i> Create documentation issue</a>
 
 
 <a href="https://github.com/mantielero/VapourSynth.nim/issues/new" target="_blank"><i class="fas fa-tasks fa-fw"></i> Create project issue</a>
@@ -397,14 +397,11 @@
 
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#most-of-them-work">Most of them work</a>
-      <ul>
-        <li><a href="#using-a-filter">Using a filter</a></li>
-        <li><a href="#how-can-i-pass-parameters">How can I pass parameters?</a></li>
-      </ul>
-    </li>
-    <li><a href="#some-notes-on-nim">Some notes on Nim</a></li>
+    <li><a href="#not-apples-to-apples">Not apples to apples</a></li>
+    <li><a href="#c-version">C++ Version</a></li>
+    <li><a href="#nim-version">Nim Version</a></li>
+    <li><a href="#convolution">Convolution</a></li>
+    <li><a href="#todo">TODO</a></li>
   </ul>
 </nav>
 
@@ -436,14 +433,14 @@
 
 
 <li class="breadcrumb-item" >
-	<a href="https://mantielero.github.io/VapourSynth.nim/docs/getting-started/">Getting Started</a>
+	<a href="https://mantielero.github.io/VapourSynth.nim/docs/filters/">Filters</a>
 </li>
 
 
 
 
 <li class="breadcrumb-item active" aria-current="page">
-	<a href="https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/">Functions</a>
+	<a href="https://mantielero.github.io/VapourSynth.nim/docs/filters/benchmarking/">Benchmarking</a>
 </li>
 
 	</ol>
@@ -451,43 +448,54 @@
 
             
 <div class="td-content">
-	<h1>VapourSynth functions</h1>
-    <div class="lead">Here you will found out about how to use VapourSynth functions</div>
+	<h1>Benchmarking</h1>
+    <div class="lead">Comparing filters performance in Nim and C++</div>
 	       
-	<h2 id="introduction">Introduction</h2>
-<p>VapourSynth provides a number of functions that you can find in the <a href="http://www.vapoursynth.com/doc/functions.html">Function Reference</a>.</p>
-<p>At the end of the day, these are just filters included in a plugin named <code>std</code>. The source code for these filters is in <a href="https://github.com/vapoursynth/vapoursynth/blob/master/src/core/simplefilters.c">simplefilter.c</a>.</p>
-<h2 id="most-of-them-work">Most of them work</h2>
-<h3 id="using-a-filter">Using a filter</h3>
-<p>VapourSynth.nim treats <code>std</code> plugin as any other plugin. It is already wrapped in <a href="https://github.com/mantielero/VapourSynth.nim/blob/master/src/plugins/std.nim">std.nim</a> and you don&rsquo;t need to do anything special to use it.</p>
-<p>For instance, in order to apply the <a href="http://www.vapoursynth.com/doc/functions/transpose.html">Transpose</a> filter:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">vapoursynth</span>
-<span style="color:#000">Source</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;video.mkv&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Transpose</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pipey4m</span>
-</code></pre></div><h3 id="how-can-i-pass-parameters">How can I pass parameters?</h3>
-<p>The way I wrap the functions is that optional parameters can receive <code>none</code> or <code>some</code> value. By default, I am passing <code>none</code> to all the optional parameters. Optional parameters requires importing the <code>options</code> module, which provides the keyword <code>some</code>. If you want to pass something different you have to do it like this:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">vapoursynth</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">options</span>
-<span style="color:#000">Source</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;video.mkv&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Bicubic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">width</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">320</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">height</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">200</span><span style="color:#000;font-weight:bold">)).</span><span style="color:#000">Pipey4m</span>
-</code></pre></div><blockquote>
-<p>In Nim, it is equivalent doing: <code>some(320)</code>, <code>320.some</code> and <code>some 320</code> so you could write:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">vapoursynth</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">options</span>
-<span style="color:#000">Source</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;video.mkv&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Bicubic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">width</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">320.</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">height</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">200.</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Pipey4m</span>
-                                  <span style="color:#000;font-weight:bold">^^^^^^^^</span>         <span style="color:#000;font-weight:bold">^^^^^^^^</span>
-</code></pre></div></blockquote>
-<p>You could create a custom function making this parameters mandatory. This might be useful if you are going to call the same function with the same signature many times (and you want to avoid writting <code>some</code> many times:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">vapoursynth</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">options</span>
-<span style="color:#204a87;font-weight:bold">proc </span><span style="color:#000">myfilter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">vsmap</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">ptr</span> <span style="color:#000">VSMap</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">w</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">h</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">):</span><span style="color:#204a87;font-weight:bold">ptr</span> <span style="color:#000">VSMap</span> <span style="color:#ce5c00;font-weight:bold">=</span> 
-  <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">vsmap</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Bicubic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">width</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">w</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">height</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">some</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">h</span><span style="color:#000;font-weight:bold">))</span>
-
-<span style="color:#000">Source</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;video.mkv&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">myfilter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">320</span><span style="color:#000;font-weight:bold">,</span><span style="color:#0000cf;font-weight:bold">200</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Pipey4m</span>
-</code></pre></div><blockquote>
-<p>All the filters in VapourSynth.nim, has a first argument typed <code>ptr VSMap</code> and returns a <code>ptr VSMap</code>. This allows chaining functions.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#204a87;font-weight:bold">proc </span><span style="color:#000">myfilter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">vsmap</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">ptr</span> <span style="color:#000">VSMap</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">w</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">h</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">):</span><span style="color:#204a87;font-weight:bold">ptr</span> <span style="color:#000">VSMap</span> <span style="color:#ce5c00;font-weight:bold">=</span>
-                    <span style="color:#000;font-weight:bold">^^^^^^^^^</span>                <span style="color:#000;font-weight:bold">^^^^^^^^^</span>
-</code></pre></div></blockquote>
-<p>We can improve the readability by calling the filter with <code>(w=320,h=200)</code>:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nim" data-lang="nim"><span style="color:#000">Source</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;video.mkv&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">myfilter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">w</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">320</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">h</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">200</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Pipey4m</span>
-</code></pre></div><h2 id="some-notes-on-nim">Some notes on Nim</h2>
-<p>Nim is typed. So you can avoid some erros by taking advance of it. For example, you could define <code>myfilter</code> to take <code>Natural</code> (which includes only integers equal or greater than 0) instead of <code>int</code>.</p>
+	<p>I manage to compare in my computer the pure C++ filter and a Nim based version.</p>
+<h2 id="not-apples-to-apples">Not apples to apples</h2>
+<p>Right now this is not comparing apples to apples. Using <code>vspipe</code></p>
+<h2 id="c-version">C++ Version</h2>
+<p>I took it from <a href="https://github.com/IFeelBloated/test_c_filters">here</a>. I compiled with:</p>
+<pre><code>g++ -Wall -O3 -shared -fPIC -I. -o libfilter.so GaussBlur.cxx
+</code></pre><p>Create a VapourSynth python filter like <strong>test_filter.vpy</strong>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">vapoursynth</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">vs</span>
+<span style="color:#000">core</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">vs</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_core</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000">core</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">std</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">LoadPlugin</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;./libfilter.so&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">core</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">std</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SetMaxCPU</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;none&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">clip</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">core</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">std</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">BlankClip</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">format</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">vs</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">GRAYS</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">length</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">100000</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">fpsnum</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">24000</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">fpsden</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1001</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">keep</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#3465a4">True</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">clip</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">core</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">testc</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">GaussBlur</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">clip</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">clip</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_output</span><span style="color:#000;font-weight:bold">()</span>
+</code></pre></div><p>and finally:</p>
+<pre><code>$ vspipe test_filter.vpy /dev/null
+Output 100000 frames in 29.53 seconds (3386.27 fps)
+</code></pre><h2 id="nim-version">Nim Version</h2>
+<p>I use custom_filter.nim which uses DrawFrame.nim.</p>
+<p>I compile it like:</p>
+<pre><code>$ nim c -f --threads:on -d:release -d:danger custom_filter
+</code></pre><p>And test it by doing:</p>
+<pre><code>$ ./custom_filter 
+Time       : 9.394126653671265
+Num. frames: 100000
+FPS        : 10644.94909283766
+</code></pre><p>when using int32.</p>
+<p>If I use float32:</p>
+<pre><code>$ ./custom_filter 
+Time       : 16.52139902114868
+Num. frames: 100000
+FPS        : 6052.756178335272
+</code></pre><p>I wasn&rsquo;t using multithreading before while vspipe does.</p>
+<h2 id="convolution">Convolution</h2>
+<p>Another test that I have done is using the Convolution filter from Nim: <strong>convolution.nim</strong> and I get:</p>
+<pre><code>$ ./convolution 
+Time       : 5.210163354873657
+Num. frames: 100000
+FPS        : 19193.25617813089
+</code></pre><p>Using vspipe and python script:</p>
+<pre><code>$ vspipe convolution.vpy /dev/null
+Output 100000 frames in 26.87 seconds (3721.76 fps)
+</code></pre><p>I think that vspipe is actually writting frames to /dev/null while I just request the frame and then dismiss them without further processing.</p>
+<h2 id="todo">TODO</h2>
+<p>In order to avoid the effect that using <code>vspipe</code> has, I need to wrap Gauss C++ filter in nim and use it through nim.</p>
 
 	
 		<style>

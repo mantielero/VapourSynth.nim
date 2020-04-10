@@ -76,7 +76,7 @@ weight = 1
 
 [params]
 copyright = "José María García"
-privacy_policy = "https://policies.google.com/privacy"
+#privacy_policy = "https://policies.google.com/privacy"
 
 # First one is picked as the Twitter card image if not set on page.
 # images = ["images/project-illustration.png"]
@@ -165,7 +165,7 @@ enable = false
 # Developer relevant links. These will show up on right side of footer and in the community page if you have one.
 [[params.links.developer]]
 	name = "GitHub"
-	url = "https://github.com/google/docsy"
+	url = "https://github.com/mantielero/VapourSynth.nim"
 	icon = "fab fa-github"
         desc = "Development takes place here!"
 [[params.links.developer]]

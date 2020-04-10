@@ -29,11 +29,8 @@
 &lt;p&gt;In order to install VapourSynth, follow its &lt;a href=&#34;http://www.vapoursynth.com/doc/installation.html&#34;&gt;instructions&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;installing-vapoursynthnim&#34;&gt;Installing VapourSynth.nim&lt;/h2&gt;
 &lt;p&gt;In order to install VapourSynth you need to use nimble:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ nimble install vapoursynth
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
-&lt;p&gt;TODO: right now the nimble file is created but not shared yet.&lt;/p&gt;
-&lt;/blockquote&gt;
-
+&lt;pre&gt;&lt;code&gt;$ nimble install https://github.com/mantielero/VapourSynth.nim
+&lt;/code&gt;&lt;/pre&gt;
       </description>
     </item>
     

@@ -34,6 +34,8 @@ I created a macro in order to make easier the development of filters.
 
 This makes the creating of filters simple without having any impact on speed (this is because the macro creates all the required functions at compile time, not at runtime).
 
+## Performance
+The question is how fast is this. It is fast as C, but right now I am not comparing apples to apples yet.
 
 
 

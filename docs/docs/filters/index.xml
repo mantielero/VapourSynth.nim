@@ -54,5 +54,63 @@
       </description>
     </item>
     
+    <item>
+      <title>Docs: Benchmarking</title>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/filters/benchmarking/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/filters/benchmarking/</guid>
+      <description>
+        
+        
+        &lt;p&gt;I manage to compare in my computer the pure C++ filter and a Nim based version.&lt;/p&gt;
+&lt;h2 id=&#34;not-apples-to-apples&#34;&gt;Not apples to apples&lt;/h2&gt;
+&lt;p&gt;Right now this is not comparing apples to apples. Using &lt;code&gt;vspipe&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;c-version&#34;&gt;C++ Version&lt;/h2&gt;
+&lt;p&gt;I took it from &lt;a href=&#34;https://github.com/IFeelBloated/test_c_filters&#34;&gt;here&lt;/a&gt;. I compiled with:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;g++ -Wall -O3 -shared -fPIC -I. -o libfilter.so GaussBlur.cxx
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Create a VapourSynth python filter like &lt;strong&gt;test_filter.vpy&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;vapoursynth&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;vs&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;core&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;vs&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;get_core&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;core&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;std&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;LoadPlugin&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;path&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;./libfilter.so&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;core&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;std&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SetMaxCPU&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;clip&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;core&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;std&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;BlankClip&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;format&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;vs&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;GRAYS&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;length&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;100000&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;fpsnum&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;24000&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;fpsden&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;1001&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;keep&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#3465a4&#34;&gt;True&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;clip&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;core&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;testc&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;GaussBlur&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;clip&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#000&#34;&gt;clip&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;set_output&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;and finally:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ vspipe test_filter.vpy /dev/null
+Output 100000 frames in 29.53 seconds (3386.27 fps)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;nim-version&#34;&gt;Nim Version&lt;/h2&gt;
+&lt;p&gt;I use custom_filter.nim which uses DrawFrame.nim.&lt;/p&gt;
+&lt;p&gt;I compile it like:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ nim c -f --threads:on -d:release -d:danger custom_filter
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And test it by doing:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ./custom_filter 
+Time       : 9.394126653671265
+Num. frames: 100000
+FPS        : 10644.94909283766
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;when using int32.&lt;/p&gt;
+&lt;p&gt;If I use float32:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ./custom_filter 
+Time       : 16.52139902114868
+Num. frames: 100000
+FPS        : 6052.756178335272
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I wasn&amp;rsquo;t using multithreading before while vspipe does.&lt;/p&gt;
+&lt;h2 id=&#34;convolution&#34;&gt;Convolution&lt;/h2&gt;
+&lt;p&gt;Another test that I have done is using the Convolution filter from Nim: &lt;strong&gt;convolution.nim&lt;/strong&gt; and I get:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ./convolution 
+Time       : 5.210163354873657
+Num. frames: 100000
+FPS        : 19193.25617813089
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using vspipe and python script:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ vspipe convolution.vpy /dev/null
+Output 100000 frames in 26.87 seconds (3721.76 fps)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I think that vspipe is actually writting frames to /dev/null while I just request the frame and then dismiss them without further processing.&lt;/p&gt;
+&lt;h2 id=&#34;todo&#34;&gt;TODO&lt;/h2&gt;
+&lt;p&gt;In order to avoid the effect that using &lt;code&gt;vspipe&lt;/code&gt; has, I need to wrap Gauss C++ filter in nim and use it through nim.&lt;/p&gt;
+
+      </description>
+    </item>
+    
   </channel>
 </rss>
