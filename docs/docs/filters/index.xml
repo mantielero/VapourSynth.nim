@@ -1,0 +1,58 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VapourSynth.nim – Filters</title>
+    <link>/docs/filters/</link>
+    <description>Recent content in Filters on VapourSynth.nim</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 05 Jan 2017 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="/docs/filters/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: VS plugin API</title>
+      <link>/docs/filters/vapoursynth-filter/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/filters/vapoursynth-filter/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;vapoursynth-plugins&#34;&gt;VapourSynth plugins&lt;/h2&gt;
+&lt;p&gt;These are a few references about how to develop plugins in vapoursynth using C. The principles remain with Nim. Nonetheless, I will try to make this a bit easier in the future.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.vapoursynth.com/doc/api/vapoursynth.h.html#writing-plugins&#34;&gt;Writting plugins&lt;/a&gt; in VapourSynth requires five functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;VapourSynthPluginInit&lt;/code&gt;: entry point. Its purpose is to configure the plugin and to register the filters the plugin wants to export. (It has the function signature &lt;code&gt;VSFilterInit&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;foo&amp;gt;Create&lt;/code&gt;: user defined function tasked with creating a filter instance. (It has the function signature &lt;code&gt;VSPublicFunction&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;foo&amp;gt;Init&lt;/code&gt;: A filter’s &amp;ldquo;init&amp;rdquo; function. This function is called by &lt;code&gt;createFilter()&lt;/code&gt; (indirectly). (It has the function signature &lt;code&gt;VSFilterInit&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;foo&amp;gt;GetFrame&lt;/code&gt;: A filter&amp;rsquo;s &amp;ldquo;getframe&amp;rdquo; function. It is called by the core when it needs the filter to generate a frame. (It has the function signature &lt;code&gt;VSFilterGetFrame&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;foo&amp;gt;Free&lt;/code&gt;: a &amp;ldquo;free&amp;rdquo; function. This is where the filter should free everything it allocated, including its instance data. (Function signature: &lt;code&gt;VSFilterFree&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Another thing a filter requires is an object for storing a filter instance’s private data. This object will usually contain the filter’s input nodes (if it has any) and a VSVideoInfo struct describing the video the filter wants to return.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vapoursynth/vapoursynth/blob/master/sdk/filter_skeleton.c&#34;&gt;filter skeleton&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vapoursynth/vapoursynth/blob/master/sdk/invert_example.c&#34;&gt;invert example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/vapoursynth/vapoursynth/blob/master/sdk/vsscript_example.c&#34;&gt;vscript example&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Regarding &lt;code&gt;&amp;lt;foo&amp;gt;GetFrame&lt;/code&gt;, this is the main function that gets called when a frame should be produced. It will, in most cases, get called several times to produce one frame. This state is being kept track of by the value of &lt;code&gt;activationReason&lt;/code&gt;. The first call to produce a certain frame n is always arInitial. In this state you should request all the input frames you need. Always do it in ascending order to play nice with the upstream filters. Once all frames are ready, the filter will be called with arAllFramesReady. It is now time to do the actual processing.&lt;/p&gt;
+&lt;p&gt;Depending on activationReason, calls: &lt;code&gt;requestFrameFilter&lt;/code&gt; otherwise: &lt;code&gt;getFrameFilter&lt;/code&gt;, &lt;code&gt;getFrameHeight&lt;/code&gt;, &lt;code&gt;getFrameWidth&lt;/code&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When creating a new frame for output it is VERY EXTREMELY SUPER IMPORTANT to supply the &amp;ldquo;dominant&amp;rdquo; source frame to copy properties from. Frame props are an essential part of the filter chain and you should NEVER break it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Release the source frame&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Return destination&lt;/p&gt;
+&lt;/blockquote&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>
