@@ -17,7 +17,6 @@ In order to install VapourSynth, follow its [instructions](http://www.vapoursynt
 ## Installing VapourSynth.nim
 In order to install VapourSynth you need to use nimble:
 ```
-$ nimble install vapoursynth
+$ nimble install https://github.com/mantielero/VapourSynth.nim
 ```
 
-> TODO: right now the nimble file is created but not shared yet.

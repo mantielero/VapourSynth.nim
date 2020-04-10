@@ -1,12 +1,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VapourSynth.nim – Filters</title>
-    <link>/docs/filters/</link>
+    <link>https://mantielero.github.io/VapourSynth.nim/docs/filters/</link>
     <description>Recent content in Filters on VapourSynth.nim</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Thu, 05 Jan 2017 00:00:00 +0000</lastBuildDate>
     
-	  <atom:link href="/docs/filters/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/docs/filters/index.xml" rel="self" type="application/rss+xml" />
     
     
       
@@ -16,10 +16,10 @@
     
     <item>
       <title>Docs: VS plugin API</title>
-      <link>/docs/filters/vapoursynth-filter/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/filters/vapoursynth-filter/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/filters/vapoursynth-filter/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/filters/vapoursynth-filter/</guid>
       <description>
         
         

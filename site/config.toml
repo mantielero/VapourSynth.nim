@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://mantielero.github.io/VapourSynth.nim/"
 title = "vapoursynth.nim"
 publishDir = "../docs"
 

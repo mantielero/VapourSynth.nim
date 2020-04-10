@@ -1,11 +1,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VapourSynth.nim – Getting Started</title>
-    <link>/docs/getting-started/</link>
+    <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/</link>
     <description>Recent content in Getting Started on VapourSynth.nim</description>
     <generator>Hugo -- gohugo.io</generator>
     
-	  <atom:link href="/docs/getting-started/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/docs/getting-started/index.xml" rel="self" type="application/rss+xml" />
     
     
       
@@ -15,10 +15,10 @@
     
     <item>
       <title>Docs: Installation</title>
-      <link>/docs/getting-started/installation/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/installation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/installation/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/installation/</guid>
       <description>
         
         
@@ -39,10 +39,10 @@
     
     <item>
       <title>Docs: Introduction</title>
-      <link>/docs/getting-started/intro/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/intro/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/intro/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/intro/</guid>
       <description>
         
         
@@ -163,10 +163,10 @@ Source(&amp;quot;video.mkv&amp;quot;).MotionMask( th1= some(@[10, 10, 10]), th2=
     
     <item>
       <title>Docs: Slicing and other syntactic suger</title>
-      <link>/docs/getting-started/slicing/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/slicing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/slicing/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/slicing/</guid>
       <description>
         
         
@@ -208,10 +208,10 @@ Source(&amp;quot;video.mkv&amp;quot;).MotionMask( th1= some(@[10, 10, 10]), th2=
     
     <item>
       <title>Docs: VapourSynth functions</title>
-      <link>/docs/getting-started/functions/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/functions/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/</guid>
       <description>
         
         

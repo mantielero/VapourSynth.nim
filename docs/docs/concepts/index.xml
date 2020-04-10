@@ -1,11 +1,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VapourSynth.nim – Concepts</title>
-    <link>/docs/concepts/</link>
+    <link>https://mantielero.github.io/VapourSynth.nim/docs/concepts/</link>
     <description>Recent content in Concepts on VapourSynth.nim</description>
     <generator>Hugo -- gohugo.io</generator>
     
-	  <atom:link href="/docs/concepts/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/docs/concepts/index.xml" rel="self" type="application/rss+xml" />
     
     
       

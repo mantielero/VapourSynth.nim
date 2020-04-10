@@ -1,11 +1,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VapourSynth.nim – Documentation</title>
-    <link>/docs/</link>
+    <link>https://mantielero.github.io/VapourSynth.nim/docs/</link>
     <description>Recent content in Documentation on VapourSynth.nim</description>
     <generator>Hugo -- gohugo.io</generator>
     
-	  <atom:link href="/docs/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/docs/index.xml" rel="self" type="application/rss+xml" />
     
     
       
@@ -15,10 +15,10 @@
     
     <item>
       <title>Docs: Installation</title>
-      <link>/docs/getting-started/installation/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/installation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/installation/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/installation/</guid>
       <description>
         
         
@@ -39,10 +39,10 @@
     
     <item>
       <title>Docs: Introduction</title>
-      <link>/docs/getting-started/intro/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/intro/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/intro/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/intro/</guid>
       <description>
         
         
@@ -163,10 +163,10 @@ Source(&amp;quot;video.mkv&amp;quot;).MotionMask( th1= some(@[10, 10, 10]), th2=
     
     <item>
       <title>Docs: Bed and Chair Metrics</title>
-      <link>/docs/tasks/beds/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tasks/beds/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tasks/beds/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tasks/beds/</guid>
       <description>
         
         
@@ -464,10 +464,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Configuring Ponycopters</title>
-      <link>/docs/tasks/ponycopters/configuring-ponycopters/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/configuring-ponycopters/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tasks/ponycopters/configuring-ponycopters/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/configuring-ponycopters/</guid>
       <description>
         
         
@@ -765,10 +765,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Slicing and other syntactic suger</title>
-      <link>/docs/getting-started/slicing/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/slicing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/slicing/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/slicing/</guid>
       <description>
         
         
@@ -810,10 +810,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Launching Ponycopters</title>
-      <link>/docs/tasks/ponycopters/launching-ponycopters/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/launching-ponycopters/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tasks/ponycopters/launching-ponycopters/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tasks/ponycopters/launching-ponycopters/</guid>
       <description>
         
         
@@ -1111,10 +1111,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: VS plugin API</title>
-      <link>/docs/filters/vapoursynth-filter/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/filters/vapoursynth-filter/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/filters/vapoursynth-filter/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/filters/vapoursynth-filter/</guid>
       <description>
         
         
@@ -1151,10 +1151,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Multi-Bear Domicile Setup</title>
-      <link>/docs/tutorials/multi-bear/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/multi-bear/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tutorials/multi-bear/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/multi-bear/</guid>
       <description>
         
         
@@ -1452,10 +1452,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Porridge Assessment</title>
-      <link>/docs/tasks/porridge/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tasks/porridge/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tasks/porridge/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tasks/porridge/</guid>
       <description>
         
         
@@ -1753,10 +1753,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Another Task</title>
-      <link>/docs/tasks/task/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tasks/task/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tasks/task/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tasks/task/</guid>
       <description>
         
         
@@ -2054,10 +2054,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Another Tutorial</title>
-      <link>/docs/tutorials/tutorial2/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/tutorial2/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/tutorials/tutorial2/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/tutorials/tutorial2/</guid>
       <description>
         
         
@@ -2355,10 +2355,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: Parameter Reference</title>
-      <link>/docs/reference/parameter-reference/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/reference/parameter-reference/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/reference/parameter-reference/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/reference/parameter-reference/</guid>
       <description>
         
         
@@ -2646,10 +2646,10 @@ This is a warning with a title.
     
     <item>
       <title>Docs: VapourSynth functions</title>
-      <link>/docs/getting-started/functions/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/getting-started/functions/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/getting-started/functions/</guid>
       <description>
         
         

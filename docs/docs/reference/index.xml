@@ -1,11 +1,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VapourSynth.nim – Reference</title>
-    <link>/docs/reference/</link>
+    <link>https://mantielero.github.io/VapourSynth.nim/docs/reference/</link>
     <description>Recent content in Reference on VapourSynth.nim</description>
     <generator>Hugo -- gohugo.io</generator>
     
-	  <atom:link href="/docs/reference/index.xml" rel="self" type="application/rss+xml" />
+	  <atom:link href="https://mantielero.github.io/VapourSynth.nim/docs/reference/index.xml" rel="self" type="application/rss+xml" />
     
     
       
@@ -15,10 +15,10 @@
     
     <item>
       <title>Docs: Parameter Reference</title>
-      <link>/docs/reference/parameter-reference/</link>
+      <link>https://mantielero.github.io/VapourSynth.nim/docs/reference/parameter-reference/</link>
       <pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/docs/reference/parameter-reference/</guid>
+      <guid>https://mantielero.github.io/VapourSynth.nim/docs/reference/parameter-reference/</guid>
       <description>
         
         
