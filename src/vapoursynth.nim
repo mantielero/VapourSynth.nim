@@ -39,6 +39,7 @@ include "vsframe"
 include "output"
 include "filter"  # This is the macro
 include "helper"
+include "VSScript_wrapper"
 
 when isMainModule:
   #let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
