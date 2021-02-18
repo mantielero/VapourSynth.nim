@@ -19,39 +19,35 @@ TODO: documentation and integrate it with Github pages
 
 https://nim-lang.org/docs/manual.html#types-mixing-gc-ed-memory-with-ptr
 ]##
-include "VapourSynth_wrapper.nim"
+include "wrapper/VapourSynth_wrapper.nim"
 
 let API* = getVapourSynthAPI(3)
 let CORE* = API.createCore(0)
 
-include "vsmap"
-include "vsplugins"
+include "wrapper/vsmap"
+include "wrapper/vsplugins"
 include "plugins/all_plugins"
 
-proc getVesionString():cstring = API.getCoreInfo( CORE ).versionString
-proc getCore():int = API.getCoreInfo( CORE ).core.int
-proc getApi():int = API.getCoreInfo( CORE ).api.int
-proc getNumThreads():int = API.getCoreInfo( CORE ).numThreads.int
-proc getMaxFramebufferSize():int = API.getCoreInfo( CORE ).maxFramebufferSize.int
-proc getUsedFramebufferSize():int = API.getCoreInfo( CORE ).usedFramebufferSize.int
+proc getVesionString*():cstring = API.getCoreInfo( CORE ).versionString
+proc getCore*():int = API.getCoreInfo( CORE ).core.int
+proc getApi*():int = API.getCoreInfo( CORE ).api.int
+proc getNumThreads*():int = API.getCoreInfo( CORE ).numThreads.int
+proc getMaxFramebufferSize*():int = API.getCoreInfo( CORE ).maxFramebufferSize.int
+proc getUsedFramebufferSize*():int = API.getCoreInfo( CORE ).usedFramebufferSize.int
 
-include "vsframe"
-include "output"
-include "filter"  # This is the macro
-include "helper"
-include "VSScript_wrapper"
+include "wrapper/vsframe"
+include "wrapper/output"
+include "vsmacros/filter"  # This is the macro
+include "wrapper/helper"
+include "wrapper/VSScript_wrapper"
 
-when isMainModule:
-  #let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
-  #vsmap.Savey4m("borrame.y4m")
-  let vsmap = createMap()
-  vsmap.propSetInt("hola", 1, paAppend)
-  echo vsmap.propGetData("hola", -1)
-  API.freeMap(vsmap)
-  API.freeCore(CORE)
-  #echo vsmap.propGetData("hola", 1)
-  #echo vsmap.get(1)
-  #echo vsmap.toSeq
+
+#let vsmap = Source("../test/2sec.mkv")#.ClipInfo()
+#vsmap.Savey4m("borrame.y4m")
+
+#echo vsmap.propGetData("hola", 1)
+#echo vsmap.get(1)
+#echo vsmap.toSeq
 
 
 
