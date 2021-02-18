@@ -3,7 +3,7 @@ proc Add*(vsmap:ptr VSMap; `var`= none(float); uvar= none(float); hcorr= none(fl
   let plug = getPluginById("com.holywu.addgrain")
   assert( plug != nil, "plugin \"com.holywu.addgrain\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

@@ -3,7 +3,7 @@ proc eedi3*(vsmap:ptr VSMap, field:int; dh= none(int); planes= none(seq[int]); a
   let plug = getPluginById("com.vapoursynth.eedi3")
   assert( plug != nil, "plugin \"com.vapoursynth.eedi3\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

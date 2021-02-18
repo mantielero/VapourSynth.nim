@@ -108,7 +108,8 @@ github_project_repo = "https://github.com/mantielero/VapourSynth.nim"
 # github_subdir = ""
 
 # Google Custom Search Engine ID. Remove or comment out to disable search.
-gcs_engine_id = "011737558837375720776:fsdu1nryfng"
+gcs_engine_id = "011697596346367139505:tzwbfngf1xm"
+
 
 # Enable Algolia DocSearch
 algolia_docsearch = false

@@ -3,7 +3,7 @@ proc BackwardClense*(vsmap:ptr VSMap; planes= none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -21,7 +21,7 @@ proc Clense*(vsmap:ptr VSMap; previous= none(ptr VSNodeRef); next= none(ptr VSNo
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -41,7 +41,7 @@ proc ForwardClense*(vsmap:ptr VSMap; planes= none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -59,7 +59,7 @@ proc RemoveGrain*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -77,7 +77,7 @@ proc Repair*(vsmap:ptr VSMap, repairclip:ptr VSNodeRef, mode:seq[int]):ptr VSMap
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -96,7 +96,7 @@ proc VerticalCleaner*(vsmap:ptr VSMap, mode:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.removegrainvs")
   assert( plug != nil, "plugin \"com.vapoursynth.removegrainvs\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

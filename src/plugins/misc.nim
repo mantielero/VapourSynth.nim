@@ -26,7 +26,7 @@ proc Hysteresis*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes= none(seq[int])):p
   let plug = getPluginById("com.vapoursynth.misc")
   assert( plug != nil, "plugin \"com.vapoursynth.misc\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -45,7 +45,7 @@ proc SCDetect*(vsmap:ptr VSMap; threshold= none(float)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.misc")
   assert( plug != nil, "plugin \"com.vapoursynth.misc\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

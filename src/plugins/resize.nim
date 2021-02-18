@@ -3,7 +3,7 @@ proc Bicubic*(vsmap:ptr VSMap; width= none(int); height= none(int); format= none
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -56,7 +56,7 @@ proc Bilinear*(vsmap:ptr VSMap; width= none(int); height= none(int); format= non
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -109,7 +109,7 @@ proc Lanczos*(vsmap:ptr VSMap; width= none(int); height= none(int); format= none
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -162,7 +162,7 @@ proc Point*(vsmap:ptr VSMap; width= none(int); height= none(int); format= none(i
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -215,7 +215,7 @@ proc Spline16*(vsmap:ptr VSMap; width= none(int); height= none(int); format= non
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -268,7 +268,7 @@ proc Spline36*(vsmap:ptr VSMap; width= none(int); height= none(int); format= non
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -321,7 +321,7 @@ proc Spline64*(vsmap:ptr VSMap; width= none(int); height= none(int); format= non
   let plug = getPluginById("com.vapoursynth.resize")
   assert( plug != nil, "plugin \"com.vapoursynth.resize\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

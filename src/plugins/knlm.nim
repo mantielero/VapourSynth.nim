@@ -3,7 +3,7 @@ proc KNLMeansCL*(vsmap:ptr VSMap; d= none(int); a= none(int); s= none(int); h= n
   let plug = getPluginById("com.Khanattila.KNLMeansCL")
   assert( plug != nil, "plugin \"com.Khanattila.KNLMeansCL\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

@@ -3,7 +3,7 @@ proc ImageFile*(vsmap:ptr VSMap, file:string; id= none(int); palette= none(seq[i
   let plug = getPluginById("biz.srsfckn.subtext")
   assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -33,7 +33,7 @@ proc Subtitle*(vsmap:ptr VSMap, text:string; start= none(int); `end`= none(int);
   let plug = getPluginById("biz.srsfckn.subtext")
   assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -66,7 +66,7 @@ proc TextFile*(vsmap:ptr VSMap, file:string; charset= none(string); scale= none(
   let plug = getPluginById("biz.srsfckn.subtext")
   assert( plug != nil, "plugin \"biz.srsfckn.subtext\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

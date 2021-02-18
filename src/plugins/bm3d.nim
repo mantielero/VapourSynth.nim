@@ -3,7 +3,7 @@ proc Basic*(vsmap:ptr VSMap; `ref`= none(ptr VSNodeRef); profile= none(string); 
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -31,7 +31,7 @@ proc Final*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile= none(string); sigma= 
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -58,7 +58,7 @@ proc OPP2RGB*(vsmap:ptr VSMap; sample= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -76,7 +76,7 @@ proc RGB2OPP*(vsmap:ptr VSMap; sample= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -94,7 +94,7 @@ proc VAggregate*(vsmap:ptr VSMap; radius= none(int); sample= none(int)):ptr VSMa
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -113,7 +113,7 @@ proc VBasic*(vsmap:ptr VSMap; `ref`= none(ptr VSNodeRef); profile= none(string);
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -145,7 +145,7 @@ proc VFinal*(vsmap:ptr VSMap, `ref`:ptr VSNodeRef; profile= none(string); sigma=
   let plug = getPluginById("com.vapoursynth.bm3d")
   assert( plug != nil, "plugin \"com.vapoursynth.bm3d\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 

@@ -3,7 +3,7 @@ proc FFT3DFilter*(vsmap:ptr VSMap; sigma= none(float); beta= none(float); planes
   let plug = getPluginById("systems.innocent.fft3dfilter")
   assert( plug != nil, "plugin \"systems.innocent.fft3dfilter\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

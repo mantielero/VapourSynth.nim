@@ -3,7 +3,7 @@ proc bitdepth*(vsmap:ptr VSMap; csp= none(int); bits= none(int); flt= none(int);
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -33,7 +33,7 @@ proc histluma*(vsmap:ptr VSMap; full= none(int); amp= none(int)):ptr VSMap =
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -52,7 +52,7 @@ proc matrix*(vsmap:ptr VSMap; mat= none(string); mats= none(string); matd= none(
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -80,7 +80,7 @@ proc matrix2020cl*(vsmap:ptr VSMap; full= none(int); csp= none(int); bits= none(
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -101,7 +101,7 @@ proc nativetostack16*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -118,7 +118,7 @@ proc primaries*(vsmap:ptr VSMap; rs= none(seq[float]); gs= none(seq[float]); bs=
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -146,7 +146,7 @@ proc resample*(vsmap:ptr VSMap; w= none(int); h= none(int); sx= none(seq[float])
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -217,7 +217,7 @@ proc stack16tonative*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -234,7 +234,7 @@ proc transfer*(vsmap:ptr VSMap; transs= none(seq[string]); transd= none(seq[stri
   let plug = getPluginById("fmtconv")
   assert( plug != nil, "plugin \"fmtconv\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

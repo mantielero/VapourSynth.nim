@@ -3,7 +3,7 @@ proc ClipInfo*(vsmap:ptr VSMap; alignment= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -22,7 +22,7 @@ proc CoreInfo*(vsmap= none(ptr VSMap); alignment= none(int)):ptr VSMap =
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   if vsmap.isSome:
     assert( vsmap.get.len != 0, "the vsmap should contain at least one item")
-    assert( vsmap.get.len("clip") != 1, "the vsmap should contain one node")
+    assert( vsmap.get.len("clip") == 1, "the vsmap should contain one node")
   var clip:ptr VSNodeRef
   if vsmap.isSome:
     clip = getFirstNode(vsmap.get)
@@ -43,7 +43,7 @@ proc FrameNum*(vsmap:ptr VSMap; alignment= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -61,7 +61,7 @@ proc FrameProps*(vsmap:ptr VSMap; props= none(seq[string]); alignment= none(int)
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -82,7 +82,7 @@ proc Text*(vsmap:ptr VSMap, text:string; alignment= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

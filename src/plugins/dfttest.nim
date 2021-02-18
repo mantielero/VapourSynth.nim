@@ -3,7 +3,7 @@ proc DFTTest*(vsmap:ptr VSMap; ftype= none(int); sigma= none(float); sigma2= non
   let plug = getPluginById("com.holywu.dfttest")
   assert( plug != nil, "plugin \"com.holywu.dfttest\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

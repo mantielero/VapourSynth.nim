@@ -3,7 +3,7 @@ proc SmoothST*(vsmap:ptr VSMap; temporal_threshold= none(int); spatial_threshold
   let plug = getPluginById("com.nodame.fluxsmooth")
   assert( plug != nil, "plugin \"com.nodame.fluxsmooth\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -23,7 +23,7 @@ proc SmoothT*(vsmap:ptr VSMap; temporal_threshold= none(int); planes= none(seq[i
   let plug = getPluginById("com.nodame.fluxsmooth")
   assert( plug != nil, "plugin \"com.nodame.fluxsmooth\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

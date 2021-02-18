@@ -3,7 +3,7 @@ proc Deband*(vsmap:ptr VSMap; range= none(int); y= none(int); cb= none(int); cr=
   let plug = getPluginById("net.sapikachu.f3kdb")
   assert( plug != nil, "plugin \"net.sapikachu.f3kdb\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

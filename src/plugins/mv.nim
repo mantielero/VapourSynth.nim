@@ -3,7 +3,7 @@ proc Analyse*(vsmap:ptr VSMap; blksize= none(int); blksizev= none(int); levels= 
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var super = getFirstNode(vsmap)
 
 
@@ -49,7 +49,7 @@ proc BlockFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -77,7 +77,7 @@ proc Compensate*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; sc
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -104,7 +104,7 @@ proc Degrain1*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -132,7 +132,7 @@ proc Degrain2*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -162,7 +162,7 @@ proc Degrain3*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -194,7 +194,7 @@ proc DepanAnalyse*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; mask= none(ptr VSNode
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -224,7 +224,7 @@ proc DepanCompensate*(vsmap:ptr VSMap, data:ptr VSNodeRef; offset= none(float); 
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -251,7 +251,7 @@ proc DepanEstimate*(vsmap:ptr VSMap; trust= none(float); winx= none(int); winy= 
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -282,7 +282,7 @@ proc DepanStabilise*(vsmap:ptr VSMap, data:ptr VSNodeRef; cutoff= none(float); d
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -319,7 +319,7 @@ proc Finest*(vsmap:ptr VSMap; opt= none(int)):ptr VSMap =
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var super = getFirstNode(vsmap)
 
 
@@ -337,7 +337,7 @@ proc Flow*(vsmap:ptr VSMap, super:ptr VSNodeRef, vectors:ptr VSNodeRef; time= no
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -363,7 +363,7 @@ proc FlowBlur*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:pt
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -388,7 +388,7 @@ proc FlowFPS*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:ptr
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -416,7 +416,7 @@ proc FlowInter*(vsmap:ptr VSMap, super:ptr VSNodeRef, mvbw:ptr VSNodeRef, mvfw:p
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -442,7 +442,7 @@ proc Mask*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; ml= none(float); gamma= none(
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -468,7 +468,7 @@ proc Recalculate*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thsad= none(int); smoo
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var super = getFirstNode(vsmap)
 
 
@@ -504,7 +504,7 @@ proc SCDetection*(vsmap:ptr VSMap, vectors:ptr VSNodeRef; thscd1= none(int); ths
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -524,7 +524,7 @@ proc Super*(vsmap:ptr VSMap; hpad= none(int); vpad= none(int); pel= none(int); l
   let plug = getPluginById("com.nodame.mvtools")
   assert( plug != nil, "plugin \"com.nodame.mvtools\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

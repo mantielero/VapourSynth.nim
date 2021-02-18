@@ -3,7 +3,7 @@ proc SmoothFps*(vsmap:ptr VSMap, super:ptr VSNodeRef, sdata:int, vectors:ptr VSN
   let plug = getPluginById("com.svp-team.flow2")
   assert( plug != nil, "plugin \"com.svp-team.flow2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -27,7 +27,7 @@ proc SmoothFps_NVOF*(vsmap:ptr VSMap, opt:string; nvof_src= none(ptr VSNodeRef);
   let plug = getPluginById("com.svp-team.flow2")
   assert( plug != nil, "plugin \"com.svp-team.flow2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

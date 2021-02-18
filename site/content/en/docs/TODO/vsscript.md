@@ -11,4 +11,5 @@ The API is described [here](http://www.vapoursynth.com/doc/api/vsscript.h.html).
 
 
 - [X] Bindings already created
-- [ ] Try to load an .vpy file.
+- [X] Try to load an .vpy file. (`ex12.nim`)
+- [ ] Try to use a python function defined in a **.vpy**

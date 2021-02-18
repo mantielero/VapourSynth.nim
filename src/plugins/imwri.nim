@@ -22,7 +22,7 @@ proc Write*(vsmap:ptr VSMap, imgformat:string, filename:string; firstnum= none(i
   let plug = getPluginById("com.vapoursynth.imwri")
   assert( plug != nil, "plugin \"com.vapoursynth.imwri\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

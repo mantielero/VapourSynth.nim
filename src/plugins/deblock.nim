@@ -3,7 +3,7 @@ proc Deblock*(vsmap:ptr VSMap; quant= none(int); aoffset= none(int); boffset= no
   let plug = getPluginById("com.holywu.deblock")
   assert( plug != nil, "plugin \"com.holywu.deblock\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

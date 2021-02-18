@@ -3,7 +3,7 @@ proc ABlur*(vsmap:ptr VSMap; blur= none(int); `type`= none(int); planes= none(se
   let plug = getPluginById("com.nodame.awarpsharp2")
   assert( plug != nil, "plugin \"com.nodame.awarpsharp2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -24,7 +24,7 @@ proc ASobel*(vsmap:ptr VSMap; thresh= none(int); planes= none(seq[int]); opt= no
   let plug = getPluginById("com.nodame.awarpsharp2")
   assert( plug != nil, "plugin \"com.nodame.awarpsharp2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -44,7 +44,7 @@ proc AWarp*(vsmap:ptr VSMap, mask:ptr VSNodeRef; depth= none(seq[int]); chroma= 
   let plug = getPluginById("com.nodame.awarpsharp2")
   assert( plug != nil, "plugin \"com.nodame.awarpsharp2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -67,7 +67,7 @@ proc AWarpSharp2*(vsmap:ptr VSMap; thresh= none(int); blur= none(int); `type`= n
   let plug = getPluginById("com.nodame.awarpsharp2")
   assert( plug != nil, "plugin \"com.nodame.awarpsharp2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

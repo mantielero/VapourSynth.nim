@@ -3,7 +3,7 @@ proc Vinverse*(vsmap:ptr VSMap; sstr= none(float); amnt= none(int); scl= none(fl
   let plug = getPluginById("biz.srsfckn.Vinverse")
   assert( plug != nil, "plugin \"biz.srsfckn.Vinverse\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

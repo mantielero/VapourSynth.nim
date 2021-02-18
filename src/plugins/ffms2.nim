@@ -11,7 +11,7 @@ proc GetLogLevel*():ptr VSMap =
   API.freeMap(args)
 
 
-proc Index*(source:string; cachefile= none(string); indextracks= none(seq[int]); dumptracks= none(seq[int]); audiofile= none(string); errorhandling= none(int); overwrite= none(int); demuxer= none(string)):ptr VSMap =
+proc Index*(source:string; cachefile= none(string); indextracks= none(seq[int]); errorhandling= none(int); overwrite= none(int)):ptr VSMap =
 
   let plug = getPluginById("com.vapoursynth.ffms2")
   assert( plug != nil, "plugin \"com.vapoursynth.ffms2\" not installed properly in your computer") 
@@ -22,11 +22,8 @@ proc Index*(source:string; cachefile= none(string); indextracks= none(seq[int]);
   args.append("source", source)
   if cachefile.isSome: args.append("cachefile", cachefile.get)
   if indextracks.isSome: args.set("indextracks", indextracks.get)
-  if dumptracks.isSome: args.set("dumptracks", dumptracks.get)
-  if audiofile.isSome: args.append("audiofile", audiofile.get)
   if errorhandling.isSome: args.append("errorhandling", errorhandling.get)
   if overwrite.isSome: args.append("overwrite", overwrite.get)
-  if demuxer.isSome: args.append("demuxer", demuxer.get)
 
   result = API.invoke(plug, "Index".cstring, args)
   API.freeMap(args)

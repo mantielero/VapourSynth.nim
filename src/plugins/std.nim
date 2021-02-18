@@ -3,7 +3,7 @@ proc AddBorders*(vsmap:ptr VSMap; left= none(int); right= none(int); top= none(i
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -25,7 +25,7 @@ proc AssumeFPS*(vsmap:ptr VSMap; src= none(ptr VSNodeRef); fpsnum= none(int); fp
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -45,7 +45,7 @@ proc Binarize*(vsmap:ptr VSMap; threshold= none(seq[float]); v0= none(seq[float]
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -67,7 +67,7 @@ proc BlankClip*(vsmap= none(ptr VSMap); width= none(int); height= none(int); for
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   if vsmap.isSome:
     assert( vsmap.get.len != 0, "the vsmap should contain at least one item")
-    assert( vsmap.get.len("clip") != 1, "the vsmap should contain one node")
+    assert( vsmap.get.len("clip") == 1, "the vsmap should contain one node")
   var clip:ptr VSNodeRef
   if vsmap.isSome:
     clip = getFirstNode(vsmap.get)
@@ -95,7 +95,7 @@ proc BoxBlur*(vsmap:ptr VSMap; planes= none(seq[int]); hradius= none(int); hpass
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -117,7 +117,7 @@ proc Cache*(vsmap:ptr VSMap; size= none(int); fixed= none(int); make_linear= non
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -137,7 +137,7 @@ proc ClipToProp*(vsmap:ptr VSMap, mclip:ptr VSNodeRef; prop= none(string)):ptr V
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -156,7 +156,7 @@ proc Convolution*(vsmap:ptr VSMap, matrix:seq[float]; bias= none(float); divisor
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -179,7 +179,7 @@ proc Crop*(vsmap:ptr VSMap; left= none(int); right= none(int); top= none(int); b
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -200,7 +200,7 @@ proc CropAbs*(vsmap:ptr VSMap, width:int, height:int; left= none(int); top= none
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -223,7 +223,7 @@ proc CropRel*(vsmap:ptr VSMap; left= none(int); right= none(int); top= none(int)
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -244,7 +244,7 @@ proc Deflate*(vsmap:ptr VSMap; planes= none(seq[int]); threshold= none(float)):p
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -263,7 +263,7 @@ proc DeleteFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -281,7 +281,7 @@ proc DoubleWeave*(vsmap:ptr VSMap; tff= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -299,7 +299,7 @@ proc DuplicateFrames*(vsmap:ptr VSMap, frames:seq[int]):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -339,7 +339,7 @@ proc FlipHorizontal*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -356,7 +356,7 @@ proc FlipVertical*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -373,7 +373,7 @@ proc FrameEval*(vsmap:ptr VSMap, eval:ptr VSFuncRef; prop_src= none(seq[ptr VSNo
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -394,7 +394,7 @@ proc FreezeFrames*(vsmap:ptr VSMap, first:seq[int], last:seq[int], replacement:s
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -414,7 +414,7 @@ proc Inflate*(vsmap:ptr VSMap; planes= none(seq[int]); threshold= none(float)):p
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -455,7 +455,7 @@ proc Invert*(vsmap:ptr VSMap; planes= none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -473,7 +473,7 @@ proc Levels*(vsmap:ptr VSMap; min_in= none(seq[float]); max_in= none(seq[float])
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -496,7 +496,7 @@ proc Limiter*(vsmap:ptr VSMap; min= none(seq[float]); max= none(seq[float]); pla
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -533,7 +533,7 @@ proc Loop*(vsmap:ptr VSMap; times= none(int)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -551,7 +551,7 @@ proc Lut*(vsmap:ptr VSMap; planes= none(seq[int]); lut= none(seq[int]); lutf= no
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -574,7 +574,7 @@ proc Lut2*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes= none(seq[int]); lut= no
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -598,7 +598,7 @@ proc MakeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes= none(seq[int])):ptr
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -617,7 +617,7 @@ proc MaskedMerge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef, mask:ptr VSNodeRef; plan
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -639,7 +639,7 @@ proc Maximum*(vsmap:ptr VSMap; planes= none(seq[int]); threshold= none(float); c
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -659,7 +659,7 @@ proc Median*(vsmap:ptr VSMap; planes= none(seq[int])):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -677,7 +677,7 @@ proc Merge*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; weight= none(seq[float])):ptr 
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -696,7 +696,7 @@ proc MergeDiff*(vsmap:ptr VSMap, clipb:ptr VSNodeRef; planes= none(seq[int])):pt
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -715,7 +715,7 @@ proc Minimum*(vsmap:ptr VSMap; planes= none(seq[int]); threshold= none(float); c
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -735,7 +735,7 @@ proc ModifyFrame*(vsmap:ptr VSMap, clips:seq[ptr VSNodeRef], selector:ptr VSFunc
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -755,7 +755,7 @@ proc PEMVerifier*(vsmap:ptr VSMap; upper= none(seq[float]); lower= none(seq[floa
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -774,7 +774,7 @@ proc PlaneStats*(vsmap:ptr VSMap; clipb= none(ptr VSNodeRef); plane= none(int); 
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clipa = getFirstNode(vsmap)
 
 
@@ -794,7 +794,7 @@ proc PreMultiply*(vsmap:ptr VSMap, alpha:ptr VSNodeRef):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -812,7 +812,7 @@ proc Prewitt*(vsmap:ptr VSMap; planes= none(seq[int]); scale= none(float)):ptr V
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -831,7 +831,7 @@ proc PropToClip*(vsmap:ptr VSMap; prop= none(string)):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -849,7 +849,7 @@ proc Reverse*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -866,7 +866,7 @@ proc SelectEvery*(vsmap:ptr VSMap, cycle:int, offsets:seq[int]; modify_duration=
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -886,7 +886,7 @@ proc SeparateFields*(vsmap:ptr VSMap; tff= none(int); modify_duration= none(int)
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -905,7 +905,7 @@ proc SetFieldBased*(vsmap:ptr VSMap, value:int):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -923,7 +923,7 @@ proc SetFrameProp*(vsmap:ptr VSMap, prop:string; delete= none(int); intval= none
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -981,7 +981,7 @@ proc Sobel*(vsmap:ptr VSMap; planes= none(seq[int]); scale= none(float)):ptr VSM
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -1058,7 +1058,7 @@ proc Transpose*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -1075,7 +1075,7 @@ proc Trim*(vsmap:ptr VSMap; first= none(int); last= none(int); length= none(int)
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
@@ -1095,7 +1095,7 @@ proc Turn180*(vsmap:ptr VSMap):ptr VSMap =
   let plug = getPluginById("com.vapoursynth.std")
   assert( plug != nil, "plugin \"com.vapoursynth.std\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

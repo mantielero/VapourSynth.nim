@@ -3,7 +3,7 @@ proc MotionMask*(vsmap:ptr VSMap; planes= none(seq[int]); th1= none(seq[int]); t
   let plug = getPluginById("com.nodame.motionmask")
   assert( plug != nil, "plugin \"com.nodame.motionmask\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 

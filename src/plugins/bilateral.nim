@@ -3,7 +3,7 @@ proc Bilateral*(vsmap:ptr VSMap; `ref`= none(ptr VSNodeRef); sigmaS= none(seq[fl
   let plug = getPluginById("mawen1250.Bilateral")
   assert( plug != nil, "plugin \"mawen1250.Bilateral\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 
@@ -26,7 +26,7 @@ proc Gaussian*(vsmap:ptr VSMap; sigma= none(seq[float]); sigmaV= none(seq[float]
   let plug = getPluginById("mawen1250.Bilateral")
   assert( plug != nil, "plugin \"mawen1250.Bilateral\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var input = getFirstNode(vsmap)
 
 

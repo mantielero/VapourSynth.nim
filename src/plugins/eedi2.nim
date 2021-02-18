@@ -3,7 +3,7 @@ proc EEDI2*(vsmap:ptr VSMap, field:int; mthresh= none(int); lthresh= none(int); 
   let plug = getPluginById("com.holywu.eedi2")
   assert( plug != nil, "plugin \"com.holywu.eedi2\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") != 1, "the vsmap should contain one node")
+  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
