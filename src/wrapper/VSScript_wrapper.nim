@@ -17,6 +17,7 @@
 ##  License along with VapourSynth; if not, write to the Free Software
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ##
+#[
 {. passL:"-rdynamic -Wl,-wrap,dlopen".}
 
 {.emit: """
@@ -32,7 +33,7 @@ void *__wrap_dlopen(const char *filename, int flags)
   return __real_dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
 }
 """.}
-
+]#
 #from VapourSynth_wrapper import VSNodeRef, VSMap, VSCore, VSAPI
 #import VapourSynth_wrapper
 
