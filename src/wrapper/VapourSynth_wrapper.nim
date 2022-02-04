@@ -8,6 +8,7 @@ elif defined(windows):
 else:
   const
     libname* = "libvapoursynth.dylib"
+
 const
   VAPOURSYNTH_API_MAJOR* = 3
   VAPOURSYNTH_API_MINOR* = 6
@@ -89,13 +90,6 @@ type
     arError = -1, arInitial = 0, arFrameReady = 1, arAllFramesReady = 2
   VSMessageType* {.size: sizeof(cint).} = enum
     mtDebug = 0, mtWarning = 1, mtCritical = 2, mtFatal = 3
-
-
-
-
-
-
-
 
 
 type

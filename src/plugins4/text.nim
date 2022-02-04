@@ -3,12 +3,13 @@ proc ClipInfo*(vsmap:ptr VSMap; alignment= none(int); scale= none(int)):ptr VSMa
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
+  assert( vsmap.len("vnode") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("clip", clip)
   if alignment.isSome: args.append("alignment", alignment.get)
   if scale.isSome: args.append("scale", scale.get)
@@ -23,16 +24,16 @@ proc CoreInfo*(vsmap= none(ptr VSMap); alignment= none(int); scale= none(int)):p
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   if vsmap.isSome:
     assert( vsmap.get.len != 0, "the vsmap should contain at least one item")
-    assert( vsmap.get.len("clip") == 1, "the vsmap should contain one node")
-  var clip:ptr VSNodeRef
+    assert( vsmap.get.len("vnode") == 1, "the vsmap should contain one node")
+  var clip:ptr VSNode
   if vsmap.isSome:
     clip = getFirstNode(vsmap.get)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
-  if vsmap.isSome:
-    args.append("clip", clip)
+
+  if clip.isSome: args.append("clip", clip.get)
   if alignment.isSome: args.append("alignment", alignment.get)
   if scale.isSome: args.append("scale", scale.get)
 
@@ -45,12 +46,13 @@ proc FrameNum*(vsmap:ptr VSMap; alignment= none(int); scale= none(int)):ptr VSMa
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
+  assert( vsmap.len("vnode") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("clip", clip)
   if alignment.isSome: args.append("alignment", alignment.get)
   if scale.isSome: args.append("scale", scale.get)
@@ -64,12 +66,13 @@ proc FrameProps*(vsmap:ptr VSMap; props= none(seq[string]); alignment= none(int)
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
+  assert( vsmap.len("vnode") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("clip", clip)
   if props.isSome:
     for item in props.get:
@@ -86,12 +89,13 @@ proc Text*(vsmap:ptr VSMap, text:string; alignment= none(int); scale= none(int))
   let plug = getPluginById("com.vapoursynth.text")
   assert( plug != nil, "plugin \"com.vapoursynth.text\" not installed properly in your computer") 
   assert( vsmap.len != 0, "the vsmap should contain at least one item")
-  assert( vsmap.len("clip") == 1, "the vsmap should contain one node")
+  assert( vsmap.len("vnode") == 1, "the vsmap should contain one node")
   var clip = getFirstNode(vsmap)
 
 
   # Convert the function parameters into a VSMap (taking into account that some of them might be optional)
   let args = createMap()
+
   args.append("clip", clip)
   args.append("text", text)
   if alignment.isSome: args.append("alignment", alignment.get)
